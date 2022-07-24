@@ -10,11 +10,12 @@ import net.prismclient.aether.ui.util.other.UICloneable
  */
 abstract class UIComponent<T> : Composable(), UICloneable<T> {
     override fun compose() {
-
+        updatePosition()
+        updateSize()
     }
 
     override fun render() {
-
+        renderComponent()
     }
 
     abstract fun renderComponent()

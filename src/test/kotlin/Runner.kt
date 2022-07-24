@@ -1,12 +1,5 @@
-import examples.Animations
-import examples.Default
-import examples.PathRendering
-import examples.prism.PrismScreen
-
 import net.prismclient.aether.ui.Aether
-import net.prismclient.aether.ui.Aether.Properties.updateMouse
 import net.prismclient.aether.ui.util.input.UIKey
-import net.prismclient.aether.ui.util.input.UIModifierKey
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -71,12 +64,12 @@ object Runner {
         }
 
         glfwSetMouseButtonCallback(window) { _: Long, button: Int, action: Int, _: Int ->
-            core!!.mouseChanged(button, action == GLFW_RELEASE)
+            //core!!.mouseChanged(button, action == GLFW_RELEASE)
         }
         glfwSetCursorPosCallback(window) { _: Long, xpos: Double, ypos: Double ->
             mouseX = xpos
             mouseY = ypos
-            core!!.mouseMoved(mouseX.toFloat(), mouseY.toFloat())
+            //core!!.mouseMoved(mouseX.toFloat(), mouseY.toFloat())
         }
 
         glfwSetWindowContentScaleCallback(window) { _: Long, xscale: Float, yscale: Float ->
@@ -94,51 +87,51 @@ object Runner {
 
         glfwSetKeyCallback(window) { _: Long, keyCode: Int, scanCode: Int, action: Int, _: Int ->
             // Check if the key is null
-            if (glfwGetKeyName(keyCode, scanCode) == null) {
-                if (action == GLFW_PRESS && keyCode == GLFW_KEY_ESCAPE) {
-                    createScreen(args)
-                }
-                val isRelease = action == GLFW_RELEASE
-                when (keyCode) {
-                    GLFW_KEY_LEFT_CONTROL -> Aether.updateModifierKey(UIModifierKey.LEFT_CTRL, isRelease)
-                    GLFW_KEY_RIGHT_CONTROL -> Aether.updateModifierKey(UIModifierKey.RIGHT_CTRL, isRelease)
-                    GLFW_KEY_LEFT_SHIFT -> Aether.updateModifierKey(UIModifierKey.LEFT_SHIFT, isRelease)
-                    GLFW_KEY_RIGHT_SHIFT -> Aether.updateModifierKey(UIModifierKey.RIGHT_SHIFT, isRelease)
-                    GLFW_KEY_LEFT_ALT -> Aether.updateModifierKey(UIModifierKey.LEFT_ALT, isRelease)
-                    GLFW_KEY_RIGHT_ALT -> Aether.updateModifierKey(UIModifierKey.RIGHT_ALT, isRelease)
-                    GLFW_KEY_LEFT -> Aether.updateModifierKey(UIModifierKey.ARROW_LEFT, isRelease)
-                    GLFW_KEY_RIGHT -> Aether.updateModifierKey(UIModifierKey.ARROW_RIGHT, isRelease)
-                    GLFW_KEY_UP -> Aether.updateModifierKey(UIModifierKey.ARROW_UP, isRelease)
-                    GLFW_KEY_DOWN -> Aether.updateModifierKey(UIModifierKey.ARROW_DOWN, isRelease)
-                    GLFW_KEY_TAB -> Aether.updateModifierKey(UIModifierKey.TAB, isRelease)
-                    GLFW_KEY_ESCAPE -> Aether.updateModifierKey(UIModifierKey.ESCAPE, isRelease)
-                    GLFW_KEY_ENTER -> Aether.updateModifierKey(UIModifierKey.ENTER, isRelease)
-                    GLFW_KEY_CAPS_LOCK, GLFW_MOD_CAPS_LOCK -> Aether.updateModifierKey(
-                        UIModifierKey.CAPS_LOCK,
-                        isRelease
-                    )
-                    GLFW_KEY_BACKSPACE -> Aether.updateModifierKey(UIModifierKey.BACKSPACE, isRelease)
-                }
-            } else {
-                // glfwSetCharCallback is not invoked while ctrl is held
-                if (Aether.modifierKeys[UIModifierKey.LEFT_CTRL] != true) {
-                    when (glfwGetKeyName(keyCode, scanCode)!!.lowercase()[0]) {
-                        'a' -> Aether.instance.keyPressed('a')
-                        'c' -> Aether.instance.keyPressed('c')
-                        'v' -> Aether.instance.keyPressed('v')
-                        'x' -> Aether.instance.keyPressed('x')
-                        'z' -> Aether.instance.keyPressed('z')
-                        'y' -> Aether.instance.keyPressed('y')
-                    }
-                }
-            }
+//            if (glfwGetKeyName(keyCode, scanCode) == null) {
+//                if (action == GLFW_PRESS && keyCode == GLFW_KEY_ESCAPE) {
+//                    createScreen(args)
+//                }
+//                val isRelease = action == GLFW_RELEASE
+//                when (keyCode) {
+//                    GLFW_KEY_LEFT_CONTROL -> Aether.updateModifierKey(UIModifierKey.LEFT_CTRL, isRelease)
+//                    GLFW_KEY_RIGHT_CONTROL -> Aether.updateModifierKey(UIModifierKey.RIGHT_CTRL, isRelease)
+//                    GLFW_KEY_LEFT_SHIFT -> Aether.updateModifierKey(UIModifierKey.LEFT_SHIFT, isRelease)
+//                    GLFW_KEY_RIGHT_SHIFT -> Aether.updateModifierKey(UIModifierKey.RIGHT_SHIFT, isRelease)
+//                    GLFW_KEY_LEFT_ALT -> Aether.updateModifierKey(UIModifierKey.LEFT_ALT, isRelease)
+//                    GLFW_KEY_RIGHT_ALT -> Aether.updateModifierKey(UIModifierKey.RIGHT_ALT, isRelease)
+//                    GLFW_KEY_LEFT -> Aether.updateModifierKey(UIModifierKey.ARROW_LEFT, isRelease)
+//                    GLFW_KEY_RIGHT -> Aether.updateModifierKey(UIModifierKey.ARROW_RIGHT, isRelease)
+//                    GLFW_KEY_UP -> Aether.updateModifierKey(UIModifierKey.ARROW_UP, isRelease)
+//                    GLFW_KEY_DOWN -> Aether.updateModifierKey(UIModifierKey.ARROW_DOWN, isRelease)
+//                    GLFW_KEY_TAB -> Aether.updateModifierKey(UIModifierKey.TAB, isRelease)
+//                    GLFW_KEY_ESCAPE -> Aether.updateModifierKey(UIModifierKey.ESCAPE, isRelease)
+//                    GLFW_KEY_ENTER -> Aether.updateModifierKey(UIModifierKey.ENTER, isRelease)
+//                    GLFW_KEY_CAPS_LOCK, GLFW_MOD_CAPS_LOCK -> Aether.updateModifierKey(
+//                            UIModifierKey.CAPS_LOCK,
+//                            isRelease
+//                    )
+//                    GLFW_KEY_BACKSPACE -> Aether.updateModifierKey(UIModifierKey.BACKSPACE, isRelease)
+//                }
+//            } else {
+//                // glfwSetCharCallback is not invoked while ctrl is held
+//                if (Aether.modifierKeys[UIModifierKey.LEFT_CTRL] != true) {
+//                    when (glfwGetKeyName(keyCode, scanCode)!!.lowercase()[0]) {
+//                        'a' -> Aether.instance.keyPressed('a')
+//                        'c' -> Aether.instance.keyPressed('c')
+//                        'v' -> Aether.instance.keyPressed('v')
+//                        'x' -> Aether.instance.keyPressed('x')
+//                        'z' -> Aether.instance.keyPressed('z')
+//                        'y' -> Aether.instance.keyPressed('y')
+//                    }
+//                }
+//            }
         }
 
         glfwSetCharCallback(window) { window, codepoint ->
-            Aether.instance.keyPressed(Character.toChars(codepoint)[0])
+//            Aether.instance.keyPressed(Character.toChars(codepoint)[0])
         }
 
-        glfwSetScrollCallback(window) { _: Long, _: Double, yscroll: Double -> core!!.mouseScrolled(yscroll.toFloat()) }
+//        glfwSetScrollCallback(window) { _: Long, _: Double, yscroll: Double -> core!!.mouseScrolled(yscroll.toFloat()) }
 
         glfwMakeContextCurrent(window)
         GL.createCapabilities()
@@ -160,16 +153,16 @@ object Runner {
             contentScaleY = sy[0]
 
             core!!.update(
-                framebufferWidth / contentScaleX,
-                framebufferHeight / contentScaleY,
-                max(contentScaleX, contentScaleY)
+                    framebufferWidth / contentScaleX,
+                    framebufferHeight / contentScaleY,
+                    max(contentScaleX, contentScaleY)
             )
         }
 
         createScreen(args)
 
         while (!glfwWindowShouldClose(window)) {
-            updateMouse(mouseX.toFloat(), mouseY.toFloat())
+            //updateMouse(mouseX.toFloat(), mouseY.toFloat())
 
             core!!.renderFrames()
 
@@ -189,14 +182,15 @@ object Runner {
     }
 
     fun createScreen(args: Array<String>) {
-        if (args.isNotEmpty()) {
-            Aether.displayScreen(
-                when (args[0]) {
-                    "Animations" -> Animations()
-                    "PathRendering" -> PathRendering()
-                    else -> Default()
-                }
-            )
-        } else Aether.displayScreen(PrismScreen())
+        Aether.displayScreen(TestScreen())
+//        if (args.isNotEmpty()) {
+//            Aether.displayScreen(
+//                    when (args[0]) {
+//                        "Animations" -> Animations()
+//                        "PathRendering" -> PathRendering()
+//                        else -> Default()
+//                    }
+//            )
+//        } else Aether.displayScreen(PrismScreen())
     }
 }

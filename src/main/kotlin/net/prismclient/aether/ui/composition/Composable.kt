@@ -3,6 +3,7 @@ package net.prismclient.aether.ui.composition
 import net.prismclient.aether.ui.Aether
 import net.prismclient.aether.ui.alignment.UIAnchorPoint
 import net.prismclient.aether.ui.unit.UIUnit
+import net.prismclient.aether.ui.util.shorthands.px
 
 /**
  * [Composable] is an object which Aether uses to compose the UI. In other words, it is a class
@@ -42,6 +43,16 @@ abstract class Composable {
     var height: UIUnit? = null
     var anchorPoint: UIAnchorPoint? = null
 
+    open fun updatePosition() {
+        x?.compute(this, false)
+        y?.compute(this, false)
+    }
+
+    open fun updateSize() {
+        width?.compute(this, false)
+        height?.compute(this, false)
+    }
+
     /**
      * Invoked when this is to be composed. Units and other properties should be initialized at this point.
      */
@@ -52,5 +63,25 @@ abstract class Composable {
      */
     abstract fun render()
 
-    operator fun UIUnit?.unaryPlus(): Float = this?.value ?: 0f
+    // -- Util -- //
+
+    operator fun UIUnit?.unaryPlus(): Float = this?.cachedValue ?: 0f
+
+    // -- Shorthands -- //
+    open fun constrain(x: Number, y: Number, width: Number, height: Number) =
+            constrain(px(x), px(y), px(width), px(height))
+
+    open fun constrain(x: UIUnit, y: UIUnit, width: UIUnit, height: UIUnit) {
+        this.x = x
+        this.y = y
+        this.width = width
+        this.height = height
+    }
+
+    open fun size(width: Number, height: Number) = size(px(width), px(height))
+
+    open fun size(width: UIUnit, height: UIUnit) {
+        this.width = width
+        this.height = height
+    }
 }

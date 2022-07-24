@@ -4,6 +4,8 @@ import net.prismclient.aether.ui.composition.UIComposition
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.screen.UIScreen
 import net.prismclient.aether.ui.util.other.UIMouseButton
+import net.prismclient.aether.ui.util.shorthands.notNull
+import net.prismclient.aether.ui.util.shorthands.rel
 
 /**
  * [Aether]
@@ -44,14 +46,19 @@ open class Aether(renderer: UIRenderer) {
      * 1f is considered the default value.
      */
     open fun update(displayWidth: Float, displayHeight: Float, devicePxRatio: Float) {
-        check()
-
         // Update the state
         this.displayWidth = displayWidth
         this.displayHeight = displayHeight
         this.devicePixelRatio = devicePxRatio.coerceAtLeast(1f)
 
-        compositions!!.values.forEach(UIComposition::compose)
+        if (activeScreen != null) {
+            check()
+            compositions!!.values.forEach(UIComposition::compose)
+        }
+    }
+
+    open fun renderFrames() {
+
     }
 
     /**
@@ -67,13 +74,26 @@ open class Aether(renderer: UIRenderer) {
 
     }
 
+    open fun render() {
+        if (activeScreen.notNull()) {
+            renderer.beginFrame(displayWidth, displayHeight, devicePixelRatio)
+            compositions!!.values.forEach(UIComposition::render)
+            renderer.endFrame()
+        }
+    }
+
     /**
      * Used internally for [Aether] to display a screen.
      *
      * @see Aether.Companion.displayScreen to display a screen
      */
     open fun screen(screen: UIScreen) {
-        defaultComposition = createComposition("Default")
+        activeScreen = screen
+        compositions = hashMapOf()
+        //defaultComposition = createComposition("Default")
+//        defaultComposition!!.size(rel(1f), rel(1f))
+        screen.createScreen()
+        update(displayWidth, displayHeight, devicePixelRatio)
     }
 
     /**

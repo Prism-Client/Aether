@@ -2,11 +2,11 @@ import net.prismclient.aether.ui.Aether
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.resource.image.UIImageData
-import net.prismclient.aether.ui.util.extensions.getAlpha
-import net.prismclient.aether.ui.util.extensions.getBlue
-import net.prismclient.aether.ui.util.extensions.getGreen
-import net.prismclient.aether.ui.util.extensions.getRed
 import net.prismclient.aether.ui.renderer.UIFramebuffer
+import net.prismclient.aether.ui.util.shorthands.getAlpha
+import net.prismclient.aether.ui.util.shorthands.getBlue
+import net.prismclient.aether.ui.util.shorthands.getGreen
+import net.prismclient.aether.ui.util.shorthands.getRed
 import org.lwjgl.nanovg.*
 import org.lwjgl.nanovg.NanoVG.*
 import org.lwjgl.nanovg.NanoVGGL3.*

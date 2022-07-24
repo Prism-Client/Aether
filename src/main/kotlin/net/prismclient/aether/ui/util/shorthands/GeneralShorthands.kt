@@ -10,11 +10,24 @@ typealias Block<T> = T.() -> Unit
  * closed after the block is executed, so [Aether.activeComposition] will be null once the block is completed.
  */
 inline fun compose(name: String, block: Block<UIComposition>): UIComposition {
-    if (Aether.instance.activeComposition != null)
-        throw RuntimeException("Failed to create composition as there is already an active one.")
     val composition = Aether.instance.createComposition(name)
-    Aether.instance.activeComposition = composition
     composition.block()
-    Aether.instance.activeComposition = null
     return composition
 }
+
+internal fun Any?.isNull() = this == null
+
+internal fun Any?.notNull() = this != null
+
+
+fun FloatArray.minX(): Float = this[0]
+fun FloatArray.minY(): Float = this[1]
+fun FloatArray.maxX(): Float = this[2]
+fun FloatArray.maxY(): Float = this[3]
+
+fun FloatArray.x(): Float = this[0]
+fun FloatArray.y(): Float = this[1]
+fun FloatArray.width(): Float = this[2]
+fun FloatArray.height(): Float = this[3]
+
+fun FloatArray.advance(): Float = this[4]

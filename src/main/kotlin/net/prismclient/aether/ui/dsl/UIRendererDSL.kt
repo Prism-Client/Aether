@@ -5,10 +5,13 @@ import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.renderer.UIColor
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.alignment.UIAlignment.*
+import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.util.*
 import net.prismclient.aether.ui.renderer.UIFramebuffer
+import net.prismclient.aether.ui.resource.UIResourceProvider
+import net.prismclient.aether.ui.unit.UIRadius
 import net.prismclient.aether.ui.util.enums.UIStrokeDirection
-import net.prismclient.aether.ui.util.shorthands.Block
+import net.prismclient.aether.ui.util.shorthands.*
 
 /**
  * [UIRendererDSL] wraps the [UIRenderer] class to minimize the amount of calls
@@ -282,7 +285,7 @@ object UIRendererDSL {
     ) {
         path {
             imagePattern(
-                UIProvider.getImage(imageName)?.handle ?: 0,
+                UIResourceProvider.images[imageName]?.handle ?: 0,
                 x,
                 y,
                 width,

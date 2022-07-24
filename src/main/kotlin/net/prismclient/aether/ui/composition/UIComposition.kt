@@ -2,10 +2,12 @@ package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.ui.Aether
 import net.prismclient.aether.ui.composition.component.UIComponent
+import net.prismclient.aether.ui.dsl.UIPathDSL
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.renderer.UIFramebuffer
+import net.prismclient.aether.ui.util.shorthands.asRGBA
 import net.prismclient.aether.ui.util.shorthands.px
 
 /**
@@ -33,10 +35,8 @@ open class UIComposition : Composable() {
             // Compose all static components
             components.filterNot(UIComponent<*>::dynamic).forEach(UIComponent<*>::compose)
 
-            x?.compute(this, false)
-            y?.compute(this, false)
-            width?.compute(this, false)
-            height?.compute(this, false)
+            updatePosition()
+            updateSize()
 
             // Compose all dynamic components after the initial composition has been created.
             if (dynamic)
@@ -48,10 +48,12 @@ open class UIComposition : Composable() {
     override fun render() {
         renderer {
             if (optimizeComposition) {
+                color(-1)
+                rect(+x, +y, +width, +height)
                 path {
-                    color(-1)
-                    imagePattern(framebuffer!!.imagePattern, )
-                }.fillPath()
+                    imagePattern(framebuffer!!.imagePattern, +x, +y, +width, +height, 0f, 1f)
+                    rect(+x, +y, +width, +height)
+                }.fillPaint()
             }
         }
     }
@@ -63,20 +65,13 @@ open class UIComposition : Composable() {
     open fun rasterize() {
         if (!optimizeComposition) return
 
-        framebuffer = framebuffer ?: Aether.renderer.createFBO(width?.cachedValue ?: 0f, height?.cachedValue ?: 0f)
+        framebuffer = framebuffer ?: Aether.renderer.createFBO(+width, +height)
 
-        UIRendererDSL.renderToFramebuffer(framebuffer!!) { render() }
+        UIRendererDSL.renderToFramebuffer(framebuffer!!) {
+                components.forEach(UIComponent<*>::render)
+        }
     }
 
     // -- Shorthands -- //
 
-    open fun constrain(x: Number, y: Number, width: Number, height: Number) =
-        constrain(px(x), px(y), px(width), px(height))
-
-    open fun constrain(x: UIUnit, y: UIUnit, width: UIUnit, height: UIUnit) {
-        this.x = x
-        this.y = y
-        this.width = width
-        this.height = height
-    }
 }
