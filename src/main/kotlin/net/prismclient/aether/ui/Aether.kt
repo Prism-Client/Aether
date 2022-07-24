@@ -3,8 +3,7 @@ package net.prismclient.aether.ui
 import net.prismclient.aether.ui.composition.UIComposition
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.screen.UIScreen
-import net.prismclient.aether.ui.util.UIMouseButton
-import kotlin.properties.Delegates
+import net.prismclient.aether.ui.util.other.UIMouseButton
 
 /**
  * [Aether]
@@ -33,11 +32,10 @@ open class Aether(renderer: UIRenderer) {
      * of the composition is equal to size of the window.
      */
     var defaultComposition: UIComposition? = null
-    val activeComposition: UIComposition?
-        get() = null
 
     init {
         instance = this
+        Companion.renderer = renderer
     }
 
     /**
@@ -46,12 +44,14 @@ open class Aether(renderer: UIRenderer) {
      * 1f is considered the default value.
      */
     open fun update(displayWidth: Float, displayHeight: Float, devicePxRatio: Float) {
+        check()
+
         // Update the state
         this.displayWidth = displayWidth
         this.displayHeight = displayHeight
         this.devicePixelRatio = devicePxRatio.coerceAtLeast(1f)
 
-        // Update the active composition
+        compositions!!.values.forEach(UIComposition::compose)
     }
 
     /**
@@ -68,16 +68,36 @@ open class Aether(renderer: UIRenderer) {
     }
 
     /**
+     * Used internally for [Aether] to display a screen.
+     *
+     * @see Aether.Companion.displayScreen to display a screen
+     */
+    open fun screen(screen: UIScreen) {
+        defaultComposition = createComposition("Default")
+    }
+
+    /**
+     * Creates a new composition from the given [name].
+     */
+    open fun createComposition(name: String): UIComposition = UIComposition().also {
+        check()
+        compositions!![name] = it
+    }
+
+    open fun check() {
+        if (activeScreen == null || compositions == null)
+            throw RuntimeException("[Aether] -> Failed check because activeScreen or compositions was null.")
+    }
+
+    /**
      * The companion object of [Aether] which provides a few utility fields and functions.
      *
      */
     companion object {
-        @JvmStatic
-        lateinit var instance: Aether
+        @JvmStatic lateinit var instance: Aether
+        @JvmStatic lateinit var renderer: UIRenderer
 
         @JvmStatic
-        fun displayScreen(screen: UIScreen) {
-
-        }
+        fun displayScreen(screen: UIScreen) = instance.screen(screen)
     }
 }

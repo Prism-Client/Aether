@@ -1,6 +1,6 @@
 package net.prismclient.aether.ui.unit
 
-import net.prismclient.aether.ui.component.UIComponent
+import net.prismclient.aether.ui.composition.Composable
 
 /**
  * @author sen
@@ -9,12 +9,12 @@ import net.prismclient.aether.ui.component.UIComponent
 abstract class UIUnit(var value: Float) {
     var cachedValue: Float = 0f
 
-    open fun compute(component: UIComponent, yaxis: Boolean) {
-        cachedValue = updateCache(component, yaxis)
+    open fun compute(composable: Composable?, yaxis: Boolean) {
+        cachedValue = updateCache(composable, yaxis)
     }
 
     /**
      * Updates [cachedValue] based on the given value.
      */
-    abstract fun updateCache(component: UIComponent, yaxis: Boolean): Float
+    abstract fun updateCache(composable: Composable?, yaxis: Boolean): Float
 }

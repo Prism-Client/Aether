@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.unit.type
 
-import net.prismclient.aether.ui.component.UIComponent
+import net.prismclient.aether.ui.Aether
+import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 
 /**
@@ -12,14 +13,12 @@ import net.prismclient.aether.ui.unit.UIUnit
  * @since 1.0
  */
 class UIRelativePixel(value: Float) : UIUnit(value) {
-    override fun compute(component: UIComponent, yaxis: Boolean) {
-        super.compute(component, yaxis)
-        component.isDynamic = true
+    override fun updateCache(composable: Composable?, yaxis: Boolean): Float {
+        composable?.dynamic = true
+        return if (yaxis) {
+            composable?.parentHeight ?: Aether.instance.displayHeight
+        } else {
+            composable?.parentWidth ?: Aether.instance.displayWidth
+        } * value
     }
-
-    override fun updateCache(component: UIComponent, yaxis: Boolean): Float = if (yaxis) {
-        component.parentHeight
-    } else {
-        component.parentWidth
-    } * value
 }

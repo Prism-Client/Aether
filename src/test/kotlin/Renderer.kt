@@ -1,13 +1,12 @@
 import net.prismclient.aether.ui.Aether
-import net.prismclient.aether.ui.renderer.UIProvider
 import net.prismclient.aether.ui.renderer.UIRenderer
-import net.prismclient.aether.ui.renderer.image.UIImageData
 import net.prismclient.aether.ui.alignment.UITextAlignment
-import net.prismclient.aether.ui.renderer.other.UIContentFBO
+import net.prismclient.aether.ui.resource.image.UIImageData
 import net.prismclient.aether.ui.util.extensions.getAlpha
 import net.prismclient.aether.ui.util.extensions.getBlue
 import net.prismclient.aether.ui.util.extensions.getGreen
 import net.prismclient.aether.ui.util.extensions.getRed
+import net.prismclient.aether.ui.renderer.UIFramebuffer
 import org.lwjgl.nanovg.*
 import org.lwjgl.nanovg.NanoVG.*
 import org.lwjgl.nanovg.NanoVGGL3.*
@@ -26,7 +25,7 @@ import java.nio.ByteBuffer
  * @since 1.0
  */
 object Renderer : UIRenderer {
-    private val framebuffers: HashMap<UIContentFBO, NVGLUFramebuffer> = hashMapOf()
+    private val framebuffers: HashMap<UIFramebuffer, NVGLUFramebuffer> = hashMapOf()
 
     private val ctx: Long = nvgCreate(NVG_ANTIALIAS)
     private val fillColor: NVGColor = NVGColor.create()
@@ -83,19 +82,19 @@ object Renderer : UIRenderer {
 
     override fun useAntialiasing(antialiasing: Boolean) = nvgShapeAntiAlias(ctx, antialiasing)
 
-    override fun createFBO(width: Float, height: Float): UIContentFBO {
-        val contentScale = Aether.devicePxRatio
+    override fun createFBO(width: Float, height: Float): UIFramebuffer {
+        val contentScale = Aether.instance.devicePixelRatio
         val framebuffer = nvgluCreateFramebuffer(
             ctx, (width * contentScale).toInt().coerceAtLeast(1), (height * contentScale).toInt().coerceAtLeast(1), NVG_IMAGE_REPEATX or NVG_IMAGE_REPEATY
         ) ?: throw RuntimeException("Failed to create the framebuffer. w: $width, h: $height")
-        val fbo = UIContentFBO(
+        val fbo = UIFramebuffer(
             framebuffer.image(), width, height, width * contentScale, height * contentScale, contentScale
         )
         framebuffers[fbo] = framebuffer
         return fbo
     }
 
-    override fun deleteFBO(fbo: UIContentFBO) {
+    override fun deleteFBO(fbo: UIFramebuffer) {
         val framebuffer = framebuffers[fbo]
         if (framebuffer != null) {
             nvgluDeleteFramebuffer(ctx, framebuffer)
@@ -105,7 +104,7 @@ object Renderer : UIRenderer {
         println("Failed to delete the framebuffer because it was not found.")
     }
 
-    override fun bindFBO(fbo: UIContentFBO) {
+    override fun bindFBO(fbo: UIFramebuffer) {
         nvgluBindFramebuffer(
             ctx, framebuffers[fbo] ?: throw NullPointerException("Unable to find the framebuffer $fbo.")
         )
@@ -133,13 +132,13 @@ object Renderer : UIRenderer {
             imageData.buffer ?: throw NullPointerException("Failed to load image. Is it corrupted?")
         )
         imageData.loaded = true
-        UIProvider.registerImage(imageName, imageData)
+        // TODO: Asset provider
         return imageData
     }
 
     override fun deleteImage(imageData: String) {
-        nvgDeleteImage(ctx, UIProvider.getImage(imageData)?.handle ?: return)
-        UIProvider.deleteImage(imageData)
+//        nvgDeleteImage(ctx, UIProvider.getImage(imageData)?.handle ?: return)
+        // TODO: Asset provider
     }
 
     override fun createSvg(svgName: String, data: ByteBuffer?, scale: Float): UIImageData {
@@ -172,7 +171,8 @@ object Renderer : UIRenderer {
         image.width = w
         image.height = h
         image.loaded = true
-        UIProvider.registerImage(svgName, image)
+
+        // TODO: Asset provider
         return image
     }
 

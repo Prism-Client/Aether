@@ -1,6 +1,6 @@
 package net.prismclient.aether.ui.unit.type
 
-import net.prismclient.aether.ui.component.UIComponent
+import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 
 /**
@@ -10,5 +10,5 @@ import net.prismclient.aether.ui.unit.UIUnit
  * @since 1.0
  */
 class UIPixel(value: Float) : UIUnit(value) {
-    override fun updateCache(component: UIComponent, yaxis: Boolean): Float = value
+    override fun updateCache(composable: Composable?, yaxis: Boolean): Float = value
 }

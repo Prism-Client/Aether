@@ -2,7 +2,6 @@ package net.prismclient.aether.ui.renderer
 
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.resource.image.UIImageData
-import net.prismclient.aether.ui.util.other.UIFbo
 import java.nio.ByteBuffer
 
 /**
@@ -118,19 +117,19 @@ interface UIRenderer {
     /**
      * Creates a framebuffer from the given [width] and [height].
      */
-    fun createFBO(width: Float, height: Float): UIFbo
+    fun createFBO(width: Float, height: Float): UIFramebuffer
 
     /**
      * Deletes the framebuffer from memory.
      */
-    fun deleteFBO(fbo: UIFbo)
+    fun deleteFBO(fbo: UIFramebuffer)
 
     /**
      * Begins a new draw frame and binds the given fbo to render content to.
      *
      * @see unbindFBO
      */
-    fun bindFBO(fbo: UIFbo)
+    fun bindFBO(fbo: UIFramebuffer)
 
     /**
      * Unbinds the active framebuffer.
