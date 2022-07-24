@@ -1,0 +1,59 @@
+import org.gradle.internal.os.OperatingSystem
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.7.0'
+    id 'java'
+    id 'maven-publish'
+}
+
+group 'net.prismclient'
+version '1.0-dev'
+
+project.ext.lwjglVersion = "3.3.1"
+switch (OperatingSystem.current()) {
+    case OperatingSystem.LINUX:
+        def osArch = System.getProperty("os.arch")
+        project.ext.lwjglNatives = osArch.startsWith("arm") || osArch.startsWith("aarch64") ? "natives-linux-${osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32"}" : "natives-linux"
+        break
+    case OperatingSystem.MAC_OS:
+        project.ext.lwjglNatives = System.getProperty("os.arch").startsWith("aarch64") ? "natives-macos-arm64" : "natives-macos"
+        break
+    case OperatingSystem.WINDOWS:
+        def osArch = System.getProperty("os.arch")
+        project.ext.lwjglNatives = osArch.contains("64") ? "natives-windows${osArch.startsWith("aarch64") ? "-arm64" : ""}" : "natives-windows-x86"
+        break
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.0'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.7.0'
+    implementation 'commons-io:commons-io:2.11.0'
+
+    testImplementation 'org.apache.commons:commons-collections4:4.4'
+
+    testImplementation "org.lwjgl:lwjgl:$lwjglVersion"
+    testImplementation "org.lwjgl:lwjgl-glfw:$lwjglVersion"
+    testImplementation "org.lwjgl:lwjgl-nanovg:$lwjglVersion"
+    testImplementation "org.lwjgl:lwjgl-opengl:$lwjglVersion"
+    testImplementation "org.lwjgl:lwjgl-stb:$lwjglVersion"
+    testRuntimeOnly "org.lwjgl:lwjgl:$lwjglVersion:$lwjglNatives"
+    testRuntimeOnly "org.lwjgl:lwjgl-glfw:$lwjglVersion:$lwjglNatives"
+    testRuntimeOnly "org.lwjgl:lwjgl-nanovg:$lwjglVersion:$lwjglNatives"
+    testRuntimeOnly "org.lwjgl:lwjgl-opengl:$lwjglVersion:$lwjglNatives"
+    testRuntimeOnly "org.lwjgl:lwjgl-stb:$lwjglVersion:$lwjglNatives"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.github.Prism-Client'
+            artifactId = 'Aether'
+            version = version
+            from components.kotlin
+        }
+    }
+}

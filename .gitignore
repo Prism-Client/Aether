@@ -1,0 +1,16 @@
+.gradle
+**/build/
+!src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+.gradletasknamecache
+.project
+.classpath
+.idea
+*.DS_STORE
+*.log
+
+/src/test/resources/
+
+/src/test/kotlin/examples/prism/
