@@ -8,7 +8,7 @@ class TestScreen : UIScreen {
             constrain(50, 50, 300, 300)
 
             val button = button {
-                constrain(0, 0, 100, 100)
+                constrain(-50, -50, 100, 100)
             }
             components.add(button)
         }

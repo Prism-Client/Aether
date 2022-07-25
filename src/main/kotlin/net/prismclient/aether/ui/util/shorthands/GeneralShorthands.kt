@@ -11,14 +11,15 @@ typealias Block<T> = T.() -> Unit
  */
 inline fun compose(name: String, block: Block<UIComposition>): UIComposition {
     val composition = Aether.instance.createComposition(name)
+    Aether.instance.activeComposition = composition
     composition.block()
+    Aether.instance.activeComposition = null
     return composition
 }
 
 internal fun Any?.isNull() = this == null
 
 internal fun Any?.notNull() = this != null
-
 
 fun FloatArray.minX(): Float = this[0]
 fun FloatArray.minY(): Float = this[1]

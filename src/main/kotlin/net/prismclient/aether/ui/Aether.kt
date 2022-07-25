@@ -34,6 +34,7 @@ open class Aether(renderer: UIRenderer) {
      * of the composition is equal to size of the window.
      */
     var defaultComposition: UIComposition? = null
+    var activeComposition: UIComposition? = null
 
     init {
         instance = this
