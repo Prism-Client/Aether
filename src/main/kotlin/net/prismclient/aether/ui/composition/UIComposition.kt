@@ -1,14 +1,11 @@
 package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.ui.Aether
-import net.prismclient.aether.ui.composition.component.UIComponent
-import net.prismclient.aether.ui.dsl.UIPathDSL
+import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
-import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.renderer.UIFramebuffer
-import net.prismclient.aether.ui.util.shorthands.asRGBA
-import net.prismclient.aether.ui.util.shorthands.px
+import net.prismclient.aether.ui.util.shorthands.dp
 
 /**
  * A composition is a group of components which fills a portion or full area of the screen. Compositions allow
@@ -49,10 +46,10 @@ open class UIComposition : Composable() {
         renderer {
             if (optimizeComposition) {
                 color(-1)
-                rect(+x, +y, +width, +height)
+                rect(x.dp, y.dp, width.dp, height.dp)
                 path {
-                    imagePattern(framebuffer!!.imagePattern, +x, +y, +width, +height, 0f, 1f)
-                    rect(+x, +y, +width, +height)
+                    imagePattern(framebuffer!!.imagePattern, x.dp, y.dp, width.dp, height.dp, 0f, 1f)
+                    rect(x.dp, y.dp, width.dp, height.dp)
                 }.fillPaint()
             }
         }
@@ -65,7 +62,7 @@ open class UIComposition : Composable() {
     open fun rasterize() {
         if (!optimizeComposition) return
 
-        framebuffer = framebuffer ?: Aether.renderer.createFBO(+width, +height)
+        framebuffer = framebuffer ?: Aether.renderer.createFBO(width.dp, height.dp)
 
         UIRendererDSL.renderToFramebuffer(framebuffer!!) {
                 components.forEach(UIComponent<*>::render)

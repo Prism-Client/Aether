@@ -6,9 +6,9 @@ package net.prismclient.aether.ui.util.other
  * @author sen
  * @since 1.0
  */
-interface UICloneable<T> {
+interface Copyable<T> {
     /**
      * Returns a deep copy of everything within [T].
      */
-    fun clone(): T
+    fun copy(): T
 }

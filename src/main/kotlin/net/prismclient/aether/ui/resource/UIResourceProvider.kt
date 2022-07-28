@@ -1,6 +1,6 @@
 package net.prismclient.aether.ui.resource
 
-import net.prismclient.aether.ui.resource.font.UIFontFamily
+import net.prismclient.aether.ui.font.UIFontFamily
 import net.prismclient.aether.ui.resource.image.UIImageData
 
 /**

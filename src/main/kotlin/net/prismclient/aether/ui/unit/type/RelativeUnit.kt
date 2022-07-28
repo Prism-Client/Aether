@@ -12,7 +12,7 @@ import net.prismclient.aether.ui.unit.UIUnit
  * @author sen
  * @since 1.0
  */
-class UIRelativePixel(value: Float) : UIUnit(value) {
+open class RelativeUnit(value: Float) : UIUnit<RelativeUnit>(value) {
     override fun updateCache(composable: Composable?, yaxis: Boolean): Float {
         composable?.dynamic = true
         return if (yaxis) {
@@ -21,4 +21,8 @@ class UIRelativePixel(value: Float) : UIUnit(value) {
             composable?.parentWidth ?: Aether.instance.displayWidth
         } * value
     }
+
+    override fun copy(): RelativeUnit = RelativeUnit(value)
+
+    override fun toString(): String = "Relative($value)"
 }

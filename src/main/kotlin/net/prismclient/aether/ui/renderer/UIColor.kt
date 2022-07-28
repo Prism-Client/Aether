@@ -1,10 +1,8 @@
 package net.prismclient.aether.ui.renderer
 
-import net.prismclient.aether.ui.util.other.UICloneable
-import net.prismclient.aether.ui.util.shorthands.getAlpha
-import net.prismclient.aether.ui.util.shorthands.getBlue
-import net.prismclient.aether.ui.util.shorthands.getGreen
-import net.prismclient.aether.ui.util.shorthands.getRed
+import net.prismclient.aether.ui.util.other.Animatable
+import net.prismclient.aether.ui.util.other.Copyable
+import net.prismclient.aether.ui.util.shorthands.*
 import java.awt.Color
 
 /**
@@ -22,7 +20,7 @@ import java.awt.Color
  * @author sen
  * @since 1.1
  */
-class UIColor(color: Int) : UICloneable<UIColor> {
+class UIColor(color: Int) : Copyable<UIColor>, Animatable<UIColor> {
     /**
      * Creates the [UIColor] from an HSV color type.
      */
@@ -53,7 +51,13 @@ class UIColor(color: Int) : UICloneable<UIColor> {
 
     fun getAlpha() = rgba.getAlpha()
 
-    override fun clone(): UIColor = UIColor(rgba)
+    override fun copy(): UIColor = UIColor(rgba)
+
+    override fun animate(start: UIColor?, end: UIColor?, fraction: Float) {
+        ifNotNull(start, end) {
+            rgba = lerp(start?.rgba ?: rgba, end?.rgba ?: rgba, fraction)
+        }
+    }
 
     override fun toString(): String =
         "UIColor(color=$rgba, hsv=${hsv.contentToString()}, r:${rgba.getRed()}, g:${rgba.getGreen()}, b:${rgba.getBlue()}, a:${rgba.getAlpha()})"

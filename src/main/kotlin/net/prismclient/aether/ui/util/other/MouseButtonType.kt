@@ -1,12 +1,12 @@
 package net.prismclient.aether.ui.util.other
 
 /**
- * [UIMouseButton] represents the buttons on the mouse.
+ * [MouseButtonType] represents the buttons on the mouse.
  *
  * @author sen
  * @since 1.0
  */
-enum class UIMouseButton {
+enum class MouseButtonType {
     /**
      * None of the given mouse buttons. Pass this when the mouse is moved.
      */

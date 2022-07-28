@@ -9,7 +9,7 @@ import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.util.*
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.ui.resource.UIResourceProvider
-import net.prismclient.aether.ui.unit.UIRadius
+import net.prismclient.aether.ui.unit.other.Radius
 import net.prismclient.aether.ui.util.enums.UIStrokeDirection
 import net.prismclient.aether.ui.util.shorthands.*
 
@@ -172,7 +172,7 @@ object UIRendererDSL {
      * renders a rectangle with the given bounds and [radius].
      */
     @JvmStatic
-    fun rect(x: Float, y: Float, width: Float, height: Float, radius: UIRadius?) = rect(
+    fun rect(x: Float, y: Float, width: Float, height: Float, radius: Radius?) = rect(
         x,
         y,
         width,

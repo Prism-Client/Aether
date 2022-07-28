@@ -2,7 +2,7 @@ package net.prismclient.aether.ui.dsl
 
 import net.prismclient.aether.ui.Aether
 import net.prismclient.aether.ui.renderer.UIRenderer
-import net.prismclient.aether.ui.unit.UIRadius
+import net.prismclient.aether.ui.unit.other.Radius
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.util.shorthands.Block
 
@@ -152,15 +152,11 @@ object UIPathDSL {
             x: Float, y: Float, radius: Float, startAngle: Float, endAngle: Float, windingOrder: UIRenderer.WindingOrder
     ) = renderer.arc(x, y, radius, startAngle, endAngle, windingOrder)
 
-    @JvmStatic
-    fun rect(x: UIUnit?, y: UIUnit?, width: UIUnit?, height: UIUnit?, radius: UIRadius?) = rect(x?.cachedValue
-            ?: 0f, y?.cachedValue ?: 0f, width?.cachedValue ?: 0f, height?.cachedValue ?: 0f, radius)
-
     /**
      * Renders a rectangle sub-path with the given bounds and [radius].
      */
     @JvmStatic
-    fun rect(x: Float, y: Float, width: Float, height: Float, radius: UIRadius?) = rect(
+    fun rect(x: Float, y: Float, width: Float, height: Float, radius: Radius?) = rect(
             x,
             y,
             width,

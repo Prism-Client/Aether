@@ -3,9 +3,8 @@ package net.prismclient.aether.ui
 import net.prismclient.aether.ui.composition.UIComposition
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.screen.UIScreen
-import net.prismclient.aether.ui.util.other.UIMouseButton
+import net.prismclient.aether.ui.util.other.MouseButtonType
 import net.prismclient.aether.ui.util.shorthands.notNull
-import net.prismclient.aether.ui.util.shorthands.rel
 
 /**
  * [Aether]
@@ -68,10 +67,10 @@ open class Aether(renderer: UIRenderer) {
      * @param mouseX The x position of the mouse relative to the top left corner of the screen.
      * @param mouseY The y position of the mouse relative to the top left corner of the screen.
      * @param mouseButton The button which was pressed
-     * @param isRelease When true, the mouse button was released. The value does not matter if [mouseButton] is [UIMouseButton.None].
+     * @param isRelease When true, the mouse button was released. The value does not matter if [mouseButton] is [MouseButtonType.None].
      * @see mouseButton
      */
-    open fun mouseChanged(mouseX: Float, mouseY: Float, mouseButton: UIMouseButton, isRelease: Boolean) {
+    open fun mouseChanged(mouseX: Float, mouseY: Float, mouseButton: MouseButtonType, isRelease: Boolean) {
 
     }
 
