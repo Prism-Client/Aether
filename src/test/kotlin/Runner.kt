@@ -1,4 +1,7 @@
 import net.prismclient.aether.ui.Aether
+import net.prismclient.aether.ui.alignment.UITextAlignment
+import net.prismclient.aether.ui.dsl.renderer
+import net.prismclient.aether.ui.util.extensions.toByteBuffer
 import net.prismclient.aether.ui.util.input.UIKey
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
@@ -136,7 +139,7 @@ object Runner {
         glfwMakeContextCurrent(window)
         GL.createCapabilities()
         glfwSetTime(0.0)
-        glfwSwapInterval(1)
+        glfwSwapInterval(0)
 
         core = Aether(Renderer)
 
@@ -159,6 +162,13 @@ object Runner {
             )
         }
 
+        var actualFps = 0
+        var fps = 0
+        var time = System.currentTimeMillis()
+
+        val buffer = "/Poppins.ttf".toByteBuffer()
+        Aether.renderer.createFont("Poppins", buffer)
+
         createScreen(args)
 
         while (!glfwWindowShouldClose(window)) {
@@ -172,8 +182,23 @@ object Runner {
 
             core!!.render()
 
+            renderer {
+                beginFrame(framebufferWidth.toFloat(), framebufferHeight.toFloat(), 1f)
+                color(-1)
+                font("Poppins", 16f, UITextAlignment.CENTER, UITextAlignment.TOP, 0f)
+                "FPS: $fps".render(framebufferWidth / 2f, 0f)
+                endFrame()
+            }
+
             glfwSwapBuffers(window)
             glfwPollEvents()
+
+            actualFps++
+            if (System.currentTimeMillis() > time + 1000L) {
+                fps = actualFps
+                actualFps = 0
+                time = System.currentTimeMillis()
+            }
         }
         GL.setCapabilities(null)
         Callbacks.glfwFreeCallbacks(window)

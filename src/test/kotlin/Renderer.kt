@@ -3,10 +3,10 @@ import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.resource.image.UIImageData
 import net.prismclient.aether.ui.renderer.UIFramebuffer
-import net.prismclient.aether.ui.util.shorthands.getAlpha
-import net.prismclient.aether.ui.util.shorthands.getBlue
-import net.prismclient.aether.ui.util.shorthands.getGreen
-import net.prismclient.aether.ui.util.shorthands.getRed
+import net.prismclient.aether.ui.util.shorthands.alpha
+import net.prismclient.aether.ui.util.shorthands.blue
+import net.prismclient.aether.ui.util.shorthands.green
+import net.prismclient.aether.ui.util.shorthands.red
 import org.lwjgl.nanovg.*
 import org.lwjgl.nanovg.NanoVG.*
 import org.lwjgl.nanovg.NanoVGGL3.*
@@ -480,10 +480,10 @@ object Renderer : UIRenderer {
 
     private fun nvgColor(color: Int, nvgColor: NVGColor) {
         nvgRGBA(
-            color.getRed().toByte(),
-            color.getGreen().toByte(),
-            color.getBlue().toByte(),
-            color.getAlpha().toByte(),
+            color.red.toByte(),
+            color.green.toByte(),
+            color.blue.toByte(),
+            color.alpha.toByte(),
             nvgColor
         )
     }
