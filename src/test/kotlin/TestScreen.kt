@@ -8,12 +8,12 @@ import kotlin.random.Random
 class TestScreen : UIScreen {
     override fun createScreen() {
         compose(
-            "Test",
+            name = "Test",
             modifier = Modifier()
                 .backgroundColor(0xFFFFFF.rgb)
                 .backgroundRadius(9.radius)
         ) {
-            for (i in 0 .. 100) {
+            for (i in 0 .. 1000) {
                 val btn = button(
                     text = "Hello",
                     modifier = Modifier()

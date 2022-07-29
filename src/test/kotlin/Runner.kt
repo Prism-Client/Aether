@@ -90,10 +90,11 @@ object Runner {
 
         glfwSetKeyCallback(window) { _: Long, keyCode: Int, scanCode: Int, action: Int, _: Int ->
             // Check if the key is null
-//            if (glfwGetKeyName(keyCode, scanCode) == null) {
-//                if (action == GLFW_PRESS && keyCode == GLFW_KEY_ESCAPE) {
-//                    createScreen(args)
-//                }
+            if (glfwGetKeyName(keyCode, scanCode) == null) {
+                if (action == GLFW_PRESS && keyCode == GLFW_KEY_ESCAPE) {
+                    createScreen(args)
+                }
+            }
 //                val isRelease = action == GLFW_RELEASE
 //                when (keyCode) {
 //                    GLFW_KEY_LEFT_CONTROL -> Aether.updateModifierKey(UIModifierKey.LEFT_CTRL, isRelease)
@@ -165,6 +166,7 @@ object Runner {
         var actualFps = 0
         var fps = 0
         var time = System.currentTimeMillis()
+        var fpsstring = "FPS: $fps"
 
         val buffer = "/Poppins.ttf".toByteBuffer()
         Aether.renderer.createFont("Poppins", buffer)
@@ -186,7 +188,7 @@ object Runner {
                 beginFrame(framebufferWidth.toFloat(), framebufferHeight.toFloat(), 1f)
                 color(-1)
                 font("Poppins", 16f, UITextAlignment.CENTER, UITextAlignment.TOP, 0f)
-                "FPS: $fps".render(framebufferWidth / 2f, 0f)
+                fpsstring.render(framebufferWidth / 2f, 0f)
                 endFrame()
             }
 
@@ -198,6 +200,7 @@ object Runner {
                 fps = actualFps
                 actualFps = 0
                 time = System.currentTimeMillis()
+                fpsstring = "FPS: $fps"
             }
         }
         GL.setCapabilities(null)

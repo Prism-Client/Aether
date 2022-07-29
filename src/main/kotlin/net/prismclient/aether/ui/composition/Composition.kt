@@ -10,6 +10,7 @@ import net.prismclient.aether.ui.util.shorthands.RGBA
 import net.prismclient.aether.ui.util.shorthands.dp
 
 // TODO: disable optimize composition
+// TODO: Limit composition framerate
 /**
  * A composition is a group of components which fills a portion or full area of the screen. Compositions allow
  * for Aether to streamline component layout calculations and cache frames to improve the overall speed from initial
@@ -18,7 +19,7 @@ import net.prismclient.aether.ui.util.shorthands.dp
  * @author sen
  * @since 1.0
  */
-open class Composition(modifier: Modifier) : Composable(modifier) {
+open class Composition(name: String, modifier: Modifier) : Composable(modifier) {
     val components: ArrayList<UIComponent<*>> = arrayListOf()
     var framebuffer: UIFramebuffer? = null
         protected set

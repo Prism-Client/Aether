@@ -32,7 +32,7 @@ object Renderer : UIRenderer {
     private val strokeColor: NVGColor = NVGColor.create()
     private val gradient1: NVGColor = NVGColor.create()
     private val gradient2: NVGColor = NVGColor.create()
-    private var paint: NVGPaint? = null
+    private var paint: NVGPaint = NVGPaint.create()
 
     private var activeColor: Int = 0
 
@@ -465,13 +465,12 @@ object Renderer : UIRenderer {
         nvgRadialGradient(ctx, x, y, innerRadius, outerRadius, gradient1, gradient2, paint!!)
     }
 
-    override fun allocPaint() {
-        paint = NVGPaint.calloc()
-    }
+    override fun allocPaint() {}
 
     override fun deallocatePaint() {
-        paint?.free()
-        paint = null
+        paint.image(0)
+        paint.feather(0f)
+        paint.radius(0f)
     }
 
     override fun degToRad(deg: Float): Float = nvgDegToRad(deg)

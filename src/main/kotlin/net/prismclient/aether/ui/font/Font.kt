@@ -5,6 +5,13 @@ import net.prismclient.aether.ui.style.Style
 import net.prismclient.aether.ui.unit.UIUnit
 
 /**
+ * ra
+ */
+open class UIFont {
+
+}
+
+/**
  * Represents a component which contains a font
  *
  * @author sen

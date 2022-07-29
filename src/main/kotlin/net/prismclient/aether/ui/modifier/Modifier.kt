@@ -1,11 +1,11 @@
 package net.prismclient.aether.ui.modifier
 
-import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.composition.util.UIBackground
+import net.prismclient.aether.ui.composition.util.color
+import net.prismclient.aether.ui.composition.util.radius
+import net.prismclient.aether.ui.registry.UIRegistry
 import net.prismclient.aether.ui.renderer.UIColor
-import net.prismclient.aether.ui.shape.component.background.UIBackground
-import net.prismclient.aether.ui.shape.component.background.color
-import net.prismclient.aether.ui.shape.component.background.radius
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding

@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.shape.component.background
+package net.prismclient.aether.ui.composition.util
 
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.renderer
