@@ -26,7 +26,7 @@ open class Aether(renderer: UIRenderer) {
     /**
      * The compositions represented as a HashMap with the key as the name of the composition.
      */
-    var compositions: HashMap<String, Composition>? = null
+    var compositions: ArrayList<Composition>? = null
         protected set
 
     /**
@@ -54,7 +54,7 @@ open class Aether(renderer: UIRenderer) {
 
         if (activeScreen != null) {
             check()
-            compositions!!.values.forEach(Composition::compose)
+            compositions!!.forEach(Composition::compose)
         }
     }
 
@@ -78,7 +78,7 @@ open class Aether(renderer: UIRenderer) {
     open fun render() {
         if (activeScreen.notNull()) {
             renderer.beginFrame(displayWidth, displayHeight, devicePixelRatio)
-            compositions!!.values.forEach(Composition::render)
+            for (i in compositions!!.indices) compositions!![i].render()
             renderer.endFrame()
         }
     }
@@ -90,7 +90,7 @@ open class Aether(renderer: UIRenderer) {
      */
     open fun screen(screen: UIScreen) {
         activeScreen = screen
-        compositions = hashMapOf()
+        compositions = arrayListOf()
         //defaultComposition = createComposition("Default")
 //        defaultComposition!!.size(rel(1f), rel(1f))
         screen.createScreen()
@@ -100,9 +100,9 @@ open class Aether(renderer: UIRenderer) {
     /**
      * Creates a new composition from the given [name].
      */
-    open fun createComposition(name: String, modifier: Modifier): Composition = Composition(modifier).also {
+    open fun createComposition(name: String, modifier: Modifier): Composition = Composition(name, modifier).also {
         check()
-        compositions!![name] = it
+        compositions!!.add(it)
     }
 
     open fun check() {
