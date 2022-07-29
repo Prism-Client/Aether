@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.ui.Aether
+import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.util.shorthands.dp
@@ -13,7 +14,7 @@ import net.prismclient.aether.ui.util.shorthands.px
  * @author sen
  * @since 1.0
  */
-abstract class Composable {
+abstract class Composable(val modifier: Modifier) {
     var parent: Composable? = null
 
     /**
@@ -46,12 +47,12 @@ abstract class Composable {
 
     open fun updatePosition() {
         x?.compute(this, false)
-        y?.compute(this, false)
+        y?.compute(this, true)
     }
 
     open fun updateSize() {
         width?.compute(this, false)
-        height?.compute(this, false)
+        height?.compute(this, true)
     }
 
     /**

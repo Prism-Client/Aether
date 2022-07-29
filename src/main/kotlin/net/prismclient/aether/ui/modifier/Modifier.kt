@@ -1,10 +1,15 @@
 package net.prismclient.aether.ui.modifier
 
 import net.prismclient.aether.ui.component.UIComponent
+import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.renderer.UIColor
 import net.prismclient.aether.ui.shape.component.background.UIBackground
+import net.prismclient.aether.ui.shape.component.background.color
+import net.prismclient.aether.ui.shape.component.background.radius
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
+import net.prismclient.aether.ui.unit.other.Radius
 import net.prismclient.aether.ui.util.other.Copyable
 import net.prismclient.aether.ui.util.shorthands.px
 
@@ -27,14 +32,14 @@ open class Modifier : Copyable<Modifier> {
 
     var background: UIBackground? = null
 
-    open fun preUpdate(component: UIComponent<*>) {
-        component.x = x
-        component.y = y
-        component.width = width
-        component.height = height
+    open fun preUpdate(component: Composable) {
+        component.x = x ?: component.x
+        component.y = y ?: component.y
+        component.width = width ?: component.width
+        component.height = height ?: component.height
     }
 
-    open fun update(component: UIComponent<*>) {
+    open fun update(component: Composable) {
         background?.update(component)
     }
 
@@ -158,3 +163,16 @@ fun Modifier.margin(top: UIUnit<*>?, right: UIUnit<*>?, bottom: UIUnit<*>?, left
  */
 fun Modifier.margin(top: Number, right: Number, bottom: Number, left: Number) =
     margin(top.px, right.px, bottom.px, left.px)
+
+/**
+ * Sets the background of this Modifier to the given [color]. A background is allocated if none is set.
+ */
+fun Modifier.backgroundColor(color: UIColor) = apply {
+    background = background ?: UIBackground()
+    background!!.color(color)
+}
+
+fun Modifier.backgroundRadius(radius: Radius) = apply {
+    background = background ?: UIBackground()
+    background!!.radius(radius)
+}

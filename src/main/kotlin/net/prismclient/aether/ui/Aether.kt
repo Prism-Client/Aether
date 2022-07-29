@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui
 
-import net.prismclient.aether.ui.composition.UIComposition
+import net.prismclient.aether.ui.composition.Composition
+import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.screen.UIScreen
 import net.prismclient.aether.ui.util.other.MouseButtonType
@@ -25,15 +26,15 @@ open class Aether(renderer: UIRenderer) {
     /**
      * The compositions represented as a HashMap with the key as the name of the composition.
      */
-    var compositions: HashMap<String, UIComposition>? = null
+    var compositions: HashMap<String, Composition>? = null
         protected set
 
     /**
      * The default composition, where all "composition-less" components are placed. The size
      * of the composition is equal to size of the window.
      */
-    var defaultComposition: UIComposition? = null
-    var activeComposition: UIComposition? = null
+    var defaultComposition: Composition? = null
+    var activeComposition: Composition? = null
 
     init {
         instance = this
@@ -53,7 +54,7 @@ open class Aether(renderer: UIRenderer) {
 
         if (activeScreen != null) {
             check()
-            compositions!!.values.forEach(UIComposition::compose)
+            compositions!!.values.forEach(Composition::compose)
         }
     }
 
@@ -77,7 +78,7 @@ open class Aether(renderer: UIRenderer) {
     open fun render() {
         if (activeScreen.notNull()) {
             renderer.beginFrame(displayWidth, displayHeight, devicePixelRatio)
-            compositions!!.values.forEach(UIComposition::render)
+            compositions!!.values.forEach(Composition::render)
             renderer.endFrame()
         }
     }
@@ -99,7 +100,7 @@ open class Aether(renderer: UIRenderer) {
     /**
      * Creates a new composition from the given [name].
      */
-    open fun createComposition(name: String): UIComposition = UIComposition().also {
+    open fun createComposition(name: String, modifier: Modifier): Composition = Composition(modifier).also {
         check()
         compositions!![name] = it
     }

@@ -18,8 +18,8 @@ import net.prismclient.aether.ui.util.shorthands.ifNotNull
  * @since 1.0
  */
 open class UIBackground : ComposableShape(), Copyable<UIBackground>, Animatable<UIBackground> {
-    override var width: UIUnit<*>? = rel(1)
-    override var height: UIUnit<*>? = rel(1)
+    override var width: UIUnit<*>? = 1.crel
+    override var height: UIUnit<*>? = 1.crel
 
     // TODO: Border
 
@@ -29,7 +29,7 @@ open class UIBackground : ComposableShape(), Copyable<UIBackground>, Animatable<
     override fun render() {
         renderer {
             color(backgroundColor)
-            rect(x.dp, y.dp, width.dp, height.dp)
+            rect(initialX + x.dp, initialY + y.dp, width.dp, height.dp, backgroundRadius)
         }
     }
 
@@ -62,10 +62,10 @@ open class UIBackground : ComposableShape(), Copyable<UIBackground>, Animatable<
     }
 }
 
-fun UIBackground.backgroundColor(color: UIColor) = apply {
+fun UIBackground.color(color: UIColor) = apply {
     backgroundColor = color
 }
 
-fun UIBackground.backgroundRadius(radius: Radius) = apply {
+fun UIBackground.radius(radius: Radius) = apply {
     backgroundRadius = radius
 }

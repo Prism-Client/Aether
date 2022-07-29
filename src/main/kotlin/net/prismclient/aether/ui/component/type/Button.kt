@@ -4,8 +4,6 @@ import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.util.shorthands.Block
-import net.prismclient.aether.ui.util.shorthands.asRGBA
-import net.prismclient.aether.ui.util.shorthands.dp
 
 open class UIButton(text: String, modifier: Modifier) : UIComponent<UIButton>(modifier) {
     var text: String = text
@@ -13,8 +11,8 @@ open class UIButton(text: String, modifier: Modifier) : UIComponent<UIButton>(mo
 
     override fun renderComponent() {
         renderer {
-            color(asRGBA(0f, 0f, 1f, 0.3f))
-            rect(x.dp, y.dp, width.dp, height.dp)
+//            color(asRGBA(0f, 0f, 1f, 0.3f))
+//            rect(x.dp, y.dp, width.dp, height.dp)
         }
     }
 

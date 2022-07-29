@@ -9,8 +9,7 @@ import net.prismclient.aether.ui.util.other.Copyable
  * @author sen
  * @since 1.0
  */
-abstract class UIComponent<T>(val modifier: Modifier) : Composable(),
-    Copyable<T> {
+abstract class UIComponent<T>(modifier: Modifier) : Composable(modifier), Copyable<T> {
     override fun compose() {
         modifier.preUpdate(this)
         updatePosition()
