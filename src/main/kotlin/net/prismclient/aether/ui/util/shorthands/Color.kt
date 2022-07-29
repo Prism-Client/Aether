@@ -46,7 +46,7 @@ inline val Number.rgba: UIColor get() = UIColor(this.toInt())
  */
 @JvmOverloads
 fun RGBA(r: Int, g: Int, b: Int, a: Int = 255) =
-    r or (g shl 8) or (b shl 16) or (a shl 24)
+    (r shl 16) or (g shl 8) or (b) or (a shl 24)
 
 /**
  * Returns an ARGB formatted Int from the given [r], [g], [b] and [a].
