@@ -7,6 +7,13 @@ import net.prismclient.aether.ui.unit.type.OperationUnit
 import net.prismclient.aether.ui.unit.type.PixelUnit
 import net.prismclient.aether.ui.unit.type.RelativeUnit
 
+/**
+ * UnitKt provides utility functions for creating and reading units.
+ *
+ * @author sen
+ * @since 1.0
+ */
+
 // -- Kotlin Functions -- //
 
 /**

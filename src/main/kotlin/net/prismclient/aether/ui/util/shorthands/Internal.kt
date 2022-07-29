@@ -3,7 +3,9 @@ package net.prismclient.aether.ui.util.shorthands
 import net.prismclient.aether.ui.unit.UIUnit
 import kotlin.math.roundToInt
 
-// Shorthands for Aether only.
+// Internal shorthands for Aether to reduce the amount of boilerplate code.
+
+internal typealias Block<T> = T.() -> Unit
 
 // -- Null Checking -- //
 

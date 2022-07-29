@@ -2,7 +2,14 @@ package net.prismclient.aether.ui.util.shorthands
 
 import net.prismclient.aether.ui.renderer.UIColor
 
-// Colors are in the form of 0xAARRGGBB or ARGB as an Int.
+/**
+ * ColorKt provides a set of shorthands for obtaining information and creating colors. Colors
+ * internally are stored as a UIColor, and within are stored as an Int formatted as ARGB or
+ * 0xAARRGGBB / 0xRRGGBB in hex. See UIColor for more documentation on this choice.
+ *
+ * @author sen
+ * @since 1.0
+ */
 
 /**
  * Returns the red color of the given color. The provided Int is expected to store the color as RGBA.
@@ -29,14 +36,16 @@ inline val Int.blue: Int get() = this and 0xFF
 inline val Int.alpha: Int get() = this shr 24 and 0xFF
 
 /**
- * Returns a [UIColor] from the given Int stored in the RGB format. The alpha is assumed to be 255.
+ * Returns a [UIColor] from the given Int stored in the RGB format. The alpha is assumed to be 255. Use
+ * this instead of [Number.rgba] for hex values, as the alpha is considered to be 0.
  */
 // Mask the alpha value and set it to 0xFF (255).
 @get:JvmName("rgb")
 inline val Number.rgb: UIColor get() = UIColor((this.toInt() and 0x00FFFFFF) or (0xFF shl 24))
 
 /**
- * Returns a [UIColor] from the given Int stored in the RGBA format.
+ * Returns a [UIColor] from the given Int stored in the RGBA format. For hex values use [Number.rgb] as the alpha
+ * will be 255 instead of 0.
  */
 @get:JvmName("rgba")
 inline val Number.rgba: UIColor get() = UIColor(this.toInt())
