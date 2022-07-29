@@ -5,9 +5,8 @@ import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 
 /**
- * A [UIUnit] which represents the width or height, depending on the axis of the parent
- * times the given [value]. This is considered a dynamic unit, and when necessary Aether
- * will request two composition updates.
+ * A [UIUnit] which scales based on the width or height of the composable's parent. If
+ * there is no parent, the screen's width and height are which this scales on.
  *
  * @author sen
  * @since 1.0
@@ -15,10 +14,10 @@ import net.prismclient.aether.ui.unit.UIUnit
 open class RelativeUnit(value: Float) : UIUnit<RelativeUnit>(value) {
     override fun updateCache(composable: Composable?, yaxis: Boolean): Float {
         composable?.dynamic = true
-        return if (yaxis) {
-            composable?.parentHeight ?: Aether.instance.displayHeight
-        } else {
+        return if (!yaxis) {
             composable?.parentWidth ?: Aether.instance.displayWidth
+        } else {
+            composable?.parentHeight ?: Aether.instance.displayHeight
         } * value
     }
 

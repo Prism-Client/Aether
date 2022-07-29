@@ -3,6 +3,7 @@ package net.prismclient.aether.ui.composition
 import net.prismclient.aether.ui.Aether
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.AnchorPoint
+import net.prismclient.aether.ui.util.shorthands.dp
 import net.prismclient.aether.ui.util.shorthands.px
 
 /**
@@ -19,13 +20,13 @@ abstract class Composable {
      * Returns the width of [parent], or the width of the display.
      */
     val parentWidth: Float
-        get() = if (parent != null) parent!!.parentWidth else Aether.instance.displayWidth
+        get() = if (parent != null) parent?.width.dp else Aether.instance.displayWidth
 
     /**
      * Returns the height of [parent], or the height of the display.
      */
     val parentHeight: Float
-        get() = if (parent != null) parent!!.parentHeight else Aether.instance.displayHeight
+        get() = if (parent != null) parent?.height.dp else Aether.instance.displayHeight
 
     /**
      * Returns true if this has been composed at least once.
@@ -132,4 +133,4 @@ fun Composable.constrain(x: UIUnit<*>, y: UIUnit<*>, width: UIUnit<*>, height: U
  * Constrains this to be within the bounds of the given values.
  */
 fun Composable.constrain(x: Number, y: Number, width: Number, height: Number) =
-    constrain(px(x), px(y), px(width), px(height))
+    constrain(x.px, y.px, width.px, height.px)
