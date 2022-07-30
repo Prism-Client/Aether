@@ -11,7 +11,7 @@ import net.prismclient.aether.ui.unit.UIUnit
  * @since 1.0
  */
 open class PixelUnit(value: Float) : UIUnit<PixelUnit>(value) {
-    override fun updateCache(composable: Composable?, yaxis: Boolean): Float = value
+    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float = value
 
     override fun copy(): PixelUnit = PixelUnit(value)
 

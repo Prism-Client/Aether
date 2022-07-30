@@ -21,12 +21,7 @@ object UIRegistry {
         globalModifiers[clazz::class.simpleName!!] = clazz
     }
 
-    fun test() {
-        val helloWorld = object {
-            val hello = "Hello"
-            val world = "World"
-            // object expressions extend Any, so `override` is required on `toString()`
-            override fun toString() = "$hello $world"
-        }
+    fun obtainModifier(modifier: Modifier): Modifier? {
+        return globalModifiers[modifier::class.simpleName!!]
     }
 }

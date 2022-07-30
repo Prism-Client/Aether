@@ -14,17 +14,10 @@ internal fun Any?.isNull() = this == null
 internal fun Any?.notNull() = this != null
 
 /**
- * Runs [block] as long as [value] and [value1] aren't null
+ * Runs [block] if either [value] or [value1] are not null.
  */
 internal inline fun ifNotNull(value: Any?, value1: Any? = null, block: () -> Unit) {
     if (value != null || value1 != null) block()
-}
-
-/**
- * Runs [block] as long as [value] and [value1] are null.
- */
-internal inline fun ifNull(value: Any?, value1: Any? = null, block: () -> Unit) {
-    if (value == null || value1 == null) block()
 }
 
 // -- Lerping -- //

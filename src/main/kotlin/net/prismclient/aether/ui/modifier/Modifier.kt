@@ -32,6 +32,10 @@ open class Modifier : Copyable<Modifier> {
 
     var background: UIBackground? = null
 
+    init {
+//        UIRegistry.obtainModifier
+    }
+
     open fun preUpdate(component: Composable) {
         component.x = x ?: component.x
         component.y = y ?: component.y

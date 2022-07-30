@@ -291,15 +291,15 @@ object Renderer : UIRenderer {
         return nrows
     }
 
-    override fun calculateText(text: ArrayList<String>, x: Float, y: Float, lineHeight: Float) {
-        var offset = y
-        var minx = x
-        var miny = y
+    override fun calculateText(text: ArrayList<String>, lineHeight: Float) {
+        var offset = 0f
+        var minx = -1f
+        var miny = -1f
         var maxx = 0f
         var maxy = 0f
 
         for (i in text.indices) {
-            nvgTextBounds(ctx, x, offset, text[i], fontBounds)
+            nvgTextBounds(ctx, 0f, offset, text[i], fontBounds)
             minx = fontBounds[0].coerceAtMost(minx)
             miny = fontBounds[1].coerceAtMost(miny)
             maxx = fontBounds[2].coerceAtLeast(maxx)
@@ -316,18 +316,16 @@ object Renderer : UIRenderer {
 
     override fun calculateText(
         text: String,
-        x: Float,
-        y: Float,
         lineWidth: Float,
         lineHeight: Float,
         lines: ArrayList<String>?
     ): Int {
         val nrows = nvgTextBreakLines(ctx, text, lineWidth, rows)
 
-        var offset = y
+        var offset = 0f
 
-        var minx = x
-        var miny = y
+        var minx = -1f
+        var miny = -1f
         var maxx = 0f
         var maxy = 0f
 
@@ -335,7 +333,7 @@ object Renderer : UIRenderer {
             val row = rows[i]
 
             lines?.add(MemoryUtil.memUTF8(row.start(), (row.end() - row.start()).toInt()))
-            nnvgTextBounds(ctx, x, offset, row.start(), row.end(), fontBounds)
+            nnvgTextBounds(ctx, 0f, offset, row.start(), row.end(), fontBounds)
 
             minx = fontBounds[0].coerceAtMost(minx)
             miny = fontBounds[1].coerceAtMost(miny)

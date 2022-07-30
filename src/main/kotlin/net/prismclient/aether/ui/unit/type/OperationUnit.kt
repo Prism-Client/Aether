@@ -17,10 +17,10 @@ import net.prismclient.aether.ui.util.shorthands.dp
 open class OperationUnit(val unit1: UIUnit<*>, val unit2: UIUnit<*>, val operation: Operation) :
     UIUnit<OperationUnit>(0f) {
 
-    override fun updateCache(composable: Composable?, yaxis: Boolean): Float {
+    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float {
         // The units automatically make the composable dynamic.
-        unit1.updateCache(composable, yaxis)
-        unit2.updateCache(composable, yaxis)
+        unit1.updateCache(composable, width, height, yaxis)
+        unit2.updateCache(composable, width, height, yaxis)
         return when (operation) {
             Operation.ADD -> unit1.dp + unit2.dp
             Operation.SUBTRACT -> unit1.dp - unit2.dp

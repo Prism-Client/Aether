@@ -127,45 +127,6 @@ object UIRendererDSL {
         this.render(alignedX, alignedY)
     }
 
-    /**
-     * Returns the bounds of the most recent text render call
-     */
-    @JvmStatic
-    fun fontBounds(): FloatArray = renderer.fontBounds()
-
-    /**
-     * Returns the bounds of the given text. This is considered as text render call, so subsequent calls
-     * to functions such as [fontBounds] and [fontAscender] will return the metrics of this.
-     */
-    @JvmStatic
-    fun String.fontBounds(): FloatArray = renderer.fontBounds(this)
-
-    /**
-     * Returns the width of the most recent text render call.
-     *
-     * @see fontBounds
-     */
-    @JvmStatic
-    fun fontWidth(): Float = fontBounds().maxX() - fontBounds().minX()
-
-    /**
-     * Returns the height of the most recent text render call.
-     */
-    @JvmStatic
-    fun fontHeight(): Float = fontBounds().maxY() - fontBounds().minY()
-
-    /**
-     * Returns the ascender of the most recent text render call.
-     */
-    @JvmStatic
-    fun fontAscender(): Float = renderer.fontAscender()
-
-    /**
-     * Returns the descender of the most recent text render call.
-     */
-    @JvmStatic
-    fun fontDescender(): Float = renderer.fontDescender()
-
     // -- General Rendering -- //
 
     /**
@@ -317,9 +278,9 @@ object UIRendererDSL {
     @JvmStatic
     fun String.indexOffset(index: Int): Float {
         var w = 0f
-        if (index > this.length - 1) return UIRendererDSL.fontBounds()[4] + this.fontBounds()[0]
-        for (i in 0 until index) w += this[i].toString().fontBounds()[4]
-        return w + this.fontBounds()[0]
+        if (index > this.length - 1) return fontBounds().advance + fontBounds().minX
+        for (i in 0 until index) w += this[i].toString().bounds.advance
+        return w + fontBounds().minX
     }
 
     /**

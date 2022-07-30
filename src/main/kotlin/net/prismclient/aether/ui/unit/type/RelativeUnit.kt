@@ -12,13 +12,8 @@ import net.prismclient.aether.ui.unit.UIUnit
  * @since 1.0
  */
 open class RelativeUnit(value: Float) : UIUnit<RelativeUnit>(value) {
-    override fun updateCache(composable: Composable?, yaxis: Boolean): Float {
-        composable?.dynamic = true
-        return if (!yaxis) {
-            composable?.parentWidth ?: Aether.instance.displayWidth
-        } else {
-            composable?.parentHeight ?: Aether.instance.displayHeight
-        } * value
+    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float {
+        TODO("Not yet implemented")
     }
 
     override fun copy(): RelativeUnit = RelativeUnit(value)

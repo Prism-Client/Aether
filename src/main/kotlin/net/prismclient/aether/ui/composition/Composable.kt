@@ -3,6 +3,7 @@ package net.prismclient.aether.ui.composition
 import net.prismclient.aether.ui.Aether
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.unit.UIUnit
+import net.prismclient.aether.ui.unit.compute
 import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.util.shorthands.dp
 import net.prismclient.aether.ui.util.shorthands.px

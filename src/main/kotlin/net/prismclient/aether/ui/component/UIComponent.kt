@@ -14,8 +14,14 @@ abstract class UIComponent<T>(modifier: Modifier) : Composable(modifier), Copyab
         modifier.preUpdate(this)
         updatePosition()
         updateSize()
+        update()
         modifier.update(this)
     }
+
+    /**
+     * Invoked after the components bounds have been updated.
+     */
+    open fun update() {}
 
     override fun render() {
         modifier.preRender()

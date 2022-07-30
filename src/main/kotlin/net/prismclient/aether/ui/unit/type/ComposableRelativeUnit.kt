@@ -14,12 +14,12 @@ import net.prismclient.aether.ui.util.shorthands.dp
  * @since 1.0
  */
 class ComposableRelativeUnit(value: Float) : UIUnit<ComposableRelativeUnit>(value) {
-    override fun updateCache(composable: Composable?, yaxis: Boolean): Float {
+    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float {
         composable?.dynamic = true
         return if (!yaxis) {
-            composable?.width.dp ?: Aether.instance.displayWidth
+            composable?.width?.dp ?: Aether.instance.displayWidth
         } else {
-            composable?.height.dp ?: Aether.instance.displayHeight
+            composable?.height?.dp ?: Aether.instance.displayHeight
         } * value
     }
 

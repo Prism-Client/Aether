@@ -219,13 +219,13 @@ interface UIRenderer {
     /**
      * Calculates the bounds given the array of [text] splitting it by the [lineHeight].
      */
-    fun calculateText(text: ArrayList<String>, x: Float, y: Float, lineHeight: Float)
+    fun calculateText(text: ArrayList<String>, lineHeight: Float)
 
     /**
      * Calculates the given [text] where if the text exceeds the [lineWidth], it will
      * be put onto a new line. If [lines] is not null, the string will be added to it.
      */
-    fun calculateText(text: String, x: Float, y: Float, lineWidth: Float, lineHeight: Float, lines: ArrayList<String>?): Int
+    fun calculateText(text: String, lineWidth: Float, lineHeight: Float, lines: ArrayList<String>?): Int
 
     /**
      * Returns an array of five floats representing the most recently rendered text.

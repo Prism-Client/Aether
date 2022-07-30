@@ -5,11 +5,12 @@ import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.renderer.UIRenderer
 
 /**
- * FontKt provides utilities for metrics pertaining to text.
+ * [Font] provides utilities for obtaining metrics for fonts.
  *
  * @author sen
  * @since 1.0
  */
+private class Font
 
 /**
  * Returns an array of the metrics from the most recent text render call. The returned value
@@ -60,7 +61,7 @@ inline val FloatArray.maxX: Float get() = this[2]
 inline val FloatArray.maxY: Float get() = this[3]
 
 /**
- * Returns the x coordinate of the next character's glyph position
+ * Returns the x coordinate of the next character's glyph position.
  *
  * @see fontBounds
  */

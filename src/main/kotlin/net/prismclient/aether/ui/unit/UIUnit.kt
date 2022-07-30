@@ -2,6 +2,7 @@ package net.prismclient.aether.ui.unit
 
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.util.other.Copyable
+import net.prismclient.aether.ui.util.shorthands.dp
 
 /**
  * [UIUnit] is the superclass of all units, which represent an amount of pixels on the screen when
@@ -19,12 +20,27 @@ import net.prismclient.aether.ui.util.other.Copyable
 abstract class UIUnit<T : UIUnit<T>>(open var value: Float) : Copyable<T> {
     open var cachedValue: Float = 0f
 
-    open fun compute(composable: Composable?, yaxis: Boolean) {
-        cachedValue = updateCache(composable, yaxis)
+    /**
+     * Updates the [cachedValue] based on the provided values.
+     *
+     * @see updateCache
+     */
+    fun compute(composable: Composable?, width: Float, height: Float, yaxis: Boolean) {
+        cachedValue = updateCache(composable, width, height, yaxis)
     }
 
     /**
-     * Updates [cachedValue] based on the given value.
+     * Updates [cachedValue] based on the given value. The [width] and [height] represent the
+     * width and height of the composable or other object, such as a shape. [yaxis] indicates
+     * that the expected axis should be the y-axis.
      */
-    abstract fun updateCache(composable: Composable?, yaxis: Boolean): Float
+    abstract fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float
+}
+
+/**
+ * Computes and updates the cache based on the provided [composable] the
+ * width and height are the properties of the [composable]'s parent.
+ */
+fun UIUnit<*>?.compute(composable: Composable, yaxis: Boolean) {
+    this?.compute(composable, composable.parentWidth, composable.parentHeight, yaxis)
 }
