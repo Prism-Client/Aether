@@ -138,10 +138,10 @@ object UIRendererDSL {
         y,
         width,
         height,
-        radius?.topLeft ?: 0f,
-        radius?.topRight ?: 0f,
-        radius?.bottomRight ?: 0f,
-        radius?.bottomLeft ?: 0f
+        radius?.topLeft.dp,
+        radius?.topRight.dp,
+        radius?.bottomRight.dp,
+        radius?.bottomLeft.dp
     )
 
     /**

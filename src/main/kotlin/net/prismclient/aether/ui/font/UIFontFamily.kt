@@ -36,6 +36,5 @@ class UIFontFamily(val familyName: String, val thin: Font?, val extraLight: Font
             "$location/$familyName-black.ttf".safeByteBuffer()
     )
 
-
     class Font(val name: String, val buffer: ByteBuffer)
 }

@@ -7,40 +7,44 @@ import net.prismclient.aether.ui.composition.util.radius
 import net.prismclient.aether.ui.registry.UIRegistry
 import net.prismclient.aether.ui.renderer.UIColor
 import net.prismclient.aether.ui.unit.UIUnit
+import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
 import net.prismclient.aether.ui.unit.other.Radius
+import net.prismclient.aether.ui.util.other.Animatable
 import net.prismclient.aether.ui.util.other.Copyable
+import net.prismclient.aether.ui.util.other.Mergable
+import net.prismclient.aether.ui.util.shorthands.or
 import net.prismclient.aether.ui.util.shorthands.px
 
 /**
  * [Modifier] contains information such as the position, background, padding and other properties
  * that reflect the component that this is passed to. [Modifier] is an inheritable class where custom
- * properties can be added to add custom effects if the given API is not enough.
+ * properties and effects can be added if the existing API is not enough. If Modifier is inherited, the
+ * functions [Modifier.copy], [Modifier.merge] and [Modifier.animate] should
+ * be overriden to avoid unwanted behavior.
  *
  * @author sen
  * @since 1.0
  */
-open class Modifier : Copyable<Modifier> {
+open class Modifier : Copyable<Modifier>, Mergable<Modifier>, Animatable<Modifier> {
     var x: UIUnit<*>? = null
     var y: UIUnit<*>? = null
     var width: UIUnit<*>? = null
     var height: UIUnit<*>? = null
+    var anchorPoint: AnchorPoint? = null
 
     var padding: Padding? = null
     var margin: Margin? = null
 
     var background: UIBackground? = null
 
-    init {
-//        UIRegistry.obtainModifier
-    }
-
     open fun preUpdate(component: Composable) {
         component.x = x ?: component.x
         component.y = y ?: component.y
         component.width = width ?: component.width
         component.height = height ?: component.height
+        component.anchorPoint = anchorPoint ?: component.anchorPoint
     }
 
     open fun update(component: Composable) {
@@ -66,9 +70,28 @@ open class Modifier : Copyable<Modifier> {
         it.y = y?.copy()
         it.width = width?.copy()
         it.height = height?.copy()
+        it.anchorPoint = anchorPoint?.copy()
         it.padding = padding?.copy()
         it.margin = margin?.copy()
         it.background = background?.copy()
+    }
+
+    override fun merge(other: Modifier?): Modifier {
+        if (other == null) return copy()
+        return Modifier().also {
+            it.x = other.x or x
+            it.y = other.y or y
+            it.width = other.width or width
+            it.height = other.height or height
+            it.anchorPoint = other.anchorPoint or anchorPoint
+            it.padding = other.padding or padding
+            it.margin = other.margin or margin
+            it.background = other.background or background
+        }
+    }
+
+    override fun animate(start: Modifier?, end: Modifier?, fraction: Float) {
+        TODO("Aniamte")
     }
 }
 

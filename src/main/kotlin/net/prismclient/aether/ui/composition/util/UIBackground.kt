@@ -8,6 +8,7 @@ import net.prismclient.aether.ui.unit.other.Radius
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.util.other.Animatable
 import net.prismclient.aether.ui.util.other.Copyable
+import net.prismclient.aether.ui.util.other.Property
 import net.prismclient.aether.ui.util.shorthands.*
 import net.prismclient.aether.ui.util.shorthands.ifNotNull
 
@@ -17,7 +18,7 @@ import net.prismclient.aether.ui.util.shorthands.ifNotNull
  * @author sen
  * @since 1.0
  */
-open class UIBackground : ComposableShape(), Copyable<UIBackground>, Animatable<UIBackground> {
+open class UIBackground : ComposableShape(), Property<UIBackground> {
     override var width: UIUnit<*>? = 1.crel
     override var height: UIUnit<*>? = 1.crel
 
@@ -25,6 +26,11 @@ open class UIBackground : ComposableShape(), Copyable<UIBackground>, Animatable<
 
     var backgroundColor: UIColor? = null
     var backgroundRadius: Radius? = null
+
+    override fun update(composable: Composable?) {
+        super.update(composable)
+        backgroundRadius?.update(composable)
+    }
 
     override fun render() {
         renderer {
@@ -34,12 +40,24 @@ open class UIBackground : ComposableShape(), Copyable<UIBackground>, Animatable<
     }
 
     override fun copy(): UIBackground = UIBackground().also {
-        it.x = x
-        it.y = y
-        it.width = width
-        it.height = height
-        it.backgroundColor = backgroundColor
-        it.backgroundRadius = backgroundRadius
+        it.x = x?.copy()
+        it.y = y?.copy()
+        it.width = width?.copy()
+        it.height = height?.copy()
+        it.backgroundColor = backgroundColor?.copy()
+        it.backgroundRadius = backgroundRadius?.copy()
+    }
+
+    override fun merge(other: UIBackground?): UIBackground {
+        if (other == null) return copy()
+        return UIBackground().also {
+            it.x = other.x or x
+            it.y = other.y or y
+            it.width = other.width or width
+            it.height = other.height or height
+            it.backgroundColor = other.backgroundColor or backgroundColor
+            it.backgroundRadius = other.backgroundRadius or backgroundRadius
+        }
     }
 
     override fun animate(start: UIBackground?, end: UIBackground?, fraction: Float) {
@@ -60,6 +78,8 @@ open class UIBackground : ComposableShape(), Copyable<UIBackground>, Animatable<
             height!!.lerp(start?.height, end?.height, fraction)
         }
     }
+
+    override fun toString(): String = "UIBackground(x=$x, y=$y, width=$width, height=$height, backgroundColor=$backgroundColor, backgroundRadius=$backgroundRadius)"
 }
 
 fun UIBackground.color(color: UIColor) = apply {

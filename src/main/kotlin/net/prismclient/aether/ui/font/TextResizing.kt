@@ -29,9 +29,4 @@ enum class TextResizing {
      * Cuts the text off at the point where it exceeds the width of this, and append the string [UIFont.truncatedText]
      */
     TruncateText,
-
-    /**
-     * Automatically figures out which one is the best based on the properties of the font.
-     */
-    Auto
 }

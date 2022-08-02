@@ -5,10 +5,10 @@ import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.util.other.Animatable
 import net.prismclient.aether.ui.util.other.Copyable
+import net.prismclient.aether.ui.util.other.Mergable
+import net.prismclient.aether.ui.util.shorthands.*
 import net.prismclient.aether.ui.util.shorthands.ifNotNull
 import net.prismclient.aether.ui.util.shorthands.lerp
-import net.prismclient.aether.ui.util.shorthands.px
-import net.prismclient.aether.ui.util.shorthands.rel
 
 /**
  * Expects a width and height which is used to scale the given properties
@@ -16,16 +16,21 @@ import net.prismclient.aether.ui.util.shorthands.rel
  * @author sen
  * @since 1.0
  */
-open class AnchorPoint : Copyable<AnchorPoint>, Animatable<AnchorPoint> {
+open class AnchorPoint : Copyable<AnchorPoint>, Mergable<AnchorPoint>, Animatable<AnchorPoint> {
     open var x: UIUnit<*>? = null
     open var y: UIUnit<*>? = null
+
+    open fun update(composable: Composable?, width: Float, height: Float) {
+        x?.compute(composable, width, height, false)
+        y?.compute(composable, width, height, true)
+    }
 
     /**
      * Sets the x and y values to relative values based on the [alignment]
      */
     fun align(alignment: UIAlignment) {
-        x = 0.rel
-        y = 0.rel
+        x = 0.crel
+        y = 0.crel
         x!!.value = when (alignment) {
             UIAlignment.TOPCENTER, UIAlignment.CENTER, UIAlignment.BOTTOMCENTER -> 0.5f
             UIAlignment.TOPRIGHT, UIAlignment.MIDDLERIGHT, UIAlignment.BOTTOMRIGHT -> 1f
@@ -38,14 +43,17 @@ open class AnchorPoint : Copyable<AnchorPoint>, Animatable<AnchorPoint> {
         }
     }
 
-    fun update(composable: Composable?, width: Float, height: Float) {
-        x?.compute(composable, width, height, false)
-        y?.compute(composable, width, height, true)
-    }
-
     override fun copy(): AnchorPoint = AnchorPoint().also {
         it.x = x?.copy()
         it.y = y?.copy()
+    }
+
+    override fun merge(other: AnchorPoint?): AnchorPoint {
+        if (other == null) return copy()
+        return AnchorPoint().also {
+            it.x = other.x or x
+            it.y = other.y or y
+        }
     }
 
     override fun animate(start: AnchorPoint?, end: AnchorPoint?, fraction: Float) {

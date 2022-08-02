@@ -1,14 +1,15 @@
 package net.prismclient.aether.ui.util.other
 
 /**
- * Returns a deep copy of the given object, [T].
+ * [Copyable] is used for creating deep copies (same properties, different references) of an object.
  *
  * @author sen
  * @since 1.0
+ * @see Property
  */
 interface Copyable<T> {
     /**
-     * Returns a deep copy of everything within [T].
+     * Every property within this, [T], is copied to a new object of this.
      */
     fun copy(): T
 }

@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.unit.other
 
 import net.prismclient.aether.ui.unit.UIUnit
+import net.prismclient.aether.ui.util.shorthands.or
 
 /**
  * The margin is the space between each component within a layout. This will be offset by [top] and
@@ -13,4 +14,14 @@ import net.prismclient.aether.ui.unit.UIUnit
  */
 open class Margin(top: UIUnit<*>?, right: UIUnit<*>?, bottom: UIUnit<*>?, left: UIUnit<*>?) : Padding(top, right, bottom, left) {
     override fun copy(): Margin = Margin(top?.copy(), right?.copy(), bottom?.copy(), left?.copy())
+
+    override fun merge(other: Padding?): Margin {
+        if (other == null) return copy()
+        return Margin(
+            top = other.top or top,
+            right = other.right or right,
+            bottom = other.bottom or bottom,
+            left = other.left or left
+        )
+    }
 }

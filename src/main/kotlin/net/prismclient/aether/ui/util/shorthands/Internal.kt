@@ -1,6 +1,8 @@
 package net.prismclient.aether.ui.util.shorthands
 
 import net.prismclient.aether.ui.unit.UIUnit
+import net.prismclient.aether.ui.util.other.Copyable
+import net.prismclient.aether.ui.util.other.Mergable
 import kotlin.math.roundToInt
 
 // Internal shorthands for Aether to reduce the amount of boilerplate code.
@@ -12,6 +14,14 @@ internal typealias Block<T> = T.() -> Unit
 internal fun Any?.isNull() = this == null
 
 internal fun Any?.notNull() = this != null
+
+/**
+ * Returns a copy of the receiver if not null, else other. If other is null, return null.
+ *
+ * This is used for [Mergable] to return the other value else this.
+ */
+@Suppress("unchecked_cast")
+internal infix fun <T : Copyable<*>> T?.or(other: T?) = (this ?: other)?.copy() as T
 
 /**
  * Runs [block] if either [value] or [value1] are not null.

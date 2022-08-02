@@ -5,6 +5,7 @@ import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.unit.other.Radius
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.util.shorthands.Block
+import net.prismclient.aether.ui.util.shorthands.dp
 
 /**
  * [UIPathDSL] is a DSL for paths. [UIRendererDSL] utilizes this to apply the paths.
@@ -161,10 +162,10 @@ object UIPathDSL {
             y,
             width,
             height,
-            radius?.topLeft ?: 0f,
-            radius?.topRight ?: 0f,
-            radius?.bottomRight ?: 0f,
-            radius?.bottomLeft ?: 0f
+            radius?.topLeft.dp,
+            radius?.topRight.dp,
+            radius?.bottomRight.dp,
+            radius?.bottomLeft.dp
     )
 
     /**
@@ -227,8 +228,10 @@ object UIPathDSL {
      * The calls would look like:
      *
      *      path {
-     *          rect(...)
-     *          circle(...) // Somewhere within the rectangle call above
+     *          hole {
+     *              rect(...)
+     *              circle(...) // Somewhere within the rectangle call above
+     *          }
      *      }.fillPath() // Fill path or something
      *
      * @see <a href="https://github.com/memononen/nanovg#understanding-composite-paths">See NanoVG Composite paths</a>

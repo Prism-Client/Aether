@@ -6,6 +6,8 @@ import net.prismclient.aether.ui.util.other.Copyable
 
 
 /**
+ * [UIComponent] is the core of all components. With that said, all components must extend this.
+ *
  * @author sen
  * @since 1.0
  */

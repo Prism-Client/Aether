@@ -36,11 +36,3 @@ abstract class UIUnit<T : UIUnit<T>>(open var value: Float) : Copyable<T> {
      */
     abstract fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float
 }
-
-/**
- * Computes and updates the cache based on the provided [composable] the
- * width and height are the properties of the [composable]'s parent.
- */
-fun UIUnit<*>?.compute(composable: Composable, yaxis: Boolean) {
-    this?.compute(composable, composable.parentWidth, composable.parentHeight, yaxis)
-}

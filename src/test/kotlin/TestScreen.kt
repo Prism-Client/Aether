@@ -1,3 +1,4 @@
+import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.component.type.button
 import net.prismclient.aether.ui.composition.constrain
 import net.prismclient.aether.ui.font.*
@@ -12,23 +13,24 @@ class TestScreen : UIScreen {
         compose(
             name = "Test",
             modifier = Modifier()
-                .backgroundColor(0xFFFFFF.rgb)
-//                .backgroundRadius(9.radius)
+                .backgroundColor(0x202020.rgb)
+                .backgroundRadius(25.radius)
         ) {
 //            for (i in 0 .. 1000) {
                 val btn = button(
-                    text = "Hello",
+                    text = "AgdCiLMmzjt",
                     modifier = Modifier()
-                        .position(5, 5)
-                        .size(250.px, 250.px)
-                        .backgroundColor(0x57A4FF.rgb),
-//                        .backgroundRadius(5.radius),
+                        .position(25, 25)
+                        .size(150.px, 30.px)
+                        .backgroundColor(0x29CC97.rgb)
+                        .backgroundRadius(9.radius),
                     fontStyle = FontStyle()
                         .fontName("Poppins")
-                        .fontColor(0xFF0000.rgb)
-                        .fontSize(32.px)
-                        .position(40, 40)
-                        .fontAnchor(AnchorPoint(0.5.crel, 0.5.crel))
+                        .fontColor(RGBA(255, 255, 255).rgb)
+                        .fontSize(16.px)
+                        .position(0.5.crel, 0.5.crel)
+                        .size(1.crel, 1.crel)
+                        .fontAnchor(UIAlignment.CENTER)
 
                 )
                 components.add(btn)

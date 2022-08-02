@@ -2,7 +2,7 @@ package net.prismclient.aether.ui.util.shorthands
 
 import net.prismclient.aether.ui.unit.other.Radius
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.unit.type.ComposableRelativeUnit
+import net.prismclient.aether.ui.unit.type.SizeUnit
 import net.prismclient.aether.ui.unit.type.OperationUnit
 import net.prismclient.aether.ui.unit.type.PixelUnit
 import net.prismclient.aether.ui.unit.type.RelativeUnit
@@ -35,25 +35,26 @@ inline val Number.px: PixelUnit get() = PixelUnit(this.toFloat())
 inline val Number.rel: RelativeUnit get() = RelativeUnit(this.toFloat())
 
 /**
- * Creates a [ComposableRelativeUnit] of the given value. A composable relative unit scales based on
+ * Creates a [SizeUnit] of the given value. A composable relative unit scales based on
  * the width / height of the composable which is passed through on update. This is considered a dynamic unit.
  *
- * @see ComposableRelativeUnit
+ * @see SizeUnit
  */
 @get:JvmName("crel")
-inline val Number.crel: ComposableRelativeUnit get() = ComposableRelativeUnit(this.toFloat())
+inline val Number.crel: SizeUnit get() = SizeUnit(this.toFloat())
 
 /**
  * Creates a [Radius] with the given value for each corner.
  */
 @get:JvmName("radius")
-inline val Number.radius: Radius get() = Radius(this.toFloat(), this.toFloat(), this.toFloat(), this.toFloat())
+inline val Number.radius: Radius get() = px.radii
 
 /**
- * Creates a [Radius] with the given pixel value
+ * Creates a [Radius] with the given unit. The unit is copied for each corner except the topLeft, where
+ * the original UIUnit reference is placed.
  */
 @get:JvmName("radii")
-inline val PixelUnit.radii: Radius get() = Radius(this.value)
+inline val UIUnit<*>.radii: Radius get() = Radius(this, this.copy(), this.copy(), this.copy())
 
 // -- Util -- //
 
