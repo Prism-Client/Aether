@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.ui.Aether
+import net.prismclient.aether.ui.event.UIEvent
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.util.shorthands.dp
@@ -23,29 +24,35 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     open var parent: Composable? = null
 
     /**
+     * The event listeners for this component. The outer HashMap represents the name of the event,
+     * while the inner HashMap's key represents the custom name of the event.
+     */
+    open var events: HashMap<String, HashMap<String, UIEvent>>? = null
+
+    /**
      * Returns the width of [parent], or the width of the display.
      */
-    val parentWidth: Float get() = if (parent != null) parent?.modifier?.width.dp else Aether.instance.displayWidth
+    open val parentWidth: Float get() = if (parent != null) parent?.modifier?.width.dp else Aether.instance.displayWidth
 
     /**
      * Returns the height of [parent], or the height of the display.
      */
-    val parentHeight: Float get() = if (parent != null) parent?.modifier?.height.dp else Aether.instance.displayHeight
+    open val parentHeight: Float get() = if (parent != null) parent?.modifier?.height.dp else Aether.instance.displayHeight
 
     /**
      * Returns true if this has been composed at least once.
      */
-    var composed: Boolean = false
+    open var composed: Boolean = false
 
     /**
      * Returns true if this or a child (but not sub-children) has a relative/dynamic unit.
      */
-    var dynamic: Boolean = false
+    open var dynamic: Boolean = false
 
-    var x: Float = 0f
-    var y: Float = 0f
-    var width: Float = 0f
-    var height: Float = 0f
+    open var x: Float = 0f
+    open var y: Float = 0f
+    open var width: Float = 0f
+    open var height: Float = 0f
 
     /**
      * Updates the anchor point and computes the [UIModifier.x] and [UIModifier.y] values and sets them to [x] and [y].
@@ -88,6 +95,10 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     @Suppress
     protected fun UIUnit<*>?.compute(yaxis: Boolean) {
         this?.compute(this@Composable, parentWidth, parentHeight, yaxis)
+    }
+
+    protected open fun invokeListeners(eventName: String) {
+
     }
 }
 

@@ -187,9 +187,9 @@ object Runner {
             core!!.render()
 
             renderer {
-                beginFrame(framebufferWidth.toFloat(), framebufferHeight.toFloat(), 1f)
+                beginFrame(framebufferWidth.toFloat(), framebufferHeight.toFloat(), max(contentScaleX, contentScaleY))
                 color(-1)
-                font("Poppins", 16f, UITextAlignment.CENTER, UITextAlignment.TOP, 0f)
+                font("Poppins", 32f, UITextAlignment.CENTER, UITextAlignment.TOP, 0f)
                 fpsstring.render(framebufferWidth / 2f, 0f)
                 endFrame()
             }
