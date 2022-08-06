@@ -1,8 +1,8 @@
 import net.prismclient.aether.ui.Aether
-import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.alignment.UITextAlignment
-import net.prismclient.aether.ui.resource.image.UIImageData
 import net.prismclient.aether.ui.renderer.UIFramebuffer
+import net.prismclient.aether.ui.renderer.UIRenderer
+import net.prismclient.aether.ui.resource.image.UIImageData
 import net.prismclient.aether.ui.util.shorthands.alpha
 import net.prismclient.aether.ui.util.shorthands.blue
 import net.prismclient.aether.ui.util.shorthands.green

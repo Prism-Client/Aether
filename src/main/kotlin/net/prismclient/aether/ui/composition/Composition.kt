@@ -4,10 +4,9 @@ import net.prismclient.aether.ui.Aether
 import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
-import net.prismclient.aether.ui.modifier.Modifier
+import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.renderer.UIFramebuffer
-import net.prismclient.aether.ui.util.shorthands.RGBA
-import net.prismclient.aether.ui.util.shorthands.dp
+import net.prismclient.aether.ui.util.shorthands.or
 
 // TODO: disable optimize composition
 // TODO: Limit composition framerate
@@ -19,15 +18,17 @@ import net.prismclient.aether.ui.util.shorthands.dp
  * @author sen
  * @since 1.0
  */
-open class Composition(name: String, modifier: Modifier) : Composable(modifier) {
-    val components: ArrayList<UIComponent<*>> = arrayListOf()
-    var framebuffer: UIFramebuffer? = null
+open class Composition(val name: String, modifier: CompositionModifier) : Composable(modifier) {
+    override val modifier: CompositionModifier get() = super.modifier as CompositionModifier
+
+    open val components: ArrayList<UIComponent<*>> = arrayListOf()
+    open var framebuffer: UIFramebuffer? = null
         protected set
 
     /**
      * True by default. The composition will use a framebuffer.
      */
-    var optimizeComposition: Boolean = true
+    var optimizeComposition: Boolean = true // TODO: Move to modifier
 
     // -- Core -- //
 
@@ -35,8 +36,9 @@ open class Composition(name: String, modifier: Modifier) : Composable(modifier) 
         if (!composed || dynamic) {
             modifier.preUpdate(this)
 
-            updatePosition()
             updateSize()
+            updateAnchor()
+            updatePosition()
 
             // Compose all static components
             components.filterNot(UIComponent<*>::dynamic).forEach(UIComponent<*>::compose)
@@ -54,8 +56,8 @@ open class Composition(name: String, modifier: Modifier) : Composable(modifier) 
             if (optimizeComposition) {
                 color(-1)
                 path {
-                    imagePattern(framebuffer!!.imagePattern, x.dp, y.dp, width.dp, height.dp, 0f, 1f)
-                    rect(x.dp, y.dp, width.dp, height.dp, modifier.background?.backgroundRadius)
+                    imagePattern(framebuffer!!.imagePattern, x, y, width, height, 0f, 1f)
+                    rect(x, y, width, height, modifier.background?.backgroundRadius)
                 }.fillPaint()
             }
         }
@@ -68,7 +70,7 @@ open class Composition(name: String, modifier: Modifier) : Composable(modifier) 
     open fun rasterize() {
         if (!optimizeComposition) return
 
-        framebuffer = framebuffer ?: Aether.renderer.createFBO(width.dp, height.dp)
+        framebuffer = framebuffer ?: Aether.renderer.createFBO(width, height)
 
         UIRendererDSL.renderToFramebuffer(framebuffer!!) {
             modifier.preRender()
@@ -79,4 +81,60 @@ open class Composition(name: String, modifier: Modifier) : Composable(modifier) 
 
     // -- Shorthands -- //
 
+}
+
+/**
+ * The [UIModifier] for [Composition]s. See the properties for more information
+ *
+ * @author sen
+ * @since 1.0
+ */
+open class CompositionModifier : UIModifier<CompositionModifier>() {
+    /**
+     * The frame rate of this composition. The frame is updated regardless of this property on an event.
+     *
+     *      -1 = unlimited
+     *       0 = disabled (default)
+     *      >0 = frames per second
+     */
+    var frameRate: Int = 0 // TODO: Convert to class
+
+    override fun copy(): CompositionModifier = CompositionModifier().also {
+        it.x = x?.copy()
+        it.y = y?.copy()
+        it.width = width?.copy()
+        it.height = height?.copy()
+        it.anchorPoint = anchorPoint?.copy()
+        it.padding = padding?.copy()
+        it.margin = margin?.copy()
+        it.background = background?.copy()
+        it.frameRate = frameRate
+    }
+
+    override fun merge(other: CompositionModifier?) {
+        if (other != null) {
+            x = other.x or x
+            y = other.y or y
+            width = other.width or width
+            height = other.height or height
+            anchorPoint = other.anchorPoint or anchorPoint
+            padding = other.padding or padding
+            margin = other.margin or margin
+            background = other.background or background
+            frameRate = other.frameRate
+        }
+    }
+
+    override fun animate(start: CompositionModifier?, end: CompositionModifier?, fraction: Float) {
+        TODO("Animate CompositionModifier")
+    }
+}
+
+/**
+ * Limits the frame rate of the composition of this [CompositionModifier].
+ *
+ * @see [CompositionModifier.frameRate]
+ */
+fun Composition.limitFrameRate(frameRate: Int) = apply {
+    modifier.frameRate = frameRate
 }

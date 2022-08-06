@@ -1,7 +1,8 @@
-package net.prismclient.aether.ui.unit.type
+package net.prismclient.aether.ui.unit.type.dynamic
 
 import net.prismclient.aether.ui.Aether
 import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.unit.DynamicUnit
 import net.prismclient.aether.ui.unit.UIUnit
 
 /**
@@ -11,7 +12,7 @@ import net.prismclient.aether.ui.unit.UIUnit
  * @author sen
  * @since 1.0
  */
-open class RelativeUnit(value: Float) : UIUnit<RelativeUnit>(value) {
+open class RelativeUnit(value: Float) : DynamicUnit<RelativeUnit>(value) {
     override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float {
         composable?.dynamic = true
         return if (!yaxis) {

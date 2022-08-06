@@ -1,18 +1,16 @@
 package net.prismclient.aether.ui.component.type
 
 import net.prismclient.aether.ui.component.UIComponent
-import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.font.FontStyle
 import net.prismclient.aether.ui.font.UIFont
-import net.prismclient.aether.ui.modifier.Modifier
-import net.prismclient.aether.ui.util.shorthands.Block
+import net.prismclient.aether.ui.modifier.UIModifier
 
 open class UIButton internal constructor(
     text: String,
-    modifier: Modifier,
+    modifier: UIModifier<*>,
     val font: UIFont
 ) : UIComponent<UIButton>(modifier) {
-    constructor(text: String, modifier: Modifier, fontStyle: FontStyle) : this(text, modifier, UIFont(fontStyle))
+    constructor(text: String, modifier: UIModifier<*>, fontStyle: FontStyle) : this(text, modifier, UIFont(fontStyle))
 
     var text: String = text
         set(value) {
@@ -29,13 +27,5 @@ open class UIButton internal constructor(
         font.render()
     }
 
-    override fun copy(): UIButton = UIButton(text, modifier, font.copy())
+    override fun copy(): UIButton = UIButton(text, modifier.copy(), font.copy())
 }
-
-@JvmOverloads
-fun button(
-    text: String,
-    modifier: Modifier = Modifier(),
-    fontStyle: FontStyle = FontStyle(),
-    block: Block<UIButton> = {}
-): UIButton = UIButton(text, modifier, fontStyle).also(block)

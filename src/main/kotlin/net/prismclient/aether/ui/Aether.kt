@@ -1,7 +1,7 @@
 package net.prismclient.aether.ui
 
 import net.prismclient.aether.ui.composition.Composition
-import net.prismclient.aether.ui.modifier.Modifier
+import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.screen.UIScreen
 import net.prismclient.aether.ui.util.other.MouseButtonType
@@ -34,7 +34,6 @@ open class Aether(renderer: UIRenderer) {
      * of the composition is equal to size of the window.
      */
     var defaultComposition: Composition? = null
-    var activeComposition: Composition? = null
 
     init {
         instance = this
@@ -100,7 +99,7 @@ open class Aether(renderer: UIRenderer) {
     /**
      * Creates a new composition from the given [name].
      */
-    open fun createComposition(name: String, modifier: Modifier): Composition = Composition(name, modifier).also {
+    open fun createComposition(name: String, modifier: CompositionModifier): Composition = Composition(name, modifier).also {
         check()
         compositions!!.add(it)
     }

@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.unit.type
+package net.prismclient.aether.ui.unit.type.other
 
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit

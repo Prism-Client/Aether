@@ -1,11 +1,11 @@
 package net.prismclient.aether.ui.util.shorthands
 
-import net.prismclient.aether.ui.unit.other.Radius
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.unit.type.SizeUnit
-import net.prismclient.aether.ui.unit.type.OperationUnit
-import net.prismclient.aether.ui.unit.type.PixelUnit
-import net.prismclient.aether.ui.unit.type.RelativeUnit
+import net.prismclient.aether.ui.unit.other.Radius
+import net.prismclient.aether.ui.unit.type.dynamic.RelativeUnit
+import net.prismclient.aether.ui.unit.type.dynamic.SizeUnit
+import net.prismclient.aether.ui.unit.type.other.OperationUnit
+import net.prismclient.aether.ui.unit.type.solid.PixelUnit
 
 /**
  * UnitKt provides utility functions for creating and reading units.

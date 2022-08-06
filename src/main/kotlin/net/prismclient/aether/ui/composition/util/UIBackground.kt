@@ -4,13 +4,10 @@ import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.renderer.UIColor
 import net.prismclient.aether.ui.shape.ComposableShape
-import net.prismclient.aether.ui.unit.other.Radius
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.util.other.Animatable
-import net.prismclient.aether.ui.util.other.Copyable
+import net.prismclient.aether.ui.unit.other.Radius
 import net.prismclient.aether.ui.util.other.Property
 import net.prismclient.aether.ui.util.shorthands.*
-import net.prismclient.aether.ui.util.shorthands.ifNotNull
 
 /**
  * [UIBackground] is a property for a component's Modifier. It represents the background of a [Composable].
@@ -48,34 +45,41 @@ open class UIBackground : ComposableShape(), Property<UIBackground> {
         it.backgroundRadius = backgroundRadius?.copy()
     }
 
-    override fun merge(other: UIBackground?): UIBackground {
-        if (other == null) return copy()
-        return UIBackground().also {
-            it.x = other.x or x
-            it.y = other.y or y
-            it.width = other.width or width
-            it.height = other.height or height
-            it.backgroundColor = other.backgroundColor or backgroundColor
-            it.backgroundRadius = other.backgroundRadius or backgroundRadius
+    override fun merge(other: UIBackground?) {
+        if (other != null) {
+            x = other.x or x
+            y = other.y or y
+            width = other.width or width
+            height = other.height or height
+            backgroundColor = other.backgroundColor or backgroundColor
+            backgroundRadius = other.backgroundRadius or backgroundRadius
         }
     }
 
     override fun animate(start: UIBackground?, end: UIBackground?, fraction: Float) {
         ifNotNull(start?.x, end?.x) {
             x = x ?: 0.px
-            x!!.lerp(start?.x, end?.x, fraction)
+            x!!.lerp(x, start?.x, end?.x, fraction)
         }
         ifNotNull(start?.y, end?.y) {
             y = y ?: 0.px
-            y!!.lerp(start?.y, end?.y, fraction)
+            y!!.lerp(y, start?.y, end?.y, fraction)
         }
         ifNotNull(start?.width, end?.width) {
             width = width ?: 0.px
-            width!!.lerp(start?.width, end?.width, fraction)
+            width!!.lerp(width, start?.width, end?.width, fraction)
         }
         ifNotNull(start?.height, end?.height) {
             height = height ?: 0.px
-            height!!.lerp(start?.height, end?.height, fraction)
+            height!!.lerp(height, start?.height, end?.height, fraction)
+        }
+        ifNotNull(start?.backgroundColor, end?.backgroundColor) {
+            backgroundColor = backgroundColor ?: UIColor(0)
+            backgroundColor!!.animate(start?.backgroundColor, end?.backgroundColor, fraction)
+        }
+        ifNotNull(start?.backgroundRadius, end?.backgroundRadius) {
+            backgroundRadius = backgroundRadius ?: Radius()
+            backgroundRadius!!.animate(start?.backgroundRadius, end?.backgroundRadius, fraction)
         }
     }
 

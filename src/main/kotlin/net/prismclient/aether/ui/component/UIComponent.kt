@@ -1,7 +1,8 @@
 package net.prismclient.aether.ui.component
 
 import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.modifier.Modifier
+import net.prismclient.aether.ui.composition.Composition
+import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.util.other.Copyable
 
 
@@ -11,7 +12,15 @@ import net.prismclient.aether.ui.util.other.Copyable
  * @author sen
  * @since 1.0
  */
-abstract class UIComponent<T>(modifier: Modifier) : Composable(modifier), Copyable<T> {
+abstract class UIComponent<T>(modifier: UIModifier<*>) : Composable(modifier), Copyable<T> {
+    override var parent: Composable? = null
+        set(value) {
+            field = value
+            // TODO: Event to invoke the parent
+            if (parent is Composition)
+                (parent as Composition).components.add(this)
+        }
+
     override fun compose() {
         modifier.preUpdate(this)
         updatePosition()

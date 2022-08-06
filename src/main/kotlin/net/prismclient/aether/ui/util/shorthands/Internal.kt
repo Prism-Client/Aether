@@ -16,12 +16,12 @@ internal fun Any?.isNull() = this == null
 internal fun Any?.notNull() = this != null
 
 /**
- * Returns a copy of the receiver if not null, else other. If other is null, return null.
+ * Returns a deep copy of the receiver if not null, else other. If other is null, return null.
  *
  * This is used for [Mergable] to return the other value else this.
  */
 @Suppress("unchecked_cast")
-internal infix fun <T : Copyable<*>> T?.or(other: T?) = (this ?: other)?.copy() as T
+internal infix fun <T : Copyable<*>> T?.or(other: T?): T? = (this?.copy() ?: other) as T?
 
 /**
  * Runs [block] if either [value] or [value1] are not null.
@@ -43,8 +43,14 @@ internal fun lerp(start: Int, end: Int, progress: Float): Int = start + ((end - 
 internal fun lerp(start: Float, end: Float, progress: Float) = start + (end - start) * progress.roundToInt()
 
 /**
- * Linearly interpolates between [start] and [end] by [progress] which are Units, and adjust the cached value to the output.
+ * Linearly interpolates between [start] and [end] by [progress] which are Units, and adjust the
+ * cached value to the output. If [start] or [end] are null, the value of [initial] is used. The
+ * value of [initial] is considered 0f if null.
  */
-internal fun UIUnit<*>.lerp(start: UIUnit<*>?, end: UIUnit<*>?, progress: Float) {
-    this.cachedValue = start.dp + (end.dp - start.dp) * progress
+internal fun UIUnit<*>.lerp(initial: UIUnit<*>?, start: UIUnit<*>?, end: UIUnit<*>?, progress: Float) {
+    this.cachedValue = (start?.dp ?: initial.dp) + ((end?.dp ?: initial.dp) - (start?.dp ?: initial.dp)) * progress
 }
+
+// -- Other -- //
+@Suppress("unchecked_cast")
+internal inline val <T : Copyable<*>> T?.copy: T get() = this?.copy() as T

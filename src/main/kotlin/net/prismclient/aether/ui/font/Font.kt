@@ -7,6 +7,7 @@ import net.prismclient.aether.ui.alignment.UITextAlignment.*
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
+import net.prismclient.aether.ui.font.TextResizing.*
 import net.prismclient.aether.ui.renderer.UIColor
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.shape.ComposableShape
@@ -16,7 +17,6 @@ import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.util.other.Copyable
 import net.prismclient.aether.ui.util.shorthands.*
 import java.util.regex.Pattern
-import net.prismclient.aether.ui.font.TextResizing.*
 
 /**
  * [UIFont] is the implementation for a composable that needs a font. It expects a [FontStyle]
@@ -93,7 +93,7 @@ open class UIFont(val style: FontStyle) : ComposableShape(), Copyable<UIFont> {
     open fun updateFont() {
         // Calculate the bounds of the text and update text
         text.clear()
-        UIRendererDSL.font(style.actualFontName, style.fontSize.dp, LEFT, TOP, style.fontSpacing.dp)
+        UIRendererDSL.font(style.actualFontName ?: "", style.fontSize.dp, LEFT, TOP, style.fontSpacing.dp)
         when (style.textResizing) {
             AutoWidth -> {
                 text.add(actualText)
@@ -127,18 +127,20 @@ open class UIFont(val style: FontStyle) : ComposableShape(), Copyable<UIFont> {
     }
 
     override fun render() {
+        val horizontalAlignment = style.horizontalAlignment ?: LEFT
+        val verticalAlignment = style.verticalAlignment ?: TOP
         val width = width.dp
         val height = height.dp
         val fontSize = style.fontSize.dp
         val lineHeight = style.lineHeight.dp
 
-        val x = x.dp + initialX + when (style.horizontalAlignment) {
+        val x = x.dp + initialX + when (horizontalAlignment) {
             CENTER -> width / 2f
             RIGHT -> width
             else -> 0f
         } - anchor?.x.dp
 
-        val y = y.dp + initialY + when (style.verticalAlignment) {
+        val y = y.dp + initialY + when (verticalAlignment) {
             CENTER -> fontSize / 2f + (height - (fontSize * text.size) - (lineHeight * (text.size - 1))) / 2f
             BOTTOM -> fontSize + (height - (fontSize * text.size) - (lineHeight * (text.size - 1)))
             else -> 0f
@@ -146,12 +148,18 @@ open class UIFont(val style: FontStyle) : ComposableShape(), Copyable<UIFont> {
 
         renderer {
             color(style.fontColor)
-            font(style.actualFontName, style.fontSize.dp, style.horizontalAlignment, style.verticalAlignment, style.fontSpacing.dp)
+            font(
+                style.actualFontName ?: "",
+                style.fontSize.dp,
+                horizontalAlignment,
+                verticalAlignment,
+                style.fontSpacing.dp
+            )
             when (style.textResizing) {
                 AutoWidth -> actualText.render(x, y)
                 AutoHeight -> renderer.renderText(text, x, y, lineHeight)
                 FixedSize -> renderer.renderText(actualText, x, y, width, lineHeight, null)
-                else -> {}
+                else -> throw NullPointerException("TextResizing of $style cannot be null.")
             }
         }
     }
@@ -193,19 +201,19 @@ open class FontStyle : Style<FontStyle>() {
      * The actual font name passed to the renderer. This can be set to a custom font name that is registered
      * within the renderer with [UIRenderer.createFont] or a [fontFamily] can be set.
      */
-    var actualFontName: String = ""
+    var actualFontName: String? = null
 
     /**
      * [textResizing] is the equivalent of resizing property of text in Figma.
      *
      * @see textResizing
      */
-    var textResizing: TextResizing = TextResizing.AutoWidth
-    var horizontalAlignment: UITextAlignment = CENTER
-    var verticalAlignment: UITextAlignment = CENTER
+    var textResizing: TextResizing? = null
+    var horizontalAlignment: UITextAlignment? = null
+    var verticalAlignment: UITextAlignment? = null
 
     var fontFamily: UIFontFamily? = null
-    var fontType: FontType = FontType.Regular
+    var fontType: FontType? = null
 
     var fontColor: UIColor? = null
     var fontSize: UIUnit<*>? = null
@@ -222,7 +230,7 @@ open class FontStyle : Style<FontStyle>() {
      */
     var offsetBaseline: Boolean = true
 
-    open fun preUpdate(font: UIFont) {
+    override fun preUpdate(font: UIFont) {
         font.x = x ?: font.x
         font.y = y ?: font.y
         font.width = width ?: font.width
@@ -230,13 +238,14 @@ open class FontStyle : Style<FontStyle>() {
         font.anchor = anchor ?: font.anchor
     }
 
-    open fun update(composable: Composable) {
+    override fun update(composable: Composable?) {
+        composable!!
         ifNotNull(fontFamily) {
             println("here")
-            actualFontName = "${fontFamily!!.familyName}-${fontType.name.lowercase()}"
+            actualFontName = "${fontFamily!!.familyName}-${fontType?.name?.lowercase()}"
         }
-        fontSize?.compute(composable, composable.width.dp, composable.height.dp, false)
-        fontSpacing?.compute(composable, composable.width.dp, composable.height.dp, false)
+        fontSize?.compute(composable, composable.width, composable.height, false)
+        fontSpacing?.compute(composable, composable.width, composable.height, false)
     }
 
     override fun copy(): FontStyle = FontStyle().also {
@@ -260,8 +269,25 @@ open class FontStyle : Style<FontStyle>() {
         it.offsetBaseline = offsetBaseline
     }
 
-    override fun merge(other: FontStyle?): FontStyle = FontStyle().apply {
-        TODO("Feature yet to be implemented")
+    override fun merge(other: FontStyle?) {
+        if (other != null) {
+            x = other.x or x
+            y = other.y or y
+            width = other.width or width
+            height = other.height or height
+            anchor = other.anchor or anchor
+            textResizing = other.textResizing ?: textResizing
+            horizontalAlignment = other.horizontalAlignment ?: horizontalAlignment
+            verticalAlignment = other.verticalAlignment ?: verticalAlignment
+            if (other.actualFontName != null) actualFontName = other.actualFontName
+            fontFamily = other.fontFamily ?: fontFamily
+            fontType = other.fontType ?: fontType
+            fontColor = other.fontColor ?: fontColor
+            fontSize = other.fontSize ?: fontSize
+            fontSpacing = other.fontSpacing ?: fontSpacing
+            lineHeight = other.lineHeight ?: lineHeight
+            offsetBaseline = other.offsetBaseline || offsetBaseline
+        }
     }
 
     override fun animate(start: FontStyle?, end: FontStyle?, fraction: Float) {
@@ -339,7 +365,6 @@ fun FontStyle.constrain(x: UIUnit<*>, y: UIUnit<*>, width: UIUnit<*>, height: UI
 fun FontStyle.constrain(x: Number, y: Number, width: Number, height: Number) =
     constrain(x.px, y.px, width.px, height.px)
 
-
 fun FontStyle.fontFamily(family: UIFontFamily) = apply {
     fontFamily = family
 }
@@ -373,20 +398,42 @@ fun FontStyle.lineHeight(height: UIUnit<*>) = apply {
     lineHeight = height
 }
 
+/**
+ * Sets the fontName of this [FontStyle] to the [name]. This is overwritten if [FontStyle.fontFamily] is not null.
+ */
 fun FontStyle.fontName(name: String) = apply {
     actualFontName = name
 }
 
-
+/**
+ * Aligns the font on the x-axis to teh given [alignment].
+ */
 fun FontStyle.horizontalAlignment(alignment: UITextAlignment) = apply {
     horizontalAlignment = alignment
 }
 
+/**
+ * Aligns the font on the y-axis to the given [alignment].
+ */
 fun FontStyle.verticalAlignment(alignment: UITextAlignment) = apply {
     verticalAlignment = alignment
 }
 
+/**
+ * Anchors the font to the given [alignment] relative to the Font's size.
+ */
 fun FontStyle.fontAnchor(alignment: UIAlignment) = apply {
     anchor = anchor ?: AnchorPoint()
     anchor!!.align(alignment)
+}
+
+/**
+ * Sets the [FontStyle.offsetBaseline] to the value [offset].
+ *
+ * When true, the text is offset by the descender to align the bottom bounds of the font to
+ * the baseline. This makes the font look more like Figma, as that is what it does by default.
+ */
+@JvmOverloads
+fun FontStyle.offsetBaseline(offset: Boolean = true) = apply {
+    offsetBaseline = offset
 }

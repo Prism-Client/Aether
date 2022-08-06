@@ -1,5 +1,6 @@
-import net.prismclient.aether.ui.unit.type.PixelUnit;
-import net.prismclient.aether.ui.util.shorthands.UnitKt;
+import net.prismclient.aether.ui.registry.UIRegistry;
+import net.prismclient.aether.ui.registry.UIRegistryKt;
+import net.prismclient.aether.ui.unit.type.solid.PixelUnit;
 
 import static net.prismclient.aether.ui.util.shorthands.UnitKt.px;
 
