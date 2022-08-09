@@ -1,11 +1,15 @@
 package net.prismclient.aether.ui.composition
 
-import net.prismclient.aether.ui.Aether
-import net.prismclient.aether.ui.event.UIEvent
+import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.event.UIEvent
+import net.prismclient.aether.core.event.UIEventBus
+import net.prismclient.aether.core.event.type.MouseMoveEvent
+import net.prismclient.aether.ui.component.type.UIButton
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.util.shorthands.dp
 import net.prismclient.aether.ui.util.shorthands.px
+import java.util.function.Consumer
 
 /**
  * [Composable] is the superclass for all UI objects within Aether. Anything that extends this class
@@ -21,13 +25,12 @@ import net.prismclient.aether.ui.util.shorthands.px
  * @see UIModifier
  */
 abstract class Composable(open val modifier: UIModifier<*>) {
-    open var parent: Composable? = null
-
     /**
-     * The event listeners for this component. The outer HashMap represents the name of the event,
-     * while the inner HashMap's key represents the custom name of the event.
+     * The composition which this composable is assigned to. The functions within ComponentsKt class
+     * automatically set this value, however if not used, it must be manually assigned.
      */
-    open var events: HashMap<String, HashMap<String, UIEvent>>? = null
+    open lateinit var composition: Composition
+    open var parent: Composable? = null
 
     /**
      * Returns the width of [parent], or the width of the display.
@@ -66,7 +69,8 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     }
 
     /**
-     * Updates the size of this and sets them to [width] and [height]. If the units are dynamic, [Composable.dynamic] will be true.
+     * Updates the size of this and sets the calculated properties to [width] and [height]. If the
+     * units are dynamic, [Composable.dynamic] will be true.
      */
     open fun updateSize() {
         modifier.width?.compute(false)
@@ -90,84 +94,35 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     abstract fun render()
 
     /**
+     * Informs the [Composition] of this [Composable] to recompose (update the layout), and re-rasterize.
+     */
+    open fun recompose() {
+        // TODO: Recompose only necessary elements
+//        composition.recompose()
+    }
+
+    /**
      * Computes the given unit with the [parentWidth] and [parentHeight].
      */
     @Suppress
     protected fun UIUnit<*>?.compute(yaxis: Boolean) {
         this?.compute(this@Composable, parentWidth, parentHeight, yaxis)
     }
-
-    protected open fun invokeListeners(eventName: String) {
-
-    }
 }
 
-/**
- * Adjusts the x of this to the given [value].
- */
-fun Composable.x(value: UIUnit<*>) = apply {
-    modifier.x = value
+// -- Events -- //
+
+fun <T : UIButton> T.onClick(event: Consumer<MouseMoveEvent>) = apply {
+    UIEventBus.register(event)
 }
 
-/**
- * Adjusts the y of this to the given [value].
- */
-fun Composable.y(value: UIUnit<*>) = apply {
-    modifier.y = value
-}
-
-/**
- * Adjusts the width of this to the given [value].
- */
-fun Composable.width(value: UIUnit<*>) = apply {
-    modifier.width = value
-}
-
-/**
- * Adjusts the height of this to the given [value].
- */
-fun Composable.height(value: UIUnit<*>) = apply {
-    modifier.height = value
-}
-
-/**
- * Adjusts the position of this Composable to the given [x] and [y] coordinate units.
- */
-fun Composable.position(x: UIUnit<*>, y: UIUnit<*>) = apply {
-    modifier.x = x
-    modifier.y = y
-}
-
-/**
- * Adjusts the position of this Composable to the given [x] and [y] coordinate values.
- */
-fun Composable.position(x: Number, y: Number) = position(x.px, y.px)
-
-/**
- * Adjusts the size of this Composable to the given [width] and [height] units.
- */
-fun Composable.size(width: UIUnit<*>, height: UIUnit<*>) = apply {
-    modifier.width = width
-    modifier.height = height
-}
-
-/**
- * Adjusts the size of this Composable to the given [width] and [height] values.
- */
-fun Composable.size(width: Number, height: Number) = size(width.px, height.px)
-
-/**
- * Constrains this to be within the bounds of the given units.
- */
-fun Composable.constrain(x: UIUnit<*>, y: UIUnit<*>, width: UIUnit<*>, height: UIUnit<*>) = apply {
-    modifier.x = x
-    modifier.y = y
-    modifier.width = width
-    modifier.height = height
-}
-
-/**
- * Constrains this to be within the bounds of the given values.
- */
-fun Composable.constrain(x: Number, y: Number, width: Number, height: Number) =
-    constrain(x.px, y.px, width.px, height.px)
+///**
+// * Wraps the [consumer] within another consumer which recomposes the layout after being invoked. The
+// * new consumer is registered to the event bus.
+// */
+//private inline fun <T : Composable, reified E : UIEvent> T.addRecompose(consumer: Consumer<E>) {
+//    UIEventBus.register(Consumer<E> {
+//        consumer.accept(it)
+//        recompose()
+//    })
+//}

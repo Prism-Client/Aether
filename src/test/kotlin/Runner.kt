@@ -1,9 +1,10 @@
-import net.prismclient.aether.ui.Aether
+import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.debug.UIDebug
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.util.extensions.toByteBuffer
 import net.prismclient.aether.ui.util.input.UIKey
+import net.prismclient.aether.ui.util.other.MouseButtonType
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -49,8 +50,7 @@ object Runner {
     fun main(args: Array<String>) {
         GLFWErrorCallback.createPrint().set()
 
-        if (!glfwInit())
-            throw RuntimeException("Failed to init GLFW")
+        if (!glfwInit()) throw RuntimeException("Failed to init GLFW")
         if (Platform.get() === Platform.MACOSX) {
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3)
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2)
@@ -73,7 +73,7 @@ object Runner {
         glfwSetCursorPosCallback(window) { _: Long, xpos: Double, ypos: Double ->
             mouseX = xpos
             mouseY = ypos
-            //core!!.mouseMoved(mouseX.toFloat(), mouseY.toFloat())
+            core!!.mouseChanged(mouseX.toFloat(), mouseY.toFloat(), MouseButtonType.None, false)
         }
 
         glfwSetWindowContentScaleCallback(window) { _: Long, xscale: Float, yscale: Float ->
@@ -158,9 +158,7 @@ object Runner {
             contentScaleY = sy[0]
 
             core!!.update(
-                    framebufferWidth / contentScaleX,
-                    framebufferHeight / contentScaleY,
-                    max(contentScaleX, contentScaleY)
+                framebufferWidth / contentScaleX, framebufferHeight / contentScaleY, max(contentScaleX, contentScaleY)
             )
         }
 
@@ -189,7 +187,7 @@ object Runner {
             renderer {
                 beginFrame(framebufferWidth.toFloat(), framebufferHeight.toFloat(), max(contentScaleX, contentScaleY))
                 color(-1)
-                font("Poppins", 32f, UITextAlignment.CENTER, UITextAlignment.TOP, 0f)
+                font("Poppins", 16f, UITextAlignment.CENTER, UITextAlignment.TOP, 0f)
                 fpsstring.render(framebufferWidth / 2f, 0f)
                 endFrame()
             }

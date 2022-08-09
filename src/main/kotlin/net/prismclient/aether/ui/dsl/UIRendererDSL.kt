@@ -1,6 +1,6 @@
 package net.prismclient.aether.ui.dsl
 
-import net.prismclient.aether.ui.Aether
+import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.alignment.UIAlignment.*
 import net.prismclient.aether.ui.alignment.UITextAlignment

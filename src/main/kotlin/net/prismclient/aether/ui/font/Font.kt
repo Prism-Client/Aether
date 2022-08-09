@@ -1,6 +1,6 @@
 package net.prismclient.aether.ui.font
 
-import net.prismclient.aether.ui.Aether
+import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment.*
@@ -28,7 +28,7 @@ import java.util.regex.Pattern
  * @author sen
  * @since 1.0
  */
-open class UIFont(val style: FontStyle) : ComposableShape(), Copyable<UIFont> {
+open class UIFont(open val style: FontStyle) : ComposableShape(), Copyable<UIFont> {
     override var x: UIUnit<*>? = null
     override var y: UIUnit<*>? = null
     override var width: UIUnit<*>? = null
@@ -40,11 +40,10 @@ open class UIFont(val style: FontStyle) : ComposableShape(), Copyable<UIFont> {
      *
      * @see actualText
      */
-    val text: ArrayList<String> = arrayListOf()
+    open val text: ArrayList<String> = arrayListOf()
 
     /**
-     * The actual, unformatted original text. Setting this does not
-     * update the text. [updateFont] must be manually invoked.
+     * The actual, unformatted original text. Setting this does not update the text. [updateFont] must be manually invoked.
      *
      * @see text
      */
@@ -62,9 +61,9 @@ open class UIFont(val style: FontStyle) : ComposableShape(), Copyable<UIFont> {
      *      ascent - The y coordinate of the top to the descender line.
      *      descent - The y coordinate of the descender line to the bottom of the text's bounding box.
      */
-    val fontMetrics: FloatArray = FloatArray(7)
+    open val fontMetrics: FloatArray = FloatArray(7)
 
-    var anchor: AnchorPoint? = null
+    open var anchor: AnchorPoint? = null
 
 //    /**
 //     * The text to be appended to the string when it is truncated
@@ -191,44 +190,44 @@ open class UIFont(val style: FontStyle) : ComposableShape(), Copyable<UIFont> {
  * @since 1.0
  */
 open class FontStyle : Style<FontStyle>() {
-    var x: UIUnit<*>? = null
-    var y: UIUnit<*>? = null
-    var width: UIUnit<*>? = null
-    var height: UIUnit<*>? = null
-    var anchor: AnchorPoint? = null
+    open var x: UIUnit<*>? = null
+    open var y: UIUnit<*>? = null
+    open var width: UIUnit<*>? = null
+    open var height: UIUnit<*>? = null
+    open var anchor: AnchorPoint? = null
 
     /**
      * The actual font name passed to the renderer. This can be set to a custom font name that is registered
      * within the renderer with [UIRenderer.createFont] or a [fontFamily] can be set.
      */
-    var actualFontName: String? = null
+    open var actualFontName: String? = null
 
     /**
      * [textResizing] is the equivalent of resizing property of text in Figma.
      *
      * @see textResizing
      */
-    var textResizing: TextResizing? = null
-    var horizontalAlignment: UITextAlignment? = null
-    var verticalAlignment: UITextAlignment? = null
+    open var textResizing: TextResizing? = null
+    open var horizontalAlignment: UITextAlignment? = null
+    open var verticalAlignment: UITextAlignment? = null
 
-    var fontFamily: UIFontFamily? = null
-    var fontType: FontType? = null
+    open var fontFamily: UIFontFamily? = null
+    open var fontType: FontType? = null
 
-    var fontColor: UIColor? = null
-    var fontSize: UIUnit<*>? = null
-    var fontSpacing: UIUnit<*>? = null
+    open var fontColor: UIColor? = null
+    open var fontSize: UIUnit<*>? = null
+    open var fontSpacing: UIUnit<*>? = null
 
     /**
      * The spacing between each line of text.
      */
-    var lineHeight: UIUnit<*>? = null
+    open var lineHeight: UIUnit<*>? = null
 
     /**
      * When true, the text is offset by the descender to align the bottom bounds of the font to
      * the baseline. This makes the font look more like Figma, as that is what it does by default.
      */
-    var offsetBaseline: Boolean = true
+    open var offsetBaseline: Boolean = true
 
     override fun preUpdate(font: UIFont) {
         font.x = x ?: font.x

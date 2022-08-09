@@ -1,5 +1,7 @@
-package net.prismclient.aether.ui
+package net.prismclient.aether.core
 
+import net.prismclient.aether.core.event.UIEventBus
+import net.prismclient.aether.core.event.type.MouseMoveEvent
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.renderer.UIRenderer
@@ -71,7 +73,9 @@ open class Aether(renderer: UIRenderer) {
      * @see mouseButton
      */
     open fun mouseChanged(mouseX: Float, mouseY: Float, mouseButton: MouseButtonType, isRelease: Boolean) {
-
+        if (mouseButton == MouseButtonType.None) {
+            UIEventBus.publish(MouseMoveEvent(mouseX, mouseY))
+        }
     }
 
     open fun render() {

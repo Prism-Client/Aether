@@ -1,10 +1,17 @@
 package net.prismclient.aether.ui.component.type
 
+import net.prismclient.aether.core.event.UIEventBus
+import net.prismclient.aether.core.event.type.MouseMoveEvent
 import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.font.FontStyle
 import net.prismclient.aether.ui.font.UIFont
 import net.prismclient.aether.ui.modifier.UIModifier
+import java.util.function.Consumer
 
+/**
+ * @author sen
+ * @since 1.0
+ */
 open class UIButton internal constructor(
     text: String,
     modifier: UIModifier<*>,

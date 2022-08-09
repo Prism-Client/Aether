@@ -1,6 +1,6 @@
 package net.prismclient.aether.ui.util.shorthands
 
-import net.prismclient.aether.ui.Aether
+import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.renderer.UIRenderer
 

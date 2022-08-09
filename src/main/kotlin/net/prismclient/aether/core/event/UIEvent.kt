@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.event
+package net.prismclient.aether.core.event
 
 /**
  * @author sen

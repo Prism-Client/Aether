@@ -1,6 +1,6 @@
 package net.prismclient.aether.ui.dsl
 
-import net.prismclient.aether.ui.Aether
+import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.unit.other.Radius
 import net.prismclient.aether.ui.util.shorthands.Block

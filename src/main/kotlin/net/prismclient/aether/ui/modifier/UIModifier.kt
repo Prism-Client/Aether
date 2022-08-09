@@ -141,7 +141,7 @@ abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animata
     /**
      * Constrains this Modifier<*> to be within the bounds of the given units.
      */
-    fun <T : UIModifier<*>> T.constrain(x: UIUnit<*>, y: UIUnit<*>, width: UIUnit<*>, height: UIUnit<*>): T {
+    fun constrain(x: UIUnit<*>, y: UIUnit<*>, width: UIUnit<*>, height: UIUnit<*>): T {
         this.x = x
         this.y = y
         this.width = width

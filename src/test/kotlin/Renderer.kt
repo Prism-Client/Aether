@@ -1,4 +1,4 @@
-import net.prismclient.aether.ui.Aether
+import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.ui.renderer.UIRenderer

@@ -1,6 +1,6 @@
 package net.prismclient.aether.ui.composition
 
-import net.prismclient.aether.ui.Aether
+import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
@@ -19,6 +19,7 @@ import net.prismclient.aether.ui.util.shorthands.or
  * @since 1.0
  */
 open class Composition(val name: String, modifier: CompositionModifier) : Composable(modifier) {
+    override var composition: Composition = this
     override val modifier: CompositionModifier get() = super.modifier as CompositionModifier
 
     open val components: ArrayList<UIComponent<*>> = arrayListOf()
@@ -63,6 +64,9 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
         }
     }
 
+    override fun recompose() {
+        compose()
+    }
 
     /**
      * Converts the active composition layout to a raster image.

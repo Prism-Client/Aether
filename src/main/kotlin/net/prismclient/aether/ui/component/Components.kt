@@ -1,10 +1,9 @@
 package net.prismclient.aether.ui.component
 
-import net.prismclient.aether.ui.Aether
+import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.component.type.UIButton
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
-import net.prismclient.aether.ui.debug.warn
 import net.prismclient.aether.ui.font.FontStyle
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.modifier.UIModifier
@@ -17,7 +16,9 @@ var activeComponent: UIComponent<*>? = null
  * Applies the given component to the active state by changing the parent and adding the component to the composition.
  */
 inline fun <T : UIComponent<*>> component(component: T, block: Block<T>): T {
-    component.parent = activeComponent ?: activeComposition ?: Aether.instance.defaultComposition
+    activeComposition = activeComposition ?: Aether.instance.defaultComposition
+    component.composition = activeComposition!!
+    component.parent = activeComponent ?: activeComposition!!
     val previousActiveComponent = activeComponent
     activeComponent = component
     component.block()
