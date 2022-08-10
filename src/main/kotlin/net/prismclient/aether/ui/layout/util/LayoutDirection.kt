@@ -7,6 +7,13 @@ package net.prismclient.aether.ui.layout.util
  * @since 1.0
  */
 enum class LayoutDirection {
+    /**
+     * Lays the children on the x-axis.
+     */
     HORIZONTAL,
+
+    /**
+     * Lays the children on the y-axis.
+     */
     VERTICAL
 }

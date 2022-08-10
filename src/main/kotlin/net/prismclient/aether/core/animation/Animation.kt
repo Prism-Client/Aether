@@ -63,6 +63,8 @@ class Animation<C : UIComponent<C>>(val component: C) {
         }
 
         val progress = (duration / remainingTime).toFloat()
+
+        
     }
 
 }

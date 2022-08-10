@@ -8,6 +8,8 @@ import net.prismclient.aether.ui.component.compose
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.layout.UIListLayout
+import net.prismclient.aether.ui.layout.util.LayoutDirection
+import net.prismclient.aether.ui.layout.util.LayoutOrder
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.registry.UIRegistry
 import net.prismclient.aether.ui.registry.register
@@ -40,6 +42,9 @@ class TestScreen : UIScreen {
             modifier.constrain(0.5.rel, 0.5.rel, 500.px, 500.px)
 
             val layout = component(UIListLayout(
+                LayoutDirection.VERTICAL,
+                LayoutOrder.FIRST,
+                10.px,
                 modifier = Modifier()
                     .constrain(50, 50,250, 250)
                     .backgroundColor(RGBA(255, 255, 255).rgb)
@@ -49,7 +54,7 @@ class TestScreen : UIScreen {
                     button(
                         text = "AgdCiLMmzjt",
                         modifier = Modifier()
-//                            .control(UIAlignment.TOPCENTER)
+                            .control(UIAlignment.TOPCENTER)
                             .size(0.9.rel, 50.px)
                             .backgroundColor(0x29CC97.rgb)
                             .backgroundRadius(9.radius),
