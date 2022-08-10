@@ -1,10 +1,5 @@
 package net.prismclient.aether.ui.debug
 
-
-/**
- * @author Decencies
- * @since 1.0
- */
 enum class LogLevel {
     DEBUG,
     GLOBAL

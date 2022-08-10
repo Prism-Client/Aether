@@ -14,12 +14,6 @@ import net.prismclient.aether.ui.util.other.Copyable
  */
 abstract class UIComponent<T>(modifier: UIModifier<*>) : Composable(modifier), Copyable<T> {
     override var parent: Composable? = null
-        set(value) {
-            field = value
-            // TODO: Event to invoke the parent
-            if (parent is Composition)
-                (parent as Composition).components.add(this)
-        }
 
     override fun compose() {
         modifier.preUpdate(this)

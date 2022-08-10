@@ -310,5 +310,7 @@ open class DefaultModifier : UIModifier<DefaultModifier>() {
             margin = margin ?: Margin(null, null, null, null)
             margin!!.animate(start?.margin, end?.margin, fraction)
         }
+
+        // TODO: update composable properties
     }
 }

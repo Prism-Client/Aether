@@ -6,6 +6,7 @@ import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.renderer.UIFramebuffer
+import net.prismclient.aether.ui.util.other.ComposableGroup
 import net.prismclient.aether.ui.util.shorthands.or
 
 // TODO: disable optimize composition
@@ -18,11 +19,11 @@ import net.prismclient.aether.ui.util.shorthands.or
  * @author sen
  * @since 1.0
  */
-open class Composition(val name: String, modifier: CompositionModifier) : Composable(modifier) {
-    override var composition: Composition = this
+open class Composition(val name: String, modifier: CompositionModifier) : Composable(modifier), ComposableGroup {
     override val modifier: CompositionModifier get() = super.modifier as CompositionModifier
+    override val children: ArrayList<Composable> = arrayListOf()
+    override var composition: Composition = this
 
-    open val components: ArrayList<UIComponent<*>> = arrayListOf()
     open var framebuffer: UIFramebuffer? = null
         protected set
 
@@ -42,11 +43,11 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
             updatePosition()
 
             // Compose all static components
-            components.filterNot(UIComponent<*>::dynamic).forEach(UIComponent<*>::compose)
+            children.filterNot(Composable::dynamic).forEach(Composable::compose)
 
             // Compose all dynamic components after the initial composition has been created.
-            if (dynamic)
-                components.filter(UIComponent<*>::dynamic).forEach(UIComponent<*>::compose)
+//            if (dynamic)
+//                children.filter(Composable::dynamic).forEach(Composable::compose)
             modifier.update(this)
             rasterize()
         }
@@ -78,7 +79,7 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
 
         UIRendererDSL.renderToFramebuffer(framebuffer!!) {
             modifier.preRender()
-            components.forEach(UIComponent<*>::render)
+            children.forEach(Composable::render)
             modifier.render()
         }
     }

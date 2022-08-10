@@ -5,6 +5,7 @@ import net.prismclient.aether.core.event.UIEvent
 import net.prismclient.aether.core.event.UIEventBus
 import net.prismclient.aether.core.event.type.MouseMoveEvent
 import net.prismclient.aether.ui.component.type.UIButton
+import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.util.shorthands.dp
@@ -25,6 +26,12 @@ import java.util.function.Consumer
  * @see UIModifier
  */
 abstract class Composable(open val modifier: UIModifier<*>) {
+    /**
+     * Overridden is intended to be controlled externally. It is used to indicate whether the
+     * position properties of this are changed based on an external source, such as [UILayout].
+     */
+    open var overridden: Boolean = false
+
     /**
      * The composition which this composable is assigned to. The functions within ComponentsKt class
      * automatically set this value, however if not used, it must be manually assigned.
@@ -64,8 +71,16 @@ abstract class Composable(open val modifier: UIModifier<*>) {
         updateAnchor()
         modifier.x?.compute(false)
         modifier.y?.compute(true)
-        x = modifier.x.dp - modifier.anchorPoint?.x.dp
-        y = modifier.y.dp - modifier.anchorPoint?.y.dp
+
+        if (!overridden) {
+            x = modifier.x.dp - modifier.anchorPoint?.x.dp
+            y = modifier.y.dp - modifier.anchorPoint?.y.dp
+            if (parent != null && parent !is Composition) {
+                x += parent!!.x
+                y += parent!!.y
+                // TODO: remove
+            }
+        }
     }
 
     /**
@@ -112,9 +127,9 @@ abstract class Composable(open val modifier: UIModifier<*>) {
 
 // -- Events -- //
 
-fun <T : UIButton> T.onClick(event: Consumer<MouseMoveEvent>) = apply {
-    UIEventBus.register(event)
-}
+//fun <T : UIButton> T.onClick(event: Consumer<MouseMoveEvent>) = apply {
+//    UIEventBus.register(event)
+//}
 
 ///**
 // * Wraps the [consumer] within another consumer which recomposes the layout after being invoked. The

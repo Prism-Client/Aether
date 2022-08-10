@@ -2,28 +2,34 @@ package net.prismclient.aether.ui.component
 
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.component.type.UIButton
+import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.font.FontStyle
+import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.modifier.UIModifier
+import net.prismclient.aether.ui.util.other.ComposableGroup
 import net.prismclient.aether.ui.util.shorthands.Block
 
 var activeComposition: Composition? = null
-var activeComponent: UIComponent<*>? = null
+var activeComposable: Composable? = null
 
 /**
- * Applies the given component to the active state by changing the parent and adding the component to the composition.
+ * TODO: doc
  */
-inline fun <T : UIComponent<*>> component(component: T, block: Block<T>): T {
+inline fun <T : Composable> component(composable: T, block: Block<T>): T {
     activeComposition = activeComposition ?: Aether.instance.defaultComposition
-    component.composition = activeComposition!!
-    component.parent = activeComponent ?: activeComposition!!
-    val previousActiveComponent = activeComponent
-    activeComponent = component
-    component.block()
-    activeComponent = previousActiveComponent
-    return component
+    composable.composition = activeComposition!!
+    composable.parent = activeComposable ?: activeComposition!!
+    if (composable.parent is ComposableGroup) {
+        (composable.parent as ComposableGroup).children.add(composable)
+    }
+    val previousActiveComponent = activeComposable
+    activeComposable = composable
+    composable.block()
+    activeComposable = previousActiveComponent
+    return composable
 }
 
 /**

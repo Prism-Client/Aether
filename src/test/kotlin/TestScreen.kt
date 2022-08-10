@@ -3,9 +3,11 @@ import net.prismclient.aether.core.event.type.MouseMoveEvent
 import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.component.button
+import net.prismclient.aether.ui.component.component
 import net.prismclient.aether.ui.component.compose
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.font.*
+import net.prismclient.aether.ui.layout.UIListLayout
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.registry.UIRegistry
 import net.prismclient.aether.ui.registry.register
@@ -36,25 +38,29 @@ class TestScreen : UIScreen {
 
         compose("Test") {
             modifier.constrain(0.5.rel, 0.5.rel, 500.px, 500.px)
-            button(
-                text = "AgdCiLMmzjt",
+
+            val layout = component(UIListLayout(
                 modifier = Modifier()
-                    .control(UIAlignment.TOPCENTER)
-                    .size(0.9.rel, 50.px)
-                    .backgroundColor(0x29CC97.rgb)
-                    .backgroundRadius(9.radius),
-                fontStyle = FontStyle()
-                    .fontSize(16.px)
-                    .fontColor(RGBA(255, 255, 255).rgb)
-            ).apply {
-//                mouseMoved {
-//                    println("This mouse moved! (${it.mouseX}, ${it.mouseY})")
-//                }
+                    .constrain(50, 50,250, 250)
+                    .backgroundColor(RGBA(255, 255, 255).rgb)
+                    .backgroundRadius(9.radius)
+            )) {
+                for (i in 0..2) {
+                    button(
+                        text = "AgdCiLMmzjt",
+                        modifier = Modifier()
+//                            .control(UIAlignment.TOPCENTER)
+                            .size(0.9.rel, 50.px)
+                            .backgroundColor(0x29CC97.rgb)
+                            .backgroundRadius(9.radius),
+                        fontStyle = FontStyle()
+                            .fontSize(16.px)
+                            .fontColor(RGBA(255, 255, 255).rgb)
+                    )
+                }
             }
         }
 
-        UIEventBus.register<MouseMoveEvent> {
-            println("Hello")
-        }
+
     }
 }
