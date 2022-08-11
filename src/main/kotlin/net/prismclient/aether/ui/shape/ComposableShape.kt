@@ -29,8 +29,8 @@ abstract class ComposableShape : Shape(), Updatable {
         y?.compute(composable, true)
         width?.compute(composable, false)
         height?.compute(composable, true)
-        initialX = if (composable is Composition) 0f else composable.x
-        initialY = if (composable is Composition) 0f else composable.y
+        initialX = composable.x
+        initialY = composable.y
     }
 
     @Suppress

@@ -1,7 +1,6 @@
 package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.core.Aether
-import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.modifier.UIModifier
@@ -23,14 +22,14 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
     override val modifier: CompositionModifier get() = super.modifier as CompositionModifier
     override val children: ArrayList<Composable> = arrayListOf()
     override var composition: Composition = this
-
-    open var framebuffer: UIFramebuffer? = null
-        protected set
+    override val originX: Float = 0f
+    override val originY: Float = 0f
 
     /**
-     * True by default. The composition will use a framebuffer.
+     * todo
      */
-    var optimizeComposition: Boolean = true // TODO: Move to modifier
+    open var framebuffer: UIFramebuffer? = null
+        protected set
 
     // -- Core -- //
 
@@ -55,12 +54,18 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
 
     override fun render() {
         renderer {
-            if (optimizeComposition) {
+            if (modifier.optimizeComposition) {
                 color(-1)
                 path {
                     imagePattern(framebuffer!!.imagePattern, x, y, width, height, 0f, 1f)
                     rect(x, y, width, height, modifier.background?.backgroundRadius)
                 }.fillPaint()
+            } else {
+                scissor(x, y, width, height) {
+                    modifier.preRender()
+                    children.forEach(Composable::render)
+                    modifier.render()
+                }
             }
         }
     }
@@ -73,7 +78,7 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
      * Converts the active composition layout to a raster image.
      */
     open fun rasterize() {
-        if (!optimizeComposition) return
+        if (!modifier.optimizeComposition) return
 
         framebuffer = framebuffer ?: Aether.renderer.createFBO(width, height)
 
@@ -96,11 +101,21 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
  */
 open class CompositionModifier : UIModifier<CompositionModifier>() {
     /**
-     * The frame rate of this composition. The frame is updated regardless of this property on an event.
+     * True by default. The composition will use a framebuffer.
+     *
+     * @see frameRate
+     */
+    var optimizeComposition: Boolean = true // TODO: Move to modifier
+
+    /**
+     * The frame rate of this composition. The frame is updated regardless of this property on an event, and does nothing
+     * if [optimizeComposition] is false.
      *
      *      -1 = unlimited
      *       0 = disabled (default)
      *      >0 = frames per second
+     *
+     * @see optimizeComposition
      */
     var frameRate: Int = 0 // TODO: Convert to class
 
@@ -113,6 +128,7 @@ open class CompositionModifier : UIModifier<CompositionModifier>() {
         it.padding = padding?.copy()
         it.margin = margin?.copy()
         it.background = background?.copy()
+        it.optimizeComposition = optimizeComposition
         it.frameRate = frameRate
     }
 
@@ -126,6 +142,7 @@ open class CompositionModifier : UIModifier<CompositionModifier>() {
             padding = other.padding or padding
             margin = other.margin or margin
             background = other.background or background
+            optimizeComposition = other.optimizeComposition
             frameRate = other.frameRate
         }
     }

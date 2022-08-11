@@ -40,6 +40,18 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     open var parent: Composable? = null
 
     /**
+     * Returns the origin point of this composable. The origin point is the position of this relative
+     * to the position of the composition. When optimize composition is true, the origin point is always
+     * the x position of the composition, and not 0, thus this returns an offset.
+     */
+    open val originX: Float get() = parent?.x ?: if (composition.modifier.optimizeComposition) 0f else composition.x
+
+    /**
+     * @see originX
+     */
+    open val originY: Float get() = parent?.y ?: if (composition.modifier.optimizeComposition) 0f else composition.y
+
+    /**
      * Returns the width of [parent], or the width of the display.
      */
     open val parentWidth: Float get() = if (parent != null) parent?.modifier?.width.dp else Aether.instance.displayWidth
@@ -73,13 +85,8 @@ abstract class Composable(open val modifier: UIModifier<*>) {
         modifier.y?.compute(true)
 
         if (!overridden) {
-            x = modifier.x.dp - modifier.anchorPoint?.x.dp
-            y = modifier.y.dp - modifier.anchorPoint?.y.dp
-            if (parent != null && parent !is Composition) {
-                x += parent!!.x
-                y += parent!!.y
-                // TODO: remove
-            }
+            x = modifier.x.dp - modifier.anchorPoint?.x.dp + originX
+            y = modifier.y.dp - modifier.anchorPoint?.y.dp + originY
         }
     }
 

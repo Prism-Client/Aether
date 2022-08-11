@@ -23,7 +23,6 @@ class TestScreen : UIScreen {
             CompositionModifier()
                 .backgroundColor(0x202020.rgb)
                 .backgroundRadius(25.radius)
-                .anchor(UIAlignment.CENTER)
         )
 
         // Font style
@@ -39,14 +38,16 @@ class TestScreen : UIScreen {
         )
 
         compose("Test") {
-            modifier.constrain(0.5.rel, 0.5.rel, 500.px, 500.px)
+            modifier.constrain(50.px, 50.px, 500.px, 500.px)
+                .control(UIAlignment.CENTER)
+                .optimizeComposition = false
 
             val layout = component(UIListLayout(
                 LayoutDirection.VERTICAL,
                 LayoutOrder.FIRST,
                 10.px,
                 modifier = Modifier()
-                    .constrain(50, 50,250, 250)
+                    .constrain(50, 150,250, 250)
                     .backgroundColor(RGBA(255, 255, 255).rgb)
                     .backgroundRadius(9.radius)
             )) {
@@ -55,7 +56,7 @@ class TestScreen : UIScreen {
                         text = "AgdCiLMmzjt",
                         modifier = Modifier()
                             .control(UIAlignment.TOPCENTER)
-                            .size(0.9.rel, 50.px)
+                            .size(50.px, 50.px)
                             .backgroundColor(0x29CC97.rgb)
                             .backgroundRadius(9.radius),
                         fontStyle = FontStyle()

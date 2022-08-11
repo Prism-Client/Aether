@@ -5,6 +5,7 @@ import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.util.extensions.toByteBuffer
 import net.prismclient.aether.ui.util.input.UIKey
 import net.prismclient.aether.ui.util.other.MouseButtonType
+import net.prismclient.aether.ui.util.shorthands.RGBA
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -185,10 +186,13 @@ object Runner {
             core!!.render()
 
             renderer {
+                // 400 100, 250, 50
                 beginFrame(framebufferWidth.toFloat(), framebufferHeight.toFloat(), max(contentScaleX, contentScaleY))
                 color(-1)
                 font("Poppins", 16f, UITextAlignment.CENTER, UITextAlignment.TOP, 0f)
                 fpsstring.render(framebufferWidth / 2f, 0f)
+                color(RGBA(1f, 0f, 0f, 0.3f))
+                rect(300f, 260f, 25f, 25f, 5f)
                 endFrame()
             }
 

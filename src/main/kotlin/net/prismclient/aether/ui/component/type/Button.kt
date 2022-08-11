@@ -3,9 +3,11 @@ package net.prismclient.aether.ui.component.type
 import net.prismclient.aether.core.event.UIEventBus
 import net.prismclient.aether.core.event.type.MouseMoveEvent
 import net.prismclient.aether.ui.component.UIComponent
+import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.font.FontStyle
 import net.prismclient.aether.ui.font.UIFont
 import net.prismclient.aether.ui.modifier.UIModifier
+import net.prismclient.aether.ui.util.shorthands.RGBA
 import java.util.function.Consumer
 
 /**
