@@ -50,10 +50,11 @@ class TestScreen : UIScreen {
                     .constrain(50, 150,250, 250)
                     .backgroundColor(RGBA(255, 255, 255).rgb)
                     .backgroundRadius(9.radius)
+                    .control(UIAlignment.CENTER)
             )) {
                 for (i in 0..2) {
                     button(
-                        text = "AgdCiLMmzjt",
+                        text = "AgdCiLMmzjt $i",
                         modifier = Modifier()
                             .control(UIAlignment.TOPCENTER)
                             .size(50.px, 50.px)

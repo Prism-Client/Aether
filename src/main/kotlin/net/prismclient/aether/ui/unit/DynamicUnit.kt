@@ -4,8 +4,7 @@ import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.type.solid.PixelUnit
 
 /**
- * [DynamicUnit] is a subtype of [UIUnit] for units that depend on a value that has
- * not yet been calculated.
+ * [DynamicUnit] is a subtype of [UIUnit] for units which cannot be inferred immediately.
  *
  * For example, a unit which scales based on the size of the
  * content within it. Now, this isn't a big deal if all the [Composable]s within the

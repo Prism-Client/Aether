@@ -1,16 +1,10 @@
 package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.core.Aether
-import net.prismclient.aether.core.event.UIEvent
-import net.prismclient.aether.core.event.UIEventBus
-import net.prismclient.aether.core.event.type.MouseMoveEvent
-import net.prismclient.aether.ui.component.type.UIButton
 import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.util.shorthands.dp
-import net.prismclient.aether.ui.util.shorthands.px
-import java.util.function.Consumer
 
 /**
  * [Composable] is the superclass for all UI objects within Aether. Anything that extends this class
@@ -32,34 +26,42 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      */
     open var overridden: Boolean = false
 
+    protected open var compositionRef: Composition? = null
+
     /**
      * The composition which this composable is assigned to. The functions within ComponentsKt class
-     * automatically set this value, however if not used, it must be manually assigned.
+     * automatically set this value. If nothing is set it will default to the default composition.
      */
-    open lateinit var composition: Composition
+    open var composition: Composition
+        get() {
+//            if (compositionRef == null)
+//                compositionRef = Aether.instance.defaultComposition
+            return compositionRef!!
+        }
+        set(value) {
+            compositionRef = value
+        }
     open var parent: Composable? = null
 
     /**
-     * Returns the origin point of this composable. The origin point is the position of this relative
-     * to the position of the composition. When optimize composition is true, the origin point is always
-     * the x position of the composition, and not 0, thus this returns an offset.
+     * Returns the x position of the [parent] or 0.
      */
-    open val originX: Float get() = parent?.x ?: if (composition.modifier.optimizeComposition) 0f else composition.x
+    open val parentX: Float get() = parent?.x ?: 0f
 
     /**
-     * @see originX
+     * Returns the y position of the [parent] or 0.
      */
-    open val originY: Float get() = parent?.y ?: if (composition.modifier.optimizeComposition) 0f else composition.y
+    open val parentY: Float get() = parent?.y ?: 0f
 
     /**
-     * Returns the width of [parent], or the width of the display.
+     * Returns the width of [parent], or the width of the composition.
      */
-    open val parentWidth: Float get() = if (parent != null) parent?.modifier?.width.dp else Aether.instance.displayWidth
+    open val parentWidth: Float get() = parent?.width ?: composition.width
 
     /**
-     * Returns the height of [parent], or the height of the display.
+     * Returns the height of [parent], or the height of the composition.
      */
-    open val parentHeight: Float get() = if (parent != null) parent?.modifier?.height.dp else Aether.instance.displayHeight
+    open val parentHeight: Float get() = parent?.height ?: composition.height
 
     /**
      * Returns true if this has been composed at least once.
@@ -85,8 +87,8 @@ abstract class Composable(open val modifier: UIModifier<*>) {
         modifier.y?.compute(true)
 
         if (!overridden) {
-            x = modifier.x.dp - modifier.anchorPoint?.x.dp + originX
-            y = modifier.y.dp - modifier.anchorPoint?.y.dp + originY
+            x = modifier.x.dp - modifier.anchorPoint?.x.dp + parentX
+            y = modifier.y.dp - modifier.anchorPoint?.y.dp + parentY
         }
     }
 

@@ -19,7 +19,7 @@ var activeComposable: Composable? = null
  * TODO: doc
  */
 inline fun <T : Composable> component(composable: T, block: Block<T>): T {
-    activeComposition = activeComposition ?: Aether.instance.defaultComposition
+    activeComposition = activeComposition!!// ?: Aether.instance.defaultComposition
     composable.composition = activeComposition!!
     composable.parent = activeComposable ?: activeComposition!!
     if (composable.parent is ComposableGroup) {

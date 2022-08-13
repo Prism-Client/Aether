@@ -10,6 +10,7 @@ import net.prismclient.aether.ui.util.shorthands.or
 
 // TODO: disable optimize composition
 // TODO: Limit composition framerate
+// TODO: nested compositions
 /**
  * A composition is a group of components which fills a portion or full area of the screen. Compositions allow
  * for Aether to streamline component layout calculations and cache frames to improve the overall speed from initial
@@ -18,15 +19,24 @@ import net.prismclient.aether.ui.util.shorthands.or
  * @author sen
  * @since 1.0
  */
+@Suppress("LeakingThis")
 open class Composition(val name: String, modifier: CompositionModifier) : Composable(modifier), ComposableGroup {
     override val modifier: CompositionModifier get() = super.modifier as CompositionModifier
     override val children: ArrayList<Composable> = arrayListOf()
-    override var composition: Composition = this
-    override val originX: Float = 0f
-    override val originY: Float = 0f
+    override val parentWidth: Float = parent?.width ?: if (compositionRef == null || compositionRef == this) Aether.instance.displayWidth else composition.width
+    override val parentHeight: Float = parent?.height ?: if (compositionRef == null || compositionRef == this) Aether.instance.displayHeight else composition.height
 
     /**
-     * todo
+     * Returns the parent composition or this.
+     */
+    override var composition: Composition
+        get() = compositionRef ?: this
+        set(value) {
+            compositionRef = value
+        }
+
+    /**
+     * The FrameBuffer reference. This is automatically allocated when [CompositionModifier.optimizeComposition] is true.
      */
     open var framebuffer: UIFramebuffer? = null
         protected set
@@ -83,9 +93,19 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
         framebuffer = framebuffer ?: Aether.renderer.createFBO(width, height)
 
         UIRendererDSL.renderToFramebuffer(framebuffer!!) {
-            modifier.preRender()
-            children.forEach(Composable::render)
-            modifier.render()
+            // Translate the composition by the inverse position. This is done
+            // because it is rendered to a framebuffer where the origin is now
+            // (x, y) instead of 0, 0 as it is automatically set to (x, y) when
+            // the image of the framebuffer is rendered.
+            translate(-x, -y) {
+                // UIRendererDSL saving is disabled to account for saving
+                // the state within the translation call above.
+                shouldSave = false
+                modifier.preRender()
+                children.forEach(Composable::render)
+                modifier.render()
+                shouldSave = true
+            }
         }
     }
 
@@ -105,7 +125,7 @@ open class CompositionModifier : UIModifier<CompositionModifier>() {
      *
      * @see frameRate
      */
-    var optimizeComposition: Boolean = true // TODO: Move to modifier
+    open var optimizeComposition: Boolean = true // TODO: Move to modifier
 
     /**
      * The frame rate of this composition. The frame is updated regardless of this property on an event, and does nothing
@@ -117,7 +137,7 @@ open class CompositionModifier : UIModifier<CompositionModifier>() {
      *
      * @see optimizeComposition
      */
-    var frameRate: Int = 0 // TODO: Convert to class
+    open var frameRate: Int = 0 // TODO: Convert to class
 
     override fun copy(): CompositionModifier = CompositionModifier().also {
         it.x = x?.copy()

@@ -191,8 +191,7 @@ object Runner {
                 color(-1)
                 font("Poppins", 16f, UITextAlignment.CENTER, UITextAlignment.TOP, 0f)
                 fpsstring.render(framebufferWidth / 2f, 0f)
-                color(RGBA(1f, 0f, 0f, 0.3f))
-                rect(300f, 260f, 25f, 25f, 5f)
+
                 endFrame()
             }
 

@@ -1,6 +1,6 @@
 package net.prismclient.aether.ui.util.shorthands
 
-import net.prismclient.aether.ui.renderer.UIColor
+import net.prismclient.aether.core.color.UIColor
 
 /**
  * ColorKt provides a set of shorthands for obtaining information and creating colors. Colors

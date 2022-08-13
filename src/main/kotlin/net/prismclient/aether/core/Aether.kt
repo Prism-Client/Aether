@@ -8,6 +8,7 @@ import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.screen.UIScreen
 import net.prismclient.aether.ui.util.other.MouseButtonType
 import net.prismclient.aether.ui.util.shorthands.notNull
+import net.prismclient.aether.ui.util.shorthands.rel
 
 /**
  * [Aether]
@@ -32,10 +33,11 @@ open class Aether(renderer: UIRenderer) {
         protected set
 
     /**
-     * The default composition, where all "composition-less" components are placed. The size
+     * The default composition, where all "composition-less" composables are placed. The size
      * of the composition is equal to size of the window.
      */
-    var defaultComposition: Composition? = null
+//    var defaultComposition: Composition? = null
+//        protected set
 
     init {
         instance = this
@@ -92,11 +94,11 @@ open class Aether(renderer: UIRenderer) {
      * @see Aether.Companion.displayScreen to display a screen
      */
     open fun screen(screen: UIScreen) {
-        activeScreen = screen
         compositions = arrayListOf()
-        //defaultComposition = createComposition("Default")
-//        defaultComposition!!.size(rel(1f), rel(1f))
-        screen.createScreen()
+        activeScreen = screen
+//        defaultComposition = createComposition("Default", CompositionModifier())
+//        defaultComposition!!.modifier.size(1.rel, 1.rel)
+        activeScreen!!.createScreen()
         update(displayWidth, displayHeight, devicePixelRatio)
     }
 

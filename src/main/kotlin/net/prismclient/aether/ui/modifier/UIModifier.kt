@@ -1,12 +1,13 @@
 package net.prismclient.aether.ui.modifier
 
+import net.prismclient.aether.core.color.UIAlpha
 import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.composition.util.color
 import net.prismclient.aether.ui.composition.util.radius
 import net.prismclient.aether.ui.registry.UIRegistry
-import net.prismclient.aether.ui.renderer.UIColor
+import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.unit.other.Margin
@@ -39,6 +40,7 @@ abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animata
 
     open var padding: Padding? = null
     open var margin: Margin? = null
+    open var opacity: UIAlpha? = null // TODO: Add support for interfaces and actual implementation
 
     open var background: UIBackground? = null
 

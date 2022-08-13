@@ -1,7 +1,8 @@
-package net.prismclient.aether.ui.renderer
+package net.prismclient.aether.core.color
 
 import net.prismclient.aether.ui.util.other.Animatable
 import net.prismclient.aether.ui.util.other.Copyable
+import net.prismclient.aether.ui.util.other.Mergable
 import net.prismclient.aether.ui.util.shorthands.*
 import java.awt.Color
 
@@ -21,7 +22,7 @@ import java.awt.Color
  * @author sen
  * @since 1.0
  */
-class UIColor(color: Int) : Copyable<UIColor>, Animatable<UIColor> {
+class UIColor(color: Int) : Copyable<UIColor>, Mergable<UIColor>, Animatable<UIColor> {
     /**
      * Creates the [UIColor] from an HSV color type.
      */
@@ -53,6 +54,12 @@ class UIColor(color: Int) : Copyable<UIColor>, Animatable<UIColor> {
     fun getAlpha() = rgba.alpha
 
     override fun copy(): UIColor = UIColor(rgba)
+
+    override fun merge(other: UIColor?) {
+        if (other != null) {
+            rgba = other.rgba
+        }
+    }
 
     override fun animate(start: UIColor?, end: UIColor?, fraction: Float) {
         ifNotNull(start, end) {

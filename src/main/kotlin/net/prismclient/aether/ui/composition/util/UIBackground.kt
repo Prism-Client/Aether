@@ -2,7 +2,7 @@ package net.prismclient.aether.ui.composition.util
 
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.renderer
-import net.prismclient.aether.ui.renderer.UIColor
+import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.Radius

@@ -17,17 +17,17 @@ abstract class UILayout(modifier: UIModifier<*>, protected val override: Boolean
     override val children: ArrayList<Composable> = arrayListOf()
 
     override fun compose() {
+        // hasDynamic property?
+
+
         modifier.preUpdate(this)
         updatePosition()
         updateSize()
         children.forEach {
             it.parent = this
             if (override) it.overridden = true
-            it.compose()
         }
         updateLayout()
-
-
         modifier.update(this)
     }
 

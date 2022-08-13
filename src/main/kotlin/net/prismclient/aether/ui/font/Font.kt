@@ -8,7 +8,7 @@ import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.font.TextResizing.*
-import net.prismclient.aether.ui.renderer.UIColor
+import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.style.Style

@@ -4,7 +4,7 @@ import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.alignment.UIAlignment.*
 import net.prismclient.aether.ui.alignment.UITextAlignment
-import net.prismclient.aether.ui.renderer.UIColor
+import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.resource.UIResourceProvider
@@ -298,14 +298,19 @@ object UIRendererDSL {
     }
 
     /**
+     * A complimentary value for Compositions. When false, the save block will do nothing.
+     */
+    var shouldSave: Boolean = true
+
+    /**
      * Automatically saves and restores the state within this block. Any translations
-     * and other states such as scissor are saved within the state.
+     * and other states such as scissor are saved within the state. [shouldSave] must be true.
      */
     @JvmStatic
     inline fun save(block: Block<UIRendererDSL>): UIRendererDSL {
-        renderer.save()
+        if (shouldSave) renderer.save()
         UIRendererDSL.block()
-        renderer.restore()
+        if (shouldSave) renderer.restore()
         return UIRendererDSL
     }
 

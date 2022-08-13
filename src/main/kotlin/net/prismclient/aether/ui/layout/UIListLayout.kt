@@ -2,20 +2,32 @@ package net.prismclient.aether.ui.layout
 
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.layout.util.LayoutOrder
+import net.prismclient.aether.ui.layout.util.SpaceEvenly
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.util.shorthands.dp
 
-class UIListLayout @JvmOverloads constructor(
+open class UIListLayout constructor(
     var direction: LayoutDirection,
     var order: LayoutOrder,
     var childSpacing: UIUnit<*>?,
     modifier: UIModifier<*>
 ) : UILayout(modifier, true) {
-    override fun updateLayout() {
-        // potential size
 
+    override fun compose() {
+        // Compute the spacing prior to any other calculations.
         childSpacing.compute(direction == LayoutDirection.VERTICAL)
+        super.compose()
+    }
+
+    override fun updateLayout() {
+        // TODO: Calculate the potential size of the layout
+//        if (dynamic) {
+//
+//        }
+        if (childSpacing is SpaceEvenly) {
+
+        }
 
         val spacing = childSpacing.dp
 
@@ -27,9 +39,10 @@ class UIListLayout @JvmOverloads constructor(
                 val child = children[i]
 
                 // Update the position as it would be normally,
-                // and only override the axis set.
+                // and only override the axis set. Update the size as well.
                 child.overridden = false
                 child.updatePosition()
+                child.updateSize()
                 child.overridden = true
 
                 if (direction == LayoutDirection.HORIZONTAL) {
@@ -41,6 +54,6 @@ class UIListLayout @JvmOverloads constructor(
                 }
                 child.compose()
             }
-        } else {} // TODO: Reverse order direction
+        } else { TODO("Reverse order direction") }
     }
 }
