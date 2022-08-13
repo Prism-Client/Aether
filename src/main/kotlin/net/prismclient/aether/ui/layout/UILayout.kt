@@ -1,5 +1,6 @@
 package net.prismclient.aether.ui.layout
 
+import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.modifier.UIModifier
@@ -11,31 +12,75 @@ import net.prismclient.aether.ui.util.other.ComposableGroup
  * @author sen
  * @since 1.0
  *
- * @param override When true, the children's property overridden is enabled during the compose stage.
+ * @param overrideChildren When true, the children's property overridden is enabled during the compose stage.
  */
-abstract class UILayout(modifier: UIModifier<*>, protected val override: Boolean) : Composable(modifier), ComposableGroup {
+abstract class UILayout(modifier: UIModifier<*>, protected val overrideChildren: Boolean) : Composable(modifier), ComposableGroup {
     override val children: ArrayList<Composable> = arrayListOf()
 
+    /**
+     * The size of the layout which is set after [updateLayout] is invoked.
+     */
+    lateinit var layoutSize: Size
+
     override fun compose() {
-        // hasDynamic property?
-
-
         modifier.preUpdate(this)
         updatePosition()
         updateSize()
+        // Invoke the updateUnits function after
+        // calculating the relevant properties of this.
+        updateUnits()
+
+        // Update the parent and override (if necessary) to the children
         children.forEach {
             it.parent = this
-            if (override) it.overridden = true
+            if (overrideChildren) it.overridden = true
         }
-        updateLayout()
+        // Calculate the initial and possible the final layout
+        layoutSize = updateLayout()
+
+        if (dynamic) {
+            println("I'm dynamic!")
+            // Update the units after calculating the potential size and
+            // re-update the layout as updateUnits probably changed something
+            updateUnits()
+            updateLayout()
+        }
+
         modifier.update(this)
     }
+
+    /**
+     * Invoked after the general properties of this have been already set, such as the
+     * size and position. At this point, any dynamic units should be calculated. If the
+     * unit is a dynamic unit, the width and height of the layout might need to be calculated
+     * if this is the case, this function will be invoked twice: once before the initial layout
+     * calculation, and one right after.
+     *
+     * @see layoutSize
+     */
+    abstract fun updateUnits()
+
+    /**
+     * Invoked when the layout needs an update. There are two ways this is naturally invoked:
+     *
+     * **Initial:** This is ensured to happen.
+     *
+     * **Dynamic:** This will happen if a dynamic unit is set within the properties of this
+     *
+     * Because the property is dynamic, if the layout changes the components within it will not
+     * lay properly. To combat this, the layout is updated twice if deemed necessary.
+     *
+     * @return Expects the size of the layout with the origin point as the (x, y) of this.
+     */
+    abstract fun updateLayout(): Size
 
     override fun render() {
         modifier.preRender()
         children.forEach(Composable::render)
         modifier.render()
     }
+
+    // -- Utility -- //
 
     /**
      * Adds the given [component] to this layout.
@@ -57,13 +102,4 @@ abstract class UILayout(modifier: UIModifier<*>, protected val override: Boolean
             component.parent = null
         children.remove(component)
     }
-
-    /**
-     * Invoked when the layout needs to be composed.
-     */
-    abstract fun updateLayout()
-
-    // TODO: Utility methods for controlling composables
-    // -- Utility -- //
-
 }

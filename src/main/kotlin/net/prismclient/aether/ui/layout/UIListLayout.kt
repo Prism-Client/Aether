@@ -1,5 +1,6 @@
 package net.prismclient.aether.ui.layout
 
+import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.layout.util.LayoutOrder
 import net.prismclient.aether.ui.layout.util.SpaceEvenly
@@ -13,26 +14,19 @@ open class UIListLayout constructor(
     var childSpacing: UIUnit<*>?,
     modifier: UIModifier<*>
 ) : UILayout(modifier, true) {
-
-    override fun compose() {
-        // Compute the spacing prior to any other calculations.
+    override fun updateUnits() {
         childSpacing.compute(direction == LayoutDirection.VERTICAL)
-        super.compose()
     }
 
-    override fun updateLayout() {
-        // TODO: Calculate the potential size of the layout
-//        if (dynamic) {
-//
-//        }
-        if (childSpacing is SpaceEvenly) {
-
-        }
+    override fun updateLayout(): Size {
 
         val spacing = childSpacing.dp
 
         var x = x
         var y = y
+
+        var w = 0f
+        var h = 0f
 
         if (order == LayoutOrder.FIRST) {
             for (i in 0 until children.size) {
@@ -53,7 +47,14 @@ open class UIListLayout constructor(
                     y += child.height + spacing
                 }
                 child.compose()
+
+                w = w.coerceAtLeast(child.x + child.width - this.x)
+                h = h.coerceAtLeast(child.y + child.height - this.y)
             }
         } else { TODO("Reverse order direction") }
+
+        println("Layout size: ($w, $h)")
+
+        return Size(w, h)
     }
 }

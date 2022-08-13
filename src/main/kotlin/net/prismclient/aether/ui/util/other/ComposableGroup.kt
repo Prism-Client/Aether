@@ -1,9 +1,10 @@
 package net.prismclient.aether.ui.util.other
 
+import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.composition.Composable
 
 /**
- * Indicates a class which contains a variable for a list of Composable(s), named [children].
+ * Indicates to Aether that this is a class which stores a group of composables, known as [children].
  *
  * @author sen
  * @since 1.0
