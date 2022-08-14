@@ -3,10 +3,9 @@ package net.prismclient.aether.ui.layout
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.layout.util.LayoutOrder
-import net.prismclient.aether.ui.layout.util.SpaceEvenly
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.util.shorthands.dp
+import net.prismclient.aether.core.util.shorthands.dp
 
 open class UIListLayout constructor(
     var direction: LayoutDirection,
@@ -35,8 +34,7 @@ open class UIListLayout constructor(
                 // Update the position as it would be normally,
                 // and only override the axis set. Update the size as well.
                 child.overridden = false
-                child.updatePosition()
-                child.updateSize()
+                child.compose()
                 child.overridden = true
 
                 if (direction == LayoutDirection.HORIZONTAL) {

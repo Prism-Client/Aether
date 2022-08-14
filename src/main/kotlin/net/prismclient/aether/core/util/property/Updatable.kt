@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.util.other
+package net.prismclient.aether.core.util.property
 
 import net.prismclient.aether.ui.composition.Composable
 
@@ -13,5 +13,5 @@ interface Updatable {
     /**
      * Invoked when the composition is updated.
      */
-    fun update(composable: Composable?)
+    fun compose(composable: Composable?)
 }

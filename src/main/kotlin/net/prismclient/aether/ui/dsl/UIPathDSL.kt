@@ -3,8 +3,8 @@ package net.prismclient.aether.ui.dsl
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.unit.other.Radius
-import net.prismclient.aether.ui.util.shorthands.Block
-import net.prismclient.aether.ui.util.shorthands.dp
+import net.prismclient.aether.core.util.shorthands.Block
+import net.prismclient.aether.core.util.shorthands.dp
 
 /**
  * [UIPathDSL] is a DSL for paths. [UIRendererDSL] utilizes this to apply the paths.

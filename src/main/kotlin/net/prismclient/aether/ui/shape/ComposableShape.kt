@@ -1,12 +1,11 @@
 package net.prismclient.aether.ui.shape
 
 import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.util.other.Updatable
+import net.prismclient.aether.core.util.property.Updatable
 
 /**
- * [ComposableShape] is a shape which constrains itself based on a composition. When [ComposableShape.update]
+ * [ComposableShape] is a shape which constrains itself based on a composition. When [ComposableShape.compose]
  * is invoked, the expected [Composable] cannot be null, else a NullPointerException will be thrown.
  *
  * @author sen
@@ -23,7 +22,7 @@ abstract class ComposableShape : Shape(), Updatable {
      */
     var initialY: Float = 0f
 
-    override fun update(composable: Composable?) {
+    override fun compose(composable: Composable?) {
         composable!!
         x?.compute(composable, false)
         y?.compute(composable, true)
@@ -33,8 +32,7 @@ abstract class ComposableShape : Shape(), Updatable {
         initialY = composable.y
     }
 
-    @Suppress
-    protected fun UIUnit<*>?.compute(composable: Composable, yaxis: Boolean) {
+    protected open fun UIUnit<*>?.compute(composable: Composable, yaxis: Boolean) {
         this?.compute(composable, composable.width, composable.height, yaxis)
     }
 }

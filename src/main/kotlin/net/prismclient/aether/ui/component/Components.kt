@@ -6,29 +6,35 @@ import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.font.FontStyle
-import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.modifier.UIModifier
-import net.prismclient.aether.ui.util.other.ComposableGroup
-import net.prismclient.aether.ui.util.shorthands.Block
+import net.prismclient.aether.core.util.other.ComposableGroup
+import net.prismclient.aether.core.util.shorthands.Block
 
-var activeComposition: Composition? = null
-var activeComposable: Composable? = null
+/**
+ * Used to encapsulate the values
+ */
+object ComponentUtil {
+    @JvmStatic
+    var activeComposition: Composition? = null
+    @JvmStatic
+    var activeComposable: Composable? = null
+}
 
 /**
  * TODO: doc
  */
 inline fun <T : Composable> component(composable: T, block: Block<T>): T {
-    activeComposition = activeComposition!!// ?: Aether.instance.defaultComposition
-    composable.composition = activeComposition!!
-    composable.parent = activeComposable ?: activeComposition!!
+    ComponentUtil.activeComposition =ComponentUtil.activeComposition!!// ?: Aether.instance.defaultComposition
+    composable.composition = ComponentUtil.activeComposition!!
+    composable.parent = ComponentUtil.activeComposable ?: ComponentUtil.activeComposition!!
     if (composable.parent is ComposableGroup) {
         (composable.parent as ComposableGroup).children.add(composable)
     }
-    val previousActiveComponent = activeComposable
-    activeComposable = composable
+    val previousActiveComponent = ComponentUtil.activeComposable
+    ComponentUtil.activeComposable = composable
     composable.block()
-    activeComposable = previousActiveComponent
+    ComponentUtil.activeComposable = previousActiveComponent
     return composable
 }
 
@@ -37,9 +43,9 @@ inline fun <T : Composable> component(composable: T, block: Block<T>): T {
  */
 inline fun compose(name: String, modifier: CompositionModifier = CompositionModifier(), block: Block<Composition>): Composition {
     val composition = Aether.instance.createComposition(name, modifier)
-    activeComposition = composition
+    ComponentUtil.activeComposition = composition
     composition.block()
-    activeComposition = null
+    ComponentUtil.activeComposition = null
     return composition
 }
 

@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.util.extensions
+package net.prismclient.aether.core.util.extensions
 
 import net.prismclient.aether.core.Aether
 import org.apache.commons.io.IOUtils

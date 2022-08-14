@@ -1,12 +1,10 @@
 package net.prismclient.aether.core.color
 
-import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.util.other.Animatable
-import net.prismclient.aether.ui.util.other.Copyable
-import net.prismclient.aether.ui.util.other.Mergable
-import net.prismclient.aether.ui.util.other.Property
-import net.prismclient.aether.ui.util.shorthands.ifNotNull
-import net.prismclient.aether.ui.util.shorthands.lerp
+import net.prismclient.aether.core.util.property.Animatable
+import net.prismclient.aether.core.util.property.Copyable
+import net.prismclient.aether.core.util.property.Mergable
+import net.prismclient.aether.core.util.shorthands.ifNotNull
+import net.prismclient.aether.core.util.shorthands.lerp
 
 /**
  * [UIAlpha] represents a alpha value between 0 and 1.

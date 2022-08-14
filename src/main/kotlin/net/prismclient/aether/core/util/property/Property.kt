@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.util.other
+package net.prismclient.aether.core.util.property
 
 /**
  * [Property] provides a shorthand for implementing the 4 key single function interfaces

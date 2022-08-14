@@ -3,11 +3,11 @@ package net.prismclient.aether.ui.unit.other
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.compute
-import net.prismclient.aether.ui.util.other.Property
-import net.prismclient.aether.ui.util.shorthands.ifNotNull
-import net.prismclient.aether.ui.util.shorthands.lerp
-import net.prismclient.aether.ui.util.shorthands.or
-import net.prismclient.aether.ui.util.shorthands.px
+import net.prismclient.aether.core.util.property.Property
+import net.prismclient.aether.core.util.shorthands.ifNotNull
+import net.prismclient.aether.core.util.shorthands.lerp
+import net.prismclient.aether.core.util.shorthands.or
+import net.prismclient.aether.core.util.shorthands.px
 
 /**
  * [Radius] represents a 4 corner shape, such as rectangle which can be used to create
@@ -22,7 +22,7 @@ open class Radius(
     var bottomRight: UIUnit<*>? = null,
     var bottomLeft: UIUnit<*>? = null
 ) : Property<Radius> {
-    override fun update(composable: Composable?) {
+    override fun compose(composable: Composable?) {
         composable!!
         topLeft?.compute(composable, true)
         topRight?.compute(composable, false)

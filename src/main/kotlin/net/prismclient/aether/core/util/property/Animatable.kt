@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.util.other
+package net.prismclient.aether.core.util.property
 
 /**
  * Represents a class which takes two instances of the same class and expects

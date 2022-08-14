@@ -1,9 +1,14 @@
 package net.prismclient.aether.core.color
 
-import net.prismclient.aether.ui.util.other.Animatable
-import net.prismclient.aether.ui.util.other.Copyable
-import net.prismclient.aether.ui.util.other.Mergable
-import net.prismclient.aether.ui.util.shorthands.*
+import net.prismclient.aether.core.util.shorthands.ifNotNull
+import net.prismclient.aether.core.util.shorthands.lerp
+import net.prismclient.aether.core.util.shorthands.alpha
+import net.prismclient.aether.core.util.shorthands.blue
+import net.prismclient.aether.core.util.shorthands.green
+import net.prismclient.aether.core.util.shorthands.red
+import net.prismclient.aether.core.util.property.Animatable
+import net.prismclient.aether.core.util.property.Copyable
+import net.prismclient.aether.core.util.property.Mergable
 import java.awt.Color
 
 /**

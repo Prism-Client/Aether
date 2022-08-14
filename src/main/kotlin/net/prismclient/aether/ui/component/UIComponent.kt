@@ -1,10 +1,8 @@
 package net.prismclient.aether.ui.component
 
 import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.modifier.UIModifier
-import net.prismclient.aether.ui.util.other.Copyable
-
+import net.prismclient.aether.core.util.property.Copyable
 
 /**
  * [UIComponent] is the core of all components. With that said, all components must extend this.
@@ -16,11 +14,11 @@ abstract class UIComponent<T>(modifier: UIModifier<*>) : Composable(modifier), C
     override var parent: Composable? = null
 
     override fun compose() {
-        modifier.preUpdate(this)
-        updatePosition()
-        updateSize()
+        modifier.preCompose(this)
+        composeSize()
+        composePosition()
         update()
-        modifier.update(this)
+        modifier.compose(this)
     }
 
     /**

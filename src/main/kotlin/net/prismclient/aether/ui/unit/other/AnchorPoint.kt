@@ -1,13 +1,17 @@
 package net.prismclient.aether.ui.unit.other
 
+import net.prismclient.aether.core.util.shorthands.*
+import net.prismclient.aether.core.util.shorthands.disableDynamicCheck
+import net.prismclient.aether.core.util.shorthands.ifNotNull
+import net.prismclient.aether.core.util.shorthands.lerp
+import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.util.other.Animatable
-import net.prismclient.aether.ui.util.other.Copyable
-import net.prismclient.aether.ui.util.other.Mergable
+import net.prismclient.aether.core.util.property.Animatable
+import net.prismclient.aether.core.util.property.Copyable
+import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.ui.alignment.UIAlignment.*
-import net.prismclient.aether.ui.util.shorthands.*
 
 /**
  * Expects a width and height which is used to scale the given properties
@@ -20,8 +24,10 @@ open class AnchorPoint : Copyable<AnchorPoint>, Mergable<AnchorPoint>, Animatabl
     open var y: UIUnit<*>? = null
 
     open fun update(composable: Composable?, width: Float, height: Float) {
-        x?.compute(composable, width, height, false)
-        y?.compute(composable, width, height, true)
+        disableDynamicCheck(composable) {
+            x?.compute(composable, width, height, false)
+            y?.compute(composable, width, height, true)
+        }
     }
 
     /**
@@ -62,4 +68,6 @@ open class AnchorPoint : Copyable<AnchorPoint>, Mergable<AnchorPoint>, Animatabl
             y!!.lerp(y, start?.y, end?.y, fraction)
         }
     }
+
+    override fun toString(): String = "AnchorPoint($x, $y)"
 }

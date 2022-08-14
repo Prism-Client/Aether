@@ -2,7 +2,7 @@ package net.prismclient.aether.ui.unit.type.other
 
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.util.shorthands.dp
+import net.prismclient.aether.core.util.shorthands.dp
 
 /**
  * [OperationUnit] itself, is not a value, however, it accepts two units which it computes

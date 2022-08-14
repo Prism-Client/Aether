@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.util.other
+package net.prismclient.aether.core.util.property
 
 /**
  * [Copyable] is used for creating deep copies (same properties, different references) of an object.

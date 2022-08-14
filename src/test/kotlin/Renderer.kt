@@ -3,10 +3,10 @@ import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.resource.image.UIImageData
-import net.prismclient.aether.ui.util.shorthands.alpha
-import net.prismclient.aether.ui.util.shorthands.blue
-import net.prismclient.aether.ui.util.shorthands.green
-import net.prismclient.aether.ui.util.shorthands.red
+import net.prismclient.aether.core.util.shorthands.alpha
+import net.prismclient.aether.core.util.shorthands.blue
+import net.prismclient.aether.core.util.shorthands.green
+import net.prismclient.aether.core.util.shorthands.red
 import org.lwjgl.nanovg.*
 import org.lwjgl.nanovg.NanoVG.*
 import org.lwjgl.nanovg.NanoVGGL3.*

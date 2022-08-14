@@ -2,7 +2,7 @@ package net.prismclient.aether.ui.style
 
 import net.prismclient.aether.ui.font.UIFont
 import net.prismclient.aether.ui.registry.UIRegistry
-import net.prismclient.aether.ui.util.other.Property
+import net.prismclient.aether.core.util.property.Property
 
 /**
  * Most components require more information than the default properties provided by Modifier. Modifier
@@ -20,7 +20,7 @@ abstract class Style<T> : Property<T> {
         applyStyle(this::class.simpleName!!)
     }
 
-    open fun preUpdate(font: UIFont) {}
+    open fun preCompose() {}
 
     /**
      * Merges the given style from [UIRegistry] into this, if not null.

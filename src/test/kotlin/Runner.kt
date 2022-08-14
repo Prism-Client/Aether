@@ -2,10 +2,9 @@ import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.debug.UIDebug
 import net.prismclient.aether.ui.dsl.renderer
-import net.prismclient.aether.ui.util.extensions.toByteBuffer
+import net.prismclient.aether.core.util.extensions.toByteBuffer
 import net.prismclient.aether.ui.util.input.UIKey
-import net.prismclient.aether.ui.util.other.MouseButtonType
-import net.prismclient.aether.ui.util.shorthands.RGBA
+import net.prismclient.aether.core.util.other.MouseButtonType
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback

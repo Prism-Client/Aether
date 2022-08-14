@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.util.other
+package net.prismclient.aether.core.util.property
 
 /**
  * [Mergable] is a single function interface which accepts [T], the class to be merged. The

@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.util.shorthands
+package net.prismclient.aether.core.util.shorthands
 
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.dsl.UIRendererDSL

@@ -1,5 +1,6 @@
-package net.prismclient.aether.ui.util.shorthands
+package net.prismclient.aether.core.util.shorthands
 
+import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.Radius
 import net.prismclient.aether.ui.unit.type.dynamic.RelativeUnit
@@ -26,8 +27,7 @@ inline val Number.px: PixelUnit get() = PixelUnit(this.toFloat())
 
 /**
  * Creates a [RelativeUnit] of the given value. A relative unit scales based on the width/height of the
- * composable's parent, or the width / height of the screen. If composable or it's parent is null. This
- * is considered a dynamic unit.
+ * composable's parent, or the width / height of the screen. If composable or it's parent is null.
  *
  * @see RelativeUnit
  */
@@ -36,7 +36,7 @@ inline val Number.rel: RelativeUnit get() = RelativeUnit(this.toFloat())
 
 /**
  * Creates a [SizeUnit] of the given value. A composable relative unit scales based on
- * the width / height of the composable which is passed through on update. This is considered a dynamic unit.
+ * the width / height of the composable which is passed through on update.
  *
  * @see SizeUnit
  */
@@ -63,6 +63,15 @@ inline val UIUnit<*>.radii: Radius get() = Radius(this, this.copy(), this.copy()
  */
 @get:JvmName("dp")
 inline val UIUnit<*>?.dp: Float get() = this?.cachedValue ?: 0f
+
+/**
+ * Disables units from changing the state of [Composable.dynamic].
+ */
+internal inline fun disableDynamicCheck(composable: Composable?, block: () -> Unit) {
+    val isDynamic = composable?.dynamic ?: false
+    block()
+    composable?.dynamic = isDynamic
+}
 
 
 // -- Operator Functions -- //

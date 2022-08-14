@@ -2,9 +2,9 @@ package net.prismclient.aether.ui.debug
 
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.core.color.UIColor
-import net.prismclient.aether.ui.util.enums.UIStrokeDirection
-import net.prismclient.aether.ui.util.shorthands.RGBA
-import net.prismclient.aether.ui.util.shorthands.rgb
+import net.prismclient.aether.ui.renderer.UIStrokeDirection
+import net.prismclient.aether.core.util.shorthands.RGBA
+import net.prismclient.aether.core.util.shorthands.rgb
 
 /**
  * [UIDebug] provides utility functions to aid in visualizing and obtaining more information

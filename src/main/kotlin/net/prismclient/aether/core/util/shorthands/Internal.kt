@@ -1,8 +1,8 @@
-package net.prismclient.aether.ui.util.shorthands
+package net.prismclient.aether.core.util.shorthands
 
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.util.other.Copyable
-import net.prismclient.aether.ui.util.other.Mergable
+import net.prismclient.aether.core.util.property.Copyable
+import net.prismclient.aether.core.util.property.Mergable
 import kotlin.math.roundToInt
 
 // Internal shorthands for Aether to reduce the amount of boilerplate code.

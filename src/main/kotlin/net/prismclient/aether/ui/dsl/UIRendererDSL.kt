@@ -5,13 +5,14 @@ import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.alignment.UIAlignment.*
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.core.color.UIColor
+import net.prismclient.aether.core.util.shorthands.*
+import net.prismclient.aether.core.util.shorthands.Block
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.resource.UIResourceProvider
 import net.prismclient.aether.ui.unit.other.Radius
 import net.prismclient.aether.ui.util.*
-import net.prismclient.aether.ui.util.enums.UIStrokeDirection
-import net.prismclient.aether.ui.util.shorthands.*
+import net.prismclient.aether.ui.renderer.UIStrokeDirection
 
 /**
  * [UIRendererDSL] wraps the [UIRenderer] class to minimize the amount of calls
@@ -23,8 +24,7 @@ import net.prismclient.aether.ui.util.shorthands.*
  */
 object UIRendererDSL {
     @JvmStatic
-    val renderer
-        get() = Aether.renderer
+    val renderer get() = Aether.renderer
 
     @JvmStatic
     var activeColor: Int = 0
@@ -365,5 +365,18 @@ object UIRendererDSL {
         endFrame()
         renderer.unbindFBO()
         return UIRendererDSL
+    }
+
+    /**
+     * Depending on the renderer used, the graphics might not be drawn until after the frame is ended. If something is
+     * intended to be drawn over the UI just created, running this will end the current frame, thus drawing the content,
+     * runs the block, and begins a new frame after the block is completed. The new frame is begun based on the
+     * properties of [Aether.displayWidth] and so forth.
+     */
+    @JvmStatic
+    inline fun endAndBeginFrame(block: () -> Unit) {
+        endFrame()
+        block()
+        beginFrame(Aether.instance.displayWidth, Aether.instance.displayHeight, Aether.instance.devicePixelRatio)
     }
 }

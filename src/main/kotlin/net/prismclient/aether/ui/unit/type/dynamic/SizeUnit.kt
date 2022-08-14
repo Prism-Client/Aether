@@ -2,6 +2,7 @@ package net.prismclient.aether.ui.unit.type.dynamic
 
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.DynamicUnit
+import net.prismclient.aether.ui.unit.UIUnit
 
 /**
  * Acts nearly identical to [RelativeUnit] however, unlike [RelativeUnit] the value scales
@@ -11,7 +12,7 @@ import net.prismclient.aether.ui.unit.DynamicUnit
  * @author sen
  * @since 1.0
  */
-class SizeUnit(value: Float) : DynamicUnit<SizeUnit>(value) {
+class SizeUnit(value: Float) : UIUnit<SizeUnit>(value) {
     override fun updateCache(
         composable: Composable?,
         width: Float,
@@ -25,5 +26,5 @@ class SizeUnit(value: Float) : DynamicUnit<SizeUnit>(value) {
 
     override fun copy(): SizeUnit = SizeUnit(value)
 
-    override fun toString(): String = "ComposableRelative($value)"
+    override fun toString(): String = "SizeUnit($value, $cachedValue)"
 }

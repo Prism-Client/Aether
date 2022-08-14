@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.util.enums
+package net.prismclient.aether.ui.renderer
 
 /**
  * Instructs the renderer how to render the stroke. When center, the stroke is entered to the

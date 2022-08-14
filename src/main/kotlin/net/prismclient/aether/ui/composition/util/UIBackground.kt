@@ -3,11 +3,14 @@ package net.prismclient.aether.ui.composition.util
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.core.color.UIColor
+import net.prismclient.aether.core.util.shorthands.*
+import net.prismclient.aether.core.util.shorthands.ifNotNull
+import net.prismclient.aether.core.util.shorthands.lerp
+import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.Radius
-import net.prismclient.aether.ui.util.other.Property
-import net.prismclient.aether.ui.util.shorthands.*
+import net.prismclient.aether.core.util.property.Property
 
 /**
  * [UIBackground] is a property for a component's Modifier. It represents the background of a [Composable].
@@ -24,9 +27,11 @@ open class UIBackground : ComposableShape(), Property<UIBackground> {
     var backgroundColor: UIColor? = null
     var backgroundRadius: Radius? = null
 
-    override fun update(composable: Composable?) {
-        super.update(composable)
-        backgroundRadius?.update(composable)
+    override fun compose(composable: Composable?) {
+        super.compose(composable)
+        initialX = composable!!.relX
+        initialY = composable.relY
+        backgroundRadius?.compose(composable)
     }
 
     override fun render() {
@@ -34,6 +39,11 @@ open class UIBackground : ComposableShape(), Property<UIBackground> {
             color(backgroundColor)
             rect(initialX + x.dp, initialY + y.dp, width.dp, height.dp, backgroundRadius)
         }
+    }
+
+    override fun UIUnit<*>?.compute(composable: Composable, yaxis: Boolean) {
+        // Update based on the relative values instead of the normal
+        this?.compute(composable, composable.relWidth, composable.relHeight, yaxis)
     }
 
     override fun copy(): UIBackground = UIBackground().also {

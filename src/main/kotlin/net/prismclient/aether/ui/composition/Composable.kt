@@ -1,10 +1,9 @@
 package net.prismclient.aether.ui.composition
 
-import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.util.shorthands.dp
+import net.prismclient.aether.core.util.shorthands.dp
 
 /**
  * [Composable] is the superclass for all UI objects within Aether. Anything that extends this class
@@ -73,16 +72,25 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      */
     open var dynamic: Boolean = false
 
+    // The actual positions calculated based on the different properties, such as
+    // the position and padding of the Composable. The relative units represent the
+    // bounds of the composable (padding applied) which most content scales to.
+
     open var x: Float = 0f
     open var y: Float = 0f
     open var width: Float = 0f
     open var height: Float = 0f
 
+    open var relX: Float = 0f
+    open var relY: Float = 0f
+    open var relWidth: Float = 0f
+    open var relHeight: Float = 0f
+
     /**
      * Updates the anchor point and computes the [UIModifier.x] and [UIModifier.y] values and sets them to [x] and [y].
      */
-    open fun updatePosition() {
-        updateAnchor()
+    open fun composePosition() {
+        composeAnchor()
         modifier.x?.compute(false)
         modifier.y?.compute(true)
 
@@ -90,21 +98,37 @@ abstract class Composable(open val modifier: UIModifier<*>) {
             x = modifier.x.dp - modifier.anchorPoint?.x.dp + parentX
             y = modifier.y.dp - modifier.anchorPoint?.y.dp + parentY
         }
+        composeBounds()
     }
 
     /**
      * Updates the size of this and sets the calculated properties to [width] and [height]. If the
-     * units are dynamic, [Composable.dynamic] will be true.
+     * units are dynamic, [Composable.dynamic] will be true. The padding is calculated.
      */
-    open fun updateSize() {
+    open fun composeSize() {
+        composePadding()
         modifier.width?.compute(false)
         modifier.height?.compute(true)
         width = modifier.width.dp
         height = modifier.height.dp
     }
 
-    open fun updateAnchor() {
+    /**
+     * Updates the relative x, y, width and height of this based on the padding.
+     */
+    open fun composeBounds() {
+        relX = x - modifier.padding?.left.dp
+        relY = y - modifier.padding?.top.dp
+        relWidth = width + modifier.padding?.right.dp + modifier.padding?.left.dp
+        relHeight = height + modifier.padding?.bottom.dp + modifier.padding?.top.dp
+    }
+
+    open fun composeAnchor() {
         modifier.anchorPoint?.update(this, modifier.width.dp, modifier.height.dp)
+    }
+
+    open fun composePadding() {
+        modifier.padding?.compose(this)
     }
 
     /**

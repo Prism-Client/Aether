@@ -1,26 +1,36 @@
 package net.prismclient.aether.ui.font
 
 import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.color.UIColor
+import net.prismclient.aether.core.util.property.Copyable
+import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment.*
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
-import net.prismclient.aether.ui.font.TextResizing.*
-import net.prismclient.aether.core.color.UIColor
+import net.prismclient.aether.ui.font.FontType.*
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.style.Style
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.AnchorPoint
-import net.prismclient.aether.ui.util.other.Copyable
-import net.prismclient.aether.ui.util.shorthands.*
 import java.util.regex.Pattern
 
 /**
+ * [Font] is an interface which a composable can implement to indicate that it has a [font].
+ *
+ * @author sen
+ * @since 1.0
+ */
+interface Font {
+    val font: UIFont
+}
+
+/**
  * [UIFont] is the implementation for a composable that needs a font. It expects a [FontStyle]
- * which dictates the properties of this font.
+ * which dictates the properties of this font. Depending on the property [FontStyle.fontType]
  *
  * Aether is designed with Figma in mind, and because of that, [UIFont] is designed to mimic the text component
  * within Figma.
@@ -28,14 +38,17 @@ import java.util.regex.Pattern
  * @author sen
  * @since 1.0
  */
+@Suppress("LeakingThis")
 open class UIFont(open val style: FontStyle) : ComposableShape(), Copyable<UIFont> {
+    lateinit var composable: Composable
+
     override var x: UIUnit<*>? = null
     override var y: UIUnit<*>? = null
     override var width: UIUnit<*>? = null
     override var height: UIUnit<*>? = null
 
     /**
-     * The formatted text. Depending on the [FontStyle.textResizing] it can be one line,
+     * The formatted text. Depending on the [FontStyle.fontType] it can be one line,
      * or split by the newline character or width.
      *
      * @see actualText
@@ -75,19 +88,22 @@ open class UIFont(open val style: FontStyle) : ComposableShape(), Copyable<UIFon
 ////            if (value != null) textResizing = TextResizing.TruncateText
 //        }
 
-    override fun update(composable: Composable?) {
-        composable!!
-        // TODO: Ensure the right order of operations
-        style.preUpdate(this)
-        super.update(composable)
-        style.update(composable)
+    init {
+        style.font = this
+    }
+
+    override fun compose(composable: Composable?) {
+        this.composable = composable!!
+        style.preCompose()
+        super.compose(composable)
+        style.compose(composable)
         updateFont()
         anchor?.update(composable, width.dp, height.dp)
     }
 
     /**
-     * Updates [fontMetrics] and [text] to fit the current [FontStyle.textResizing] values. Updates
-     * the position and size if necessary based on the [FontStyle.textResizing].
+     * Updates [fontMetrics] and [text] to fit the current [FontStyle.fontType] values. Updates
+     * the position and size if necessary based on the [FontStyle.fontType].
      */
     open fun updateFont() {
         // Calculate the bounds of the text and update text
@@ -116,13 +132,23 @@ open class UIFont(open val style: FontStyle) : ComposableShape(), Copyable<UIFon
         fontMetrics[5] = fontAscender()
         fontMetrics[6] = fontDescender()
 
-        when (style.textResizing) {
-            AutoWidth, AutoHeight -> {
-                width?.cachedValue = fontWidth()
-                height?.cachedValue = fontHeight()
+        val isDynamic = when (style.textResizing) {
+            AutoWidth -> {
+                width = fontWidth().px
+                height = fontHeight().px
+                composable.width = x.dp + fontWidth()
+                composable.height =  y.dp + fontHeight()
+                true
             }
-            else -> {} // TODO:
+            AutoWidth, AutoHeight -> {
+//                activeComposable.
+//                width?.cachedValue = fontWidth()
+//                height?.cachedValue = fontHeight()
+                false
+            }
+            else -> false
         }
+        if (isDynamic) composable.dynamic = true
     }
 
     override fun render() {
@@ -184,12 +210,17 @@ open class UIFont(open val style: FontStyle) : ComposableShape(), Copyable<UIFon
  * can be set to [FontStyle.actualFontName] instead. Text/Fonts are designed to mimic Figma's properties of text.
  *
  * @see UIFont Font rendering and more documentation.
- * @see TextResizing Figma's resizing property for how text renders.
+ * @see FontType Figma's resizing property for how text renders.
  *
  * @author sen
  * @since 1.0
  */
 open class FontStyle : Style<FontStyle>() {
+    /**
+     * The reference to the font class. Font automatically sets it.
+     */
+    open lateinit var font: UIFont
+
     open var x: UIUnit<*>? = null
     open var y: UIUnit<*>? = null
     open var width: UIUnit<*>? = null
@@ -203,16 +234,14 @@ open class FontStyle : Style<FontStyle>() {
     open var actualFontName: String? = null
 
     /**
-     * [textResizing] is the equivalent of resizing property of text in Figma.
-     *
-     * @see textResizing
+     * [fontType] is the equivalent of resizing property of text in Figma. See [FontType] for documentation.
      */
-    open var textResizing: TextResizing? = null
+    open var textResizing: FontType? = null
     open var horizontalAlignment: UITextAlignment? = null
     open var verticalAlignment: UITextAlignment? = null
 
     open var fontFamily: UIFontFamily? = null
-    open var fontType: FontType? = null
+    open var fontFaceType: FontFaceType? = null
 
     open var fontColor: UIColor? = null
     open var fontSize: UIUnit<*>? = null
@@ -229,7 +258,7 @@ open class FontStyle : Style<FontStyle>() {
      */
     open var offsetBaseline: Boolean = true
 
-    override fun preUpdate(font: UIFont) {
+    override fun preCompose() {
         font.x = x ?: font.x
         font.y = y ?: font.y
         font.width = width ?: font.width
@@ -237,11 +266,11 @@ open class FontStyle : Style<FontStyle>() {
         font.anchor = anchor ?: font.anchor
     }
 
-    override fun update(composable: Composable?) {
+    override fun compose(composable: Composable?) {
         composable!!
         ifNotNull(fontFamily) {
             println("here")
-            actualFontName = "${fontFamily!!.familyName}-${fontType?.name?.lowercase()}"
+            actualFontName = "${fontFamily!!.familyName}-${fontFaceType?.name?.lowercase()}"
         }
         fontSize?.compute(composable, composable.width, composable.height, false)
         fontSpacing?.compute(composable, composable.width, composable.height, false)
@@ -260,7 +289,7 @@ open class FontStyle : Style<FontStyle>() {
             it.actualFontName = actualFontName
             null
         }
-        it.fontType = fontType
+        it.fontFaceType = fontFaceType
         it.fontColor = fontColor?.copy()
         it.fontSize = fontSize?.copy()
         it.fontSpacing = fontSpacing?.copy()
@@ -280,7 +309,7 @@ open class FontStyle : Style<FontStyle>() {
             verticalAlignment = other.verticalAlignment ?: verticalAlignment
             if (other.actualFontName != null) actualFontName = other.actualFontName
             fontFamily = other.fontFamily ?: fontFamily
-            fontType = other.fontType ?: fontType
+            fontFaceType = other.fontFaceType ?: fontFaceType
             fontColor = other.fontColor ?: fontColor
             fontSize = other.fontSize ?: fontSize
             fontSpacing = other.fontSpacing ?: fontSpacing
@@ -368,7 +397,7 @@ fun FontStyle.fontFamily(family: UIFontFamily) = apply {
     fontFamily = family
 }
 
-fun FontStyle.textResizing(resizing: TextResizing) = apply {
+fun FontStyle.fontType(resizing: FontType) = apply {
     textResizing = resizing
 }
 
@@ -377,8 +406,8 @@ fun FontStyle.fontAlignment(horizontalAlignment: UITextAlignment, verticalAlignm
     this.verticalAlignment = verticalAlignment
 }
 
-fun FontStyle.fontType(type: FontType) = apply {
-    fontType = type
+fun FontStyle.fontFaceType(type: FontFaceType) = apply {
+    fontFaceType = type
 }
 
 fun FontStyle.fontColor(color: UIColor) = apply {

@@ -4,11 +4,11 @@ import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.compute
-import net.prismclient.aether.ui.util.other.Property
-import net.prismclient.aether.ui.util.shorthands.ifNotNull
-import net.prismclient.aether.ui.util.shorthands.lerp
-import net.prismclient.aether.ui.util.shorthands.or
-import net.prismclient.aether.ui.util.shorthands.px
+import net.prismclient.aether.core.util.property.Property
+import net.prismclient.aether.core.util.shorthands.ifNotNull
+import net.prismclient.aether.core.util.shorthands.lerp
+import net.prismclient.aether.core.util.shorthands.or
+import net.prismclient.aether.core.util.shorthands.px
 
 /**
  * Padding is a property of [UIModifier] which represents the bounds of a component. When padding is added, the content size
@@ -24,7 +24,7 @@ open class Padding(
     var bottom: UIUnit<*>?,
     var left: UIUnit<*>?
 ) : Property<Padding> {
-    override fun update(composable: Composable?) {
+    override fun compose(composable: Composable?) {
         composable!!
         top?.compute(composable, true)
         right?.compute(composable, false)

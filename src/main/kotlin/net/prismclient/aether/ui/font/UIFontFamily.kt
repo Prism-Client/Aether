@@ -1,6 +1,6 @@
 package net.prismclient.aether.ui.font
 
-import net.prismclient.aether.ui.util.extensions.safeByteBuffer
+import net.prismclient.aether.core.util.extensions.safeByteBuffer
 import java.nio.ByteBuffer
 
 /**

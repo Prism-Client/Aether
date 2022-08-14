@@ -4,14 +4,10 @@ import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.type.solid.PixelUnit
 
 /**
- * [DynamicUnit] is a subtype of [UIUnit] for units which cannot be inferred immediately.
- *
- * For example, a unit which scales based on the size of the
- * content within it. Now, this isn't a big deal if all the [Composable]s within the
- * object are solid units, such as a [PixelUnit] which is known immediately. However,
- * if the unit scales based on say, the width of the object, then it has to be calculated
- * twice. In the case of [Composable]s, all solid (non-dynamic) units are calculated first, then
- * the dynamic units are calculated after the values of the solid units are known.
+ * Indicates to Aether that the unit is a [DynamicUnit]. Dynamic units, in essence, are units which rely on a property
+ * which **may** have not yet been calculated. For example, if a unit scales based on the children within it (such as a
+ * layout), the final size of the layout will not be known until the layout is updated once. To combat this, every
+ * property is set, and if a dynamic property is found, the layout will compose twice.
  *
  * @author sen
  * @since 1.0

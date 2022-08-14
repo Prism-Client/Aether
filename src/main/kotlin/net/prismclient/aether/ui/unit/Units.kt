@@ -1,14 +1,17 @@
 package net.prismclient.aether.ui.unit
 
 import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.util.other.Copyable
-import net.prismclient.aether.ui.util.shorthands.dp
+import net.prismclient.aether.core.util.property.Copyable
+import net.prismclient.aether.core.util.shorthands.dp
 
 /**
  * [UIUnit] is the superclass of all units, which represent an amount of pixels on the screen when
  * computed. It is used to describe the position, and size of components and shapes as well as other
  * pixel based properties. The provided generic value must be the class which is inheriting this class.
  * It is used for the interface [Copyable] so that the unit can be copied to be manipulated with later.
+ *
+ * Although editing the [cachedValue] externally is possible, and available to use, it is a risky operation
+ * instead, a new units should be allocated instead to represent a value if necessary.
  *
  * @author sen
  * @since 1.0
@@ -39,7 +42,7 @@ abstract class UIUnit<T : UIUnit<T>>(open var value: Float) : Copyable<T> {
  * @author sen
  * @since 1.0
  */
-internal class ResizeUnit : DynamicUnit<ResizeUnit>(-1f) {
+internal class ResizeUnit : DynamicUnit<ResizeUnit>(0f) {
     override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float = 0f
 
     override fun copy(): ResizeUnit = ResizeUnit()

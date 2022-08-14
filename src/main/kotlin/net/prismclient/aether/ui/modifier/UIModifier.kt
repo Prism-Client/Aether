@@ -8,17 +8,20 @@ import net.prismclient.aether.ui.composition.util.color
 import net.prismclient.aether.ui.composition.util.radius
 import net.prismclient.aether.ui.registry.UIRegistry
 import net.prismclient.aether.core.color.UIColor
+import net.prismclient.aether.core.util.shorthands.*
+import net.prismclient.aether.core.util.shorthands.ifNotNull
+import net.prismclient.aether.core.util.shorthands.lerp
+import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
 import net.prismclient.aether.ui.unit.other.Radius
 import net.prismclient.aether.ui.unit.type.dynamic.SizeUnit
-import net.prismclient.aether.ui.util.other.Animatable
-import net.prismclient.aether.ui.util.other.Copyable
-import net.prismclient.aether.ui.util.other.Mergable
+import net.prismclient.aether.core.util.property.Animatable
+import net.prismclient.aether.core.util.property.Copyable
+import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.ui.alignment.UIAlignment.*
-import net.prismclient.aether.ui.util.shorthands.*
 
 /**
  * [UIModifier] contains information such as the position, background, padding and other properties
@@ -51,10 +54,10 @@ abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animata
     /**
      * Invoked prior to updating general properties of the composable, such as the position and size.
      */
-    open fun preUpdate(component: Composable) {}
+    open fun preCompose(component: Composable) {}
 
-    open fun update(component: Composable) {
-        background?.update(component)
+    open fun compose(component: Composable) {
+        background?.compose(component)
     }
 
     /**

@@ -6,9 +6,8 @@ import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.screen.UIScreen
-import net.prismclient.aether.ui.util.other.MouseButtonType
-import net.prismclient.aether.ui.util.shorthands.notNull
-import net.prismclient.aether.ui.util.shorthands.rel
+import net.prismclient.aether.core.util.other.MouseButtonType
+import net.prismclient.aether.core.util.shorthands.notNull
 
 /**
  * [Aether]

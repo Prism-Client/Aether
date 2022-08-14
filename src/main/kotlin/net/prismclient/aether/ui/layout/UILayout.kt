@@ -4,7 +4,7 @@ import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.modifier.UIModifier
-import net.prismclient.aether.ui.util.other.ComposableGroup
+import net.prismclient.aether.core.util.other.ComposableGroup
 
 /**
  * [UILayout] is a composable used for controlling a group of components in a specific way. For example,
@@ -14,18 +14,19 @@ import net.prismclient.aether.ui.util.other.ComposableGroup
  *
  * @param overrideChildren When true, the children's property overridden is enabled during the compose stage.
  */
-abstract class UILayout(modifier: UIModifier<*>, protected val overrideChildren: Boolean) : Composable(modifier), ComposableGroup {
+abstract class UILayout(modifier: UIModifier<*>, protected val overrideChildren: Boolean) : Composable(modifier),
+    ComposableGroup {
     override val children: ArrayList<Composable> = arrayListOf()
 
     /**
      * The size of the layout which is set after [updateLayout] is invoked.
      */
-    lateinit var layoutSize: Size
+    open lateinit var layoutSize: Size
 
     override fun compose() {
-        modifier.preUpdate(this)
-        updatePosition()
-        updateSize()
+        modifier.preCompose(this)
+        composeSize()
+        composePosition()
         // Invoke the updateUnits function after
         // calculating the relevant properties of this.
         updateUnits()
@@ -39,14 +40,13 @@ abstract class UILayout(modifier: UIModifier<*>, protected val overrideChildren:
         layoutSize = updateLayout()
 
         if (dynamic) {
-            println("I'm dynamic!")
             // Update the units after calculating the potential size and
             // re-update the layout as updateUnits probably changed something
             updateUnits()
             updateLayout()
         }
 
-        modifier.update(this)
+        modifier.compose(this)
     }
 
     /**

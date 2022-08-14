@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.util.other
+package net.prismclient.aether.core.util.other
 
 /**
  * [MouseButtonType] represents the buttons on the mouse.

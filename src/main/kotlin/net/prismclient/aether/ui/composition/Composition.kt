@@ -5,8 +5,8 @@ import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.renderer.UIFramebuffer
-import net.prismclient.aether.ui.util.other.ComposableGroup
-import net.prismclient.aether.ui.util.shorthands.or
+import net.prismclient.aether.core.util.other.ComposableGroup
+import net.prismclient.aether.core.util.shorthands.or
 
 // TODO: disable optimize composition
 // TODO: Limit composition framerate
@@ -45,11 +45,11 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
 
     override fun compose() {
         if (!composed || dynamic) {
-            modifier.preUpdate(this)
+            modifier.preCompose(this)
 
-            updateSize()
-            updateAnchor()
-            updatePosition()
+            composeSize()
+            composeAnchor()
+            composePosition()
 
             // Compose all static components
             children.filterNot(Composable::dynamic).forEach(Composable::compose)
@@ -57,7 +57,7 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
             // Compose all dynamic components after the initial composition has been created.
 //            if (dynamic)
 //                children.filter(Composable::dynamic).forEach(Composable::compose)
-            modifier.update(this)
+            modifier.compose(this)
             rasterize()
         }
     }

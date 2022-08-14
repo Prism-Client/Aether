@@ -21,5 +21,5 @@ open class PixelUnit(value: Float) : UIUnit<PixelUnit>(value) {
 
     override fun copy(): PixelUnit = PixelUnit(value)
 
-    override fun toString(): String = "Pixel($value)"
+    override fun toString(): String = "Pixel($value, $cachedValue)"
 }
