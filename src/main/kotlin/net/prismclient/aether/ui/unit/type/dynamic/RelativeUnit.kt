@@ -24,5 +24,5 @@ open class RelativeUnit(value: Float) : UIUnit<RelativeUnit>(value) {
 
     override fun copy(): RelativeUnit = RelativeUnit(value)
 
-    override fun toString(): String = "Relative($value)"
+    override fun toString(): String = "Relative($value, $cachedValue)"
 }

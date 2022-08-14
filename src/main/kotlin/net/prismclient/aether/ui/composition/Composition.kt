@@ -6,6 +6,7 @@ import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.core.util.other.ComposableGroup
+import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.core.util.shorthands.or
 
 // TODO: disable optimize composition
@@ -23,8 +24,10 @@ import net.prismclient.aether.core.util.shorthands.or
 open class Composition(val name: String, modifier: CompositionModifier) : Composable(modifier), ComposableGroup {
     override val modifier: CompositionModifier get() = super.modifier as CompositionModifier
     override val children: ArrayList<Composable> = arrayListOf()
-    override val parentWidth: Float = parent?.width ?: if (compositionRef == null || compositionRef == this) Aether.instance.displayWidth else composition.width
-    override val parentHeight: Float = parent?.height ?: if (compositionRef == null || compositionRef == this) Aether.instance.displayHeight else composition.height
+    override val parentWidth: Float = Aether.instance.displayWidth
+    override val parentHeight: Float = Aether.instance.displayHeight
+//    override val parentWidth: Float = parent?.width ?: if (compositionRef == null || compositionRef == this) Aether.instance.displayWidth else composition.width
+//    override val parentHeight: Float = parent?.height ?: if (compositionRef == null || compositionRef == this) Aether.instance.displayHeight else composition.height
 
     /**
      * Returns the parent composition or this.
@@ -44,12 +47,12 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
     // -- Core -- //
 
     override fun compose() {
-        if (!composed || dynamic) {
+        //if (!composed || dynamic) {
             modifier.preCompose(this)
 
             composeSize()
-            composeAnchor()
             composePosition()
+        println("asd ${modifier.x.dp}")
 
             // Compose all static components
             children.filterNot(Composable::dynamic).forEach(Composable::compose)
@@ -59,7 +62,7 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
 //                children.filter(Composable::dynamic).forEach(Composable::compose)
             modifier.compose(this)
             rasterize()
-        }
+//        }
     }
 
     override fun render() {

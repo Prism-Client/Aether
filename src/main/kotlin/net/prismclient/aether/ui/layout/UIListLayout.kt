@@ -38,11 +38,11 @@ open class UIListLayout constructor(
                 child.overridden = true
 
                 if (direction == LayoutDirection.HORIZONTAL) {
-                    child.x = x //+ component.marginTop
-                    x += child.width + spacing//component.relHeight + component.marginTop + component.marginBottom + spacing
+                    child.x = x + child.modifier.padding?.left.dp
+                    x += child.relWidth + spacing
                 } else if (direction == LayoutDirection.VERTICAL) {
-                    child.y = y
-                    y += child.height + spacing
+                    child.y = y + child.modifier.padding?.top.dp
+                    y += child.relHeight + spacing
                 }
                 child.compose()
 
@@ -50,8 +50,6 @@ open class UIListLayout constructor(
                 h = h.coerceAtLeast(child.y + child.height - this.y)
             }
         } else { TODO("Reverse order direction") }
-
-        println("Layout size: ($w, $h)")
 
         return Size(w, h)
     }

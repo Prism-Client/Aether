@@ -94,6 +94,8 @@ abstract class Composable(open val modifier: UIModifier<*>) {
         modifier.x?.compute(false)
         modifier.y?.compute(true)
 
+        println(modifier.x)
+
         if (!overridden) {
             x = modifier.x.dp - modifier.anchorPoint?.x.dp + parentX
             y = modifier.y.dp - modifier.anchorPoint?.y.dp + parentY
@@ -124,7 +126,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     }
 
     open fun composeAnchor() {
-        modifier.anchorPoint?.update(this, modifier.width.dp, modifier.height.dp)
+        modifier.anchorPoint?.update(this, width, height)
     }
 
     open fun composePadding() {
@@ -132,7 +134,8 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     }
 
     /**
-     * Invoked when this is to be composed. Units and other properties should be initialized at this point.
+     * todo be doced
+     *
      */
     abstract fun compose()
 

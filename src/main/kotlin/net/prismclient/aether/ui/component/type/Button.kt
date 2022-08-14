@@ -24,12 +24,10 @@ open class UIButton internal constructor(
         }
 
     override fun update() {
-        println("Anchor before: ${modifier.anchorPoint}")
         font.actualText = text
         font.compose(this)
         if (dynamic)
             composePosition()
-        println("Anchor after: ${modifier.anchorPoint}")
     }
 
     override fun renderComponent() {
