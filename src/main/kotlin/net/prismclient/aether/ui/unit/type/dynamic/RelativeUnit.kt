@@ -16,9 +16,9 @@ import net.prismclient.aether.ui.unit.UIUnit
 open class RelativeUnit(value: Float) : UIUnit<RelativeUnit>(value) {
     override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float {
         return if (!yaxis) {
-            composable?.parentWidth ?: Aether.instance.displayWidth
+            composable?.parentWidth() ?: Aether.instance.displayWidth
         } else {
-            composable?.parentHeight ?: Aether.instance.displayHeight
+            composable?.parentHeight() ?: Aether.instance.displayHeight
         } * value
     }
 

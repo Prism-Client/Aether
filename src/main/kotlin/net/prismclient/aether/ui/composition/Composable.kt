@@ -4,6 +4,8 @@ import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.core.util.shorthands.dp
+import net.prismclient.aether.core.util.shorthands.toPx
+import kotlin.math.roundToInt
 
 /**
  * [Composable] is the superclass for all UI objects within Aether. Anything that extends this class
@@ -43,26 +45,6 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     open var parent: Composable? = null
 
     /**
-     * Returns the x position of the [parent] or 0.
-     */
-    open val parentX: Float get() = parent?.x ?: 0f
-
-    /**
-     * Returns the y position of the [parent] or 0.
-     */
-    open val parentY: Float get() = parent?.y ?: 0f
-
-    /**
-     * Returns the width of [parent], or the width of the composition.
-     */
-    open val parentWidth: Float get() = parent?.width ?: composition.width
-
-    /**
-     * Returns the height of [parent], or the height of the composition.
-     */
-    open val parentHeight: Float get() = parent?.height ?: composition.height
-
-    /**
      * Returns true if this has been composed at least once.
      */
     open var composed: Boolean = false
@@ -77,14 +59,22 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     // bounds of the composable (padding applied) which most content scales to.
 
     open var x: Float = 0f
+        set(value) { field = value.toPx }
     open var y: Float = 0f
+        set(value) { field = value.toPx }
     open var width: Float = 0f
+        set(value) { field = value.toPx }
     open var height: Float = 0f
+        set(value) { field = value.toPx }
 
     open var relX: Float = 0f
+        set(value) { field = value.toPx }
     open var relY: Float = 0f
+        set(value) { field = value.toPx }
     open var relWidth: Float = 0f
+        set(value) { field = value.toPx }
     open var relHeight: Float = 0f
+        set(value) { field = value.toPx }
 
     /**
      * Updates the anchor point and computes the [UIModifier.x] and [UIModifier.y] values and sets them to [x] and [y].
@@ -94,11 +84,9 @@ abstract class Composable(open val modifier: UIModifier<*>) {
         modifier.x?.compute(false)
         modifier.y?.compute(true)
 
-        println(modifier.x)
-
         if (!overridden) {
-            x = modifier.x.dp - modifier.anchorPoint?.x.dp + parentX
-            y = modifier.y.dp - modifier.anchorPoint?.y.dp + parentY
+            x = modifier.x.dp - modifier.anchorPoint?.x.dp + parentX()
+            y = modifier.y.dp - modifier.anchorPoint?.y.dp + parentY()
         }
         composeBounds()
     }
@@ -152,12 +140,34 @@ abstract class Composable(open val modifier: UIModifier<*>) {
 //        composition.recompose()
     }
 
+    // -- Util -- //
+
+    /**
+     * Returns the x position of the [parent] or 0.
+     */
+    open fun parentX(): Float = parent?.x ?: 0f
+
+    /**
+     * Returns the y position of the [parent] or 0.
+     */
+    open fun parentY(): Float = parent?.y ?: 0f
+
+    /**
+     * Returns the width of [parent], or the width of the composition.
+     */
+    open fun parentWidth(): Float = parent?.width ?: composition.width
+
+    /**
+     * Returns the height of [parent], or the height of the composition.
+     */
+    open fun parentHeight(): Float = parent?.height ?: composition.height
+
     /**
      * Computes the given unit with the [parentWidth] and [parentHeight].
      */
     @Suppress
     protected fun UIUnit<*>?.compute(yaxis: Boolean) {
-        this?.compute(this@Composable, parentWidth, parentHeight, yaxis)
+        this?.compute(this@Composable, parentWidth(), parentHeight(), yaxis)
     }
 }
 

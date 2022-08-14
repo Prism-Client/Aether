@@ -38,32 +38,32 @@ class TestScreen : UIScreen {
                 .control(UIAlignment.CENTER)
 //                .optimizeComposition = false
 
-//            val layout = component(UIListLayout(
-//                LayoutDirection.VERTICAL,
-//                LayoutOrder.FIRST,
-//                10.px,
-//                modifier = Modifier()
-//                    .control(UIAlignment.CENTER)
-//                    .size(250, 250)
-//                    .anchor(UIAlignment.CENTER)
-//                    .backgroundColor(RGBA(255, 255, 255).rgb)
-//                    .backgroundRadius(9.radius)
-//            )) {
-//                for (i in 0..2) {
-//                    button(
-//                        text = "AgdCiLMmzjt ${i * 10}",
-//                        modifier = Modifier()
-//                            .control(UIAlignment.CENTER)
-//                            .backgroundColor(0x29CC97.rgb)
-//                            .backgroundRadius(9.radius)
-//                            .padding(10, 0, 10, 0)
-//                        ,
-//                        fontStyle = FontStyle()
-//                            .fontSize(16.px)
-//                            .fontColor(RGBA(255, 255, 255).rgb)
-//                    )
-//                }
-//            }
+            val layout = component(UIListLayout(
+                LayoutDirection.VERTICAL,
+                LayoutOrder.FIRST,
+                10.px,
+                modifier = Modifier()
+                    .control(UIAlignment.CENTER)
+                    .size(250, 250)
+                    .anchor(UIAlignment.CENTER)
+                    .backgroundColor(RGBA(255, 255, 255).rgb)
+                    .backgroundRadius(9.radius)
+            )) {
+                for (i in 0..2) {
+                    button(
+                        text = "AgdCiLMmzjt ${i * 10}",
+                        modifier = Modifier()
+                            .control(UIAlignment.CENTER)
+                            .backgroundColor(0x29CC97.rgb)
+                            .backgroundRadius(9.radius)
+                            .padding(10, 0, 10, 0)
+                        ,
+                        fontStyle = FontStyle()
+                            .fontSize(16.px)
+                            .fontColor(RGBA(255, 255, 255).rgb)
+                    )
+                }
+            }
         }
     }
 }

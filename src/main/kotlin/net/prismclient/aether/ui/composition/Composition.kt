@@ -24,10 +24,9 @@ import net.prismclient.aether.core.util.shorthands.or
 open class Composition(val name: String, modifier: CompositionModifier) : Composable(modifier), ComposableGroup {
     override val modifier: CompositionModifier get() = super.modifier as CompositionModifier
     override val children: ArrayList<Composable> = arrayListOf()
-    override val parentWidth: Float = Aether.instance.displayWidth
-    override val parentHeight: Float = Aether.instance.displayHeight
-//    override val parentWidth: Float = parent?.width ?: if (compositionRef == null || compositionRef == this) Aether.instance.displayWidth else composition.width
-//    override val parentHeight: Float = parent?.height ?: if (compositionRef == null || compositionRef == this) Aether.instance.displayHeight else composition.height
+
+    override fun parentWidth(): Float = Aether.instance.displayWidth
+    override fun parentHeight(): Float = Aether.instance.displayHeight
 
     /**
      * Returns the parent composition or this.
@@ -52,7 +51,6 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
 
             composeSize()
             composePosition()
-        println("asd ${modifier.x.dp}")
 
             // Compose all static components
             children.filterNot(Composable::dynamic).forEach(Composable::compose)

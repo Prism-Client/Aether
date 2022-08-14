@@ -52,5 +52,14 @@ internal fun UIUnit<*>.lerp(initial: UIUnit<*>?, start: UIUnit<*>?, end: UIUnit<
 }
 
 // -- Other -- //
+
+/**
+ * Creates a deep copy of the [Copyable] or null if it is null.
+ */
 @Suppress("unchecked_cast")
 internal inline val <T : Copyable<*>> T?.copy: T get() = this?.copy() as T
+
+/**
+ * Rounds the float to the nearest pixel.aaa
+ */
+internal inline val Float.toPx: Float get() = this.roundToInt().toFloat()
