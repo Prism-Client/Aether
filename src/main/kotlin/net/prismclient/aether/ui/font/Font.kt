@@ -98,7 +98,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape(), Copyable<UIFon
         super.compose(composable)
         style.compose(composable)
         updateFont()
-        anchor?.update(composable, width.dp, height.dp)
+        anchor?.update(composable, fontMetrics.maxX - fontMetrics.minX, fontMetrics.maxY - fontMetrics.minY)// width.dp, height.dp)
     }
 
     /**
@@ -144,7 +144,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape(), Copyable<UIFon
 //                activeComposable.
 //                width?.cachedValue = fontWidth()
 //                height?.cachedValue = fontHeight()
-                false
+                true
             }
             else -> false
         }
@@ -176,8 +176,8 @@ open class UIFont(open val style: FontStyle) : ComposableShape(), Copyable<UIFon
             font(
                 style.actualFontName ?: "",
                 style.fontSize.dp,
-                horizontalAlignment,
-                verticalAlignment,
+                LEFT,
+                TOP,
                 style.fontSpacing.dp
             )
             when (style.textResizing) {

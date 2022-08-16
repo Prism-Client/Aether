@@ -86,7 +86,6 @@ object Runner {
                 framebufferWidth = width
                 framebufferHeight = height
                 core!!.update(width / contentScaleX, height / contentScaleY, max(contentScaleX, contentScaleY))
-                println("Resized to: $framebufferWidth, $framebufferHeight")
             }
         }
 

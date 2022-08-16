@@ -15,6 +15,7 @@ import org.lwjgl.stb.STBImage
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
+import kotlin.math.max
 
 /**
  * Aether allows for the ability to provide your own rendering system. However, you might not
@@ -348,6 +349,8 @@ object Renderer : UIRenderer {
         fontBounds[2] = maxx
         fontBounds[3] = maxy
         fontBounds[4] = maxx
+
+        nvgTextMetrics(ctx, ascender, descender, null)
 
         return nrows
     }

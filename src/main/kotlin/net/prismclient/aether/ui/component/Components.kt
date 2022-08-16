@@ -10,6 +10,7 @@ import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.shorthands.Block
+import net.prismclient.aether.ui.component.type.Label
 
 /**
  * Used to encapsulate the values
@@ -49,10 +50,16 @@ inline fun compose(name: String, modifier: CompositionModifier = CompositionModi
     return composition
 }
 
-@JvmOverloads
 inline fun button(
     text: String,
     modifier: UIModifier<*> = Modifier(),
     fontStyle: FontStyle = FontStyle(),
     block: Block<UIButton> = {}
 ): UIButton = component(UIButton(text, modifier, fontStyle), block)
+
+inline fun label(
+    text: String,
+    modifier: UIModifier<*> = Modifier(),
+    fontStyle: FontStyle = FontStyle(),
+    block: Block<Label> = {}
+): Label = component(Label(text, modifier, fontStyle), block)

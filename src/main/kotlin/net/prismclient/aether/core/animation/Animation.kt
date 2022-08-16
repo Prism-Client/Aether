@@ -6,6 +6,7 @@ enum class AnimationDirection {
     OBVERSE, REVERSE
 }
 
+// TODO: Determine animation type
 class Animation<C : UIComponent<C>>(val component: C) {
 
     var paused: Boolean = false

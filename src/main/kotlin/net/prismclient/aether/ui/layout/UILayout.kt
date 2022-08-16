@@ -5,6 +5,14 @@ import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.core.util.other.ComposableGroup
+import net.prismclient.aether.core.util.shorthands.ifNotNull
+import net.prismclient.aether.core.util.shorthands.lerp
+import net.prismclient.aether.core.util.shorthands.or
+import net.prismclient.aether.core.util.shorthands.px
+import net.prismclient.aether.ui.modifier.DefaultModifier
+import net.prismclient.aether.ui.unit.other.AnchorPoint
+import net.prismclient.aether.ui.unit.other.Margin
+import net.prismclient.aether.ui.unit.other.Padding
 
 /**
  * [UILayout] is a composable used for controlling a group of components in a specific way. For example,
@@ -102,4 +110,78 @@ abstract class UILayout(modifier: UIModifier<*>, protected val overrideChildren:
             component.parent = null
         children.remove(component)
     }
+}
+
+/**
+ * [LayoutModifier] the [UIModifier] type required for [UILayout]s. It is an abstract class, and holds the
+ * properties for deciding what to do with overflowing content within layouts. [T] is expected to be the class
+ * which extends this.
+ *
+ * @author sen
+ * @since 1.0
+ * @see DefaultLayoutModifier
+ */
+abstract class LayoutModifier<T : LayoutModifier<T>> : UIModifier<T>() {
+
+}
+
+class DefaultLayoutModifier : LayoutModifier<DefaultLayoutModifier>() {
+    override fun copy(): DefaultLayoutModifier = DefaultLayoutModifier().also {
+        it.x = x?.copy()
+        it.y = y?.copy()
+        it.width = width?.copy()
+        it.height = height?.copy()
+        it.anchorPoint = anchorPoint?.copy()
+        it.padding = padding?.copy()
+        it.margin = margin?.copy()
+        it.background = background?.copy()
+        TODO("Copy not yet implemented.")
+    }
+
+    override fun merge(other: DefaultLayoutModifier?) {
+        if (other != null) {
+            x = other.x or x
+            y = other.y or y
+            width = other.width or width
+            height = other.height or height
+            anchorPoint = other.anchorPoint or anchorPoint
+            padding = other.padding or padding
+            margin = other.margin or margin
+            background = other.background or background
+        }
+        TODO("Merge not yet implemented.")
+    }
+
+    override fun animate(start: DefaultLayoutModifier?, end: DefaultLayoutModifier?, fraction: Float) {
+        ifNotNull(start?.x, end?.x) {
+            x = x ?: 0.px
+            x!!.lerp(x, start?.x, end?.x, fraction)
+        }
+        ifNotNull(start?.y, end?.y) {
+            y = y ?: 0.px
+            y!!.lerp(y, start?.y, end?.y, fraction)
+        }
+        ifNotNull(start?.width, end?.width) {
+            width = width ?: 0.px
+            width!!.lerp(width, start?.width, end?.width, fraction)
+        }
+        ifNotNull(start?.height, end?.height) {
+            height = height ?: 0.px
+            height!!.lerp(height, start?.height, end?.height, fraction)
+        }
+        ifNotNull(start?.anchorPoint, end?.anchorPoint) {
+            anchorPoint = anchorPoint ?: AnchorPoint()
+            anchorPoint!!.animate(start?.anchorPoint, end?.anchorPoint, fraction)
+        }
+        ifNotNull(start?.padding, end?.padding) {
+            padding = padding ?: Padding(null, null, null, null)
+            padding!!.animate(start?.padding, end?.padding, fraction)
+        }
+        ifNotNull(start?.margin, end?.margin) {
+            margin = margin ?: Margin(null, null, null, null)
+            margin!!.animate(start?.margin, end?.margin, fraction)
+        }
+        TODO("Animate not yet implemented.")
+    }
+
 }

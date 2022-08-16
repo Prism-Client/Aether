@@ -24,16 +24,17 @@ import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.ui.alignment.UIAlignment.*
 
 /**
- * [UIModifier] contains information such as the position, background, padding and other properties
- * that reflect the component that this is passed to. [UIModifier] is an inheritable class where custom
+ * [UIModifier] contains information such as the position, background, padding and other properties that
+ * reflect the component that this is passed to. [UIModifier] is an inheritable class where custom
  * properties and effects can be added if the existing API is not enough. If Modifier is inherited, the
- * functions [UIModifier.copy], [UIModifier.merge] and [UIModifier.animate] should
- * be overriden to avoid unwanted behavior.
+ * functions [UIModifier.copy], [UIModifier.merge] and [UIModifier.animate] should be overriden to avoid
+ * unwanted behavior.
  *
  * @author sen
  * @since 1.0
+ * @see DefaultModifier
  */
-@Suppress("unchecked_cast", "LeakingThis")
+@Suppress("Unchecked_Cast", "LeakingThis")
 abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animatable<T> {
     open var x: UIUnit<*>? = null
     open var y: UIUnit<*>? = null
@@ -249,19 +250,21 @@ abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animata
 }
 
 /**
- * Returns a new instance of the default implementation of [UIModifier],
+ * Returns a new instance of the default implementation of [UIModifier] : [DefaultModifier].
  */
-@Suppress("Nothing_to_Inline", "FunctionName")
-inline fun Modifier(): DefaultModifier = DefaultModifier()
+@Suppress("FunctionName")
+fun Modifier(): DefaultModifier = DefaultModifier()
 
 /**
- * The default implementation of [UIModifier]. The copy, merge and animate functions are
- * overridden to supply for the default properties of [UIModifier].
+ * The default implementation of [UIModifier]. No unique properties are added, but the copy, merge and animate functions
+ * are overridden to supply the required functions to [UIModifier].
  * 
  * @since 1.0
  * @author sen
+ * @see UIModifier
+ * @see Modifier
  */
-open class DefaultModifier : UIModifier<DefaultModifier>() {
+class DefaultModifier : UIModifier<DefaultModifier>() {
     override fun copy(): DefaultModifier = DefaultModifier().also {
         it.x = x?.copy()
         it.y = y?.copy()

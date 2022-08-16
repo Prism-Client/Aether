@@ -4,7 +4,6 @@ import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.core.util.shorthands.dp
-import net.prismclient.aether.core.util.shorthands.toPx
 import kotlin.math.roundToInt
 
 /**
@@ -59,22 +58,14 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     // bounds of the composable (padding applied) which most content scales to.
 
     open var x: Float = 0f
-        set(value) { field = value.toPx }
     open var y: Float = 0f
-        set(value) { field = value.toPx }
     open var width: Float = 0f
-        set(value) { field = value.toPx }
     open var height: Float = 0f
-        set(value) { field = value.toPx }
 
     open var relX: Float = 0f
-        set(value) { field = value.toPx }
     open var relY: Float = 0f
-        set(value) { field = value.toPx }
     open var relWidth: Float = 0f
-        set(value) { field = value.toPx }
     open var relHeight: Float = 0f
-        set(value) { field = value.toPx }
 
     /**
      * Updates the anchor point and computes the [UIModifier.x] and [UIModifier.y] values and sets them to [x] and [y].
@@ -85,8 +76,8 @@ abstract class Composable(open val modifier: UIModifier<*>) {
         modifier.y?.compute(true)
 
         if (!overridden) {
-            x = modifier.x.dp - modifier.anchorPoint?.x.dp + parentX()
-            y = modifier.y.dp - modifier.anchorPoint?.y.dp + parentY()
+            x = (modifier.x.dp - modifier.anchorPoint?.x.dp + parentX()).roundToInt().toFloat()
+            y = (modifier.y.dp - modifier.anchorPoint?.y.dp + parentY()).roundToInt().toFloat()
         }
         composeBounds()
     }
@@ -99,22 +90,22 @@ abstract class Composable(open val modifier: UIModifier<*>) {
         composePadding()
         modifier.width?.compute(false)
         modifier.height?.compute(true)
-        width = modifier.width.dp
-        height = modifier.height.dp
+        width = modifier.width.dp.roundToInt().toFloat()
+        height = modifier.height.dp.roundToInt().toFloat()
     }
 
     /**
      * Updates the relative x, y, width and height of this based on the padding.
      */
     open fun composeBounds() {
-        relX = x - modifier.padding?.left.dp
-        relY = y - modifier.padding?.top.dp
-        relWidth = width + modifier.padding?.right.dp + modifier.padding?.left.dp
-        relHeight = height + modifier.padding?.bottom.dp + modifier.padding?.top.dp
+        relX = (x - modifier.padding?.left.dp).roundToInt().toFloat()
+        relY = (y - modifier.padding?.top.dp).roundToInt().toFloat()
+        relWidth = (width + modifier.padding?.right.dp + modifier.padding?.left.dp).roundToInt().toFloat()
+        relHeight = (height + modifier.padding?.bottom.dp + modifier.padding?.top.dp).roundToInt().toFloat()
     }
 
     open fun composeAnchor() {
-        modifier.anchorPoint?.update(this, width, height)
+        modifier.anchorPoint?.update(this, width.toFloat(), height.toFloat())
     }
 
     open fun composePadding() {
@@ -167,7 +158,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      */
     @Suppress
     protected fun UIUnit<*>?.compute(yaxis: Boolean) {
-        this?.compute(this@Composable, parentWidth(), parentHeight(), yaxis)
+        this?.compute(this@Composable, parentWidth().toFloat(), parentHeight().toFloat(), yaxis)
     }
 }
 

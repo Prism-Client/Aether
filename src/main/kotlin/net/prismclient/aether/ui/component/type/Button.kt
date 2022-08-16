@@ -21,6 +21,7 @@ open class UIButton internal constructor(
         set(value) {
             field = value
             font.actualText = value
+            // TODO: compose update
         }
 
     override fun update() {
