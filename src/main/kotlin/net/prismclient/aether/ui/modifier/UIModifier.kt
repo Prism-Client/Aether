@@ -28,14 +28,15 @@ import net.prismclient.aether.ui.alignment.UIAlignment.*
  * reflect the component that this is passed to. [UIModifier] is an inheritable class where custom
  * properties and effects can be added if the existing API is not enough. If Modifier is inherited, the
  * functions [UIModifier.copy], [UIModifier.merge] and [UIModifier.animate] should be overriden to avoid
- * unwanted behavior.
+ * unwanted behavior. The second generic type, [C] represents the a [Composable] or a subclass of it which
+ * can be expected from the functions of this.
  *
  * @author sen
  * @since 1.0
  * @see DefaultModifier
  */
 @Suppress("Unchecked_Cast", "LeakingThis")
-abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animatable<T> {
+abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animatable<M> {
     open var x: UIUnit<*>? = null
     open var y: UIUnit<*>? = null
     open var width: UIUnit<*>? = null
@@ -64,11 +65,11 @@ abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animata
     /**
      * Merges the given modifier from [UIRegistry] into this, if not null.
      */
-    open fun applyModifier(name: String): T {
+    open fun applyModifier(name: String): M {
         val activeModifier = UIRegistry.obtainModifier(name)
         // Apply the properties of the active modifier if not null
-        if (activeModifier != null) merge(activeModifier as T)
-        return this as T
+        if (activeModifier != null) merge(activeModifier as M)
+        return this as M
     }
 
     /**
@@ -87,42 +88,42 @@ abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animata
     /**
      * Adjusts the x of this to the given [value].
      */
-    fun x(value: UIUnit<*>): T {
+    fun x(value: UIUnit<*>): M {
         x = value
-        return this as T
+        return this as M
     }
 
     /**
      * Adjusts the y of this to the given [value].
      */
-    fun y(value: UIUnit<*>): T {
+    fun y(value: UIUnit<*>): M {
         y = value
-        return this as T
+        return this as M
     }
 
     /**
      * Adjusts the width of this to the given [value].
      */
-    fun width(value: UIUnit<*>): T {
+    fun width(value: UIUnit<*>): M {
         width = value
-        return this as T
+        return this as M
     }
 
     /**
      * Adjusts the height of this to the given [value].
      */
-    fun height(value: UIUnit<*>) : T {
+    fun height(value: UIUnit<*>) : M {
         height = value
-        return this as T
+        return this as M
     }
 
     /**
      * Adjusts the position of this Modifier<*> to the given [x] and [y] coordinate units.
      */
-    fun position(x: UIUnit<*>, y: UIUnit<*>): T {
+    fun position(x: UIUnit<*>, y: UIUnit<*>): M {
         this.x = x
         this.y = y
-        return this as T
+        return this as M
     }
 
     /**
@@ -133,10 +134,10 @@ abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animata
     /**
      * Adjusts the size of this Modifier<*> to the given [width] and [height] units.
      */
-    fun size(width: UIUnit<*>, height: UIUnit<*>): T {
+    fun size(width: UIUnit<*>, height: UIUnit<*>): M {
         this.width = width
         this.height = height
-        return this as T
+        return this as M
     }
 
     /**
@@ -147,12 +148,12 @@ abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animata
     /**
      * Constrains this Modifier<*> to be within the bounds of the given units.
      */
-    fun constrain(x: UIUnit<*>, y: UIUnit<*>, width: UIUnit<*>, height: UIUnit<*>): T {
+    fun constrain(x: UIUnit<*>, y: UIUnit<*>, width: UIUnit<*>, height: UIUnit<*>): M {
         this.x = x
         this.y = y
         this.width = width
         this.height = height
-        return this as T
+        return this as M
     }
 
     /**
@@ -166,10 +167,10 @@ abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animata
      *
      * @see SizeUnit
      */
-    fun anchor(alignment: UIAlignment): T {
+    fun anchor(alignment: UIAlignment): M {
         anchorPoint = anchorPoint ?: AnchorPoint()
         anchorPoint!!.align(alignment)
-        return this as T
+        return this as M
     }
 
     /**
@@ -177,17 +178,17 @@ abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animata
      *
      * @see SizeUnit
      */
-    fun anchor(x: UIUnit<*>, y: UIUnit<*>): T {
+    fun anchor(x: UIUnit<*>, y: UIUnit<*>): M {
         anchorPoint = anchorPoint ?: AnchorPoint()
         anchorPoint!!.x = x
         anchorPoint!!.y = y
-        return this as T
+        return this as M
     }
 
     /**
      * Aligns and positions this Modifier<*> to the given [alignment] relative to its parent.
      */
-    fun control(alignment: UIAlignment): T {
+    fun control(alignment: UIAlignment): M {
         anchor(alignment)
         x = when (alignment) {
             TOPCENTER, CENTER, BOTTOMCENTER -> 0.5
@@ -199,15 +200,15 @@ abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animata
             BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT -> 1.0
             else -> 0f
         }.rel
-        return this as T
+        return this as M
     }
 
     /**
      * Sets the padding of this Modifier<*> to the given units.
      */
-    fun padding(top: UIUnit<*>?, right: UIUnit<*>?, bottom: UIUnit<*>?, left: UIUnit<*>?): T {
+    fun padding(top: UIUnit<*>?, right: UIUnit<*>?, bottom: UIUnit<*>?, left: UIUnit<*>?): M {
         padding = Padding(top, right, bottom, left)
-        return this as T
+        return this as M
     }
 
     /**
@@ -219,9 +220,9 @@ abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animata
     /**
      * Sets the margin of this Modifier<*> to the given units.
      */
-    fun margin(top: UIUnit<*>?, right: UIUnit<*>?, bottom: UIUnit<*>?, left: UIUnit<*>?): T {
+    fun margin(top: UIUnit<*>?, right: UIUnit<*>?, bottom: UIUnit<*>?, left: UIUnit<*>?): M {
         margin = Margin(top, right, bottom, left)
-        return this as T
+        return this as M
     }
 
     /**
@@ -233,19 +234,19 @@ abstract class UIModifier<T : UIModifier<T>> : Copyable<T>, Mergable<T>, Animata
     /**
      * Sets the background color of this [Modifier] to the given [color]. A background is allocated if none is set.
      */
-    fun backgroundColor(color: UIColor): T {
+    fun backgroundColor(color: UIColor): M {
         background = background ?: UIBackground()
         background!!.color(color)
-        return this as T
+        return this as M
     }
 
     /**
      * Sets the background radius of this [Modifier] to the given [radius]. A background is allocated if none is set.
      */
-    fun backgroundRadius(radius: Radius): T {
+    fun backgroundRadius(radius: Radius): M {
         background = background ?: UIBackground()
         background!!.radius(radius)
-        return this as T
+        return this as M
     }
 }
 

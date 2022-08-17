@@ -18,7 +18,7 @@ import net.prismclient.aether.core.util.property.UIProperty
  * @author sen
  * @since 1.0
  */
-open class UIBackground : ComposableShape(), UIProperty<UIBackground> {
+open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground> {
     override var width: UIUnit<*>? = 1.crel
     override var height: UIUnit<*>? = 1.crel
 

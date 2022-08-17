@@ -12,6 +12,7 @@ import net.prismclient.aether.core.util.shorthands.or
 // TODO: disable optimize composition
 // TODO: Limit composition framerate
 // TODO: nested compositions
+// TODO: Remove the disableOptimization removing fbo
 /**
  * A composition is a group of components which fills a portion or full area of the screen. Compositions allow
  * for Aether to streamline component layout calculations and cache frames to improve the overall speed from initial

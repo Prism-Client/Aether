@@ -39,7 +39,7 @@ interface Font {
  * @since 1.0
  */
 @Suppress("LeakingThis")
-open class UIFont(open val style: FontStyle) : ComposableShape(), Copyable<UIFont> {
+open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Copyable<UIFont> {
     lateinit var composable: Composable
 
     override var x: UIUnit<*>? = null

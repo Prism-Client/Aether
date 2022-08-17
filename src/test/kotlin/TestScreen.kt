@@ -7,6 +7,8 @@ import net.prismclient.aether.ui.component.compose
 import net.prismclient.aether.ui.component.label
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.font.*
+import net.prismclient.aether.ui.layout.DefaultLayoutModifier
+import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.layout.UIListLayout
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.layout.util.LayoutOrder
@@ -58,7 +60,7 @@ class TestScreen : UIScreen {
                 LayoutDirection.VERTICAL,
                 LayoutOrder.FIRST,
                 10.px,
-                modifier = Modifier()
+                modifier = DefaultLayoutModifier()
                     .control(UIAlignment.CENTER)
                     .size(250, 250)
                     .anchor(UIAlignment.CENTER)

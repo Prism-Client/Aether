@@ -10,6 +10,8 @@ import net.prismclient.aether.core.event.type.ComposableEvent
 class fiddle {
 
     fun func() {
+        // Composition.attachListener<MouseChange>(::mousePressed, allowRepeat = false)
+
 //        keyPressed { event ->
 //            val composition = event.composition
 //            val key = event.key

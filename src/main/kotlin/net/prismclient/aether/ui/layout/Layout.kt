@@ -9,7 +9,9 @@ import net.prismclient.aether.core.util.shorthands.ifNotNull
 import net.prismclient.aether.core.util.shorthands.lerp
 import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.core.util.shorthands.px
-import net.prismclient.aether.ui.modifier.DefaultModifier
+import net.prismclient.aether.ui.composition.CompositionModifier
+import net.prismclient.aether.ui.layout.scroll.Scrollbar
+import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
@@ -22,14 +24,26 @@ import net.prismclient.aether.ui.unit.other.Padding
  *
  * @param overrideChildren When true, the children's property overridden is enabled during the compose stage.
  */
-abstract class UILayout(modifier: UIModifier<*>, protected val overrideChildren: Boolean) : Composable(modifier),
+abstract class UILayout(modifier: LayoutModifier<*>, protected val overrideChildren: Boolean) : Composable(modifier),
     ComposableGroup {
+    //override val modifier: UIModifier<*, Composable> = super.modifier as LayoutModifier<*>
+
     override val children: ArrayList<Composable> = arrayListOf()
 
     /**
      * The size of the layout which is set after [updateLayout] is invoked.
      */
     open lateinit var layoutSize: Size
+
+    /**
+     * Returns the width of area exceeding the bounds of this layout, or 0.
+     */
+    open fun widthOverflow(): Float = (layoutSize.width - width).coerceAtLeast(0f)
+
+    /**
+     * Returns the height of area exceeding the bounds of this layout, or 0.
+     */
+    open fun heightOverflow(): Float = (layoutSize.height - height).coerceAtLeast(0f)
 
     override fun compose() {
         modifier.preCompose(this)
@@ -122,8 +136,31 @@ abstract class UILayout(modifier: UIModifier<*>, protected val overrideChildren:
  * @see DefaultLayoutModifier
  */
 abstract class LayoutModifier<T : LayoutModifier<T>> : UIModifier<T>() {
+    var horizontalScrollbar: Scrollbar? = null
+        set(value) {
+            value?.direction = LayoutDirection.HORIZONTAL
+            field = value
+        }
+    var verticalScrollbar: Scrollbar? = null
+        set(value) {
+            value?.direction = LayoutDirection.VERTICAL
+            field = value
+        }
 
+    override fun compose(component: Composable) {
+        super.compose(component)
+
+        // Update the scrollbars after the layout has been updated
+        horizontalScrollbar?.compose(component as UILayout)
+        verticalScrollbar?.compose(component as UILayout)
+    }
 }
+
+/**
+ * Returns the default implementation of a [LayoutModifier].
+ */
+@Suppress("FunctionName")
+fun LayoutModifier(): DefaultLayoutModifier = DefaultLayoutModifier()
 
 class DefaultLayoutModifier : LayoutModifier<DefaultLayoutModifier>() {
     override fun copy(): DefaultLayoutModifier = DefaultLayoutModifier().also {

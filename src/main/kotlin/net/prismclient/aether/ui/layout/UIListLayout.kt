@@ -11,14 +11,13 @@ open class UIListLayout constructor(
     var direction: LayoutDirection,
     var order: LayoutOrder,
     var childSpacing: UIUnit<*>?,
-    modifier: UIModifier<*>
+    modifier: LayoutModifier<*>
 ) : UILayout(modifier, true) {
     override fun updateUnits() {
         childSpacing.compute(direction == LayoutDirection.VERTICAL)
     }
 
     override fun updateLayout(): Size {
-
         val spacing = childSpacing.dp
 
         var x = x
