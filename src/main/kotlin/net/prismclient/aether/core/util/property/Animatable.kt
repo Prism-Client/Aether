@@ -9,7 +9,7 @@ package net.prismclient.aether.core.util.property
  *
  * @author sen
  * @since 1.0
- * @see Property
+ * @see UIProperty
  */
 @Suppress("SpellCheckingInspection")
 interface Animatable<T> {

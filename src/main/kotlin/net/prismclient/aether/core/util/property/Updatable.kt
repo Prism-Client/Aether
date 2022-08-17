@@ -7,7 +7,7 @@ import net.prismclient.aether.ui.composition.Composable
  *
  * @authors sen
  * @since 1.0
- * @see Property
+ * @see UIProperty
  */
 interface Updatable {
     /**

@@ -1,8 +1,7 @@
 package net.prismclient.aether.ui.style
 
-import net.prismclient.aether.ui.font.UIFont
 import net.prismclient.aether.ui.registry.UIRegistry
-import net.prismclient.aether.core.util.property.Property
+import net.prismclient.aether.core.util.property.UIProperty
 
 /**
  * Most components require more information than the default properties provided by Modifier. Modifier
@@ -10,12 +9,12 @@ import net.prismclient.aether.core.util.property.Property
  * for a label, where the font size, and font color need to be changed.
  *
  * This is the superclass for all Styles. It accepts a generic property, [T] which is the type of this. All
- * [Property] functions are expected to be inherited.
+ * [UIProperty] functions are expected to be inherited.
  *
  * @author sen
  * @since 1.0
  */
-abstract class Style<T> : Property<T> {
+abstract class Style<T> : UIProperty<T> {
     init {
         applyStyle(this::class.simpleName!!)
     }

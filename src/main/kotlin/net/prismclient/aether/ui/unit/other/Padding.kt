@@ -4,7 +4,7 @@ import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.compute
-import net.prismclient.aether.core.util.property.Property
+import net.prismclient.aether.core.util.property.UIProperty
 import net.prismclient.aether.core.util.shorthands.ifNotNull
 import net.prismclient.aether.core.util.shorthands.lerp
 import net.prismclient.aether.core.util.shorthands.or
@@ -23,7 +23,7 @@ open class Padding(
     var right: UIUnit<*>?,
     var bottom: UIUnit<*>?,
     var left: UIUnit<*>?
-) : Property<Padding> {
+) : UIProperty<Padding> {
     override fun compose(composable: Composable?) {
         composable!!
         top?.compute(composable, true)

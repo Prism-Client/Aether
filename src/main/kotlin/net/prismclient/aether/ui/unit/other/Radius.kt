@@ -3,7 +3,7 @@ package net.prismclient.aether.ui.unit.other
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.compute
-import net.prismclient.aether.core.util.property.Property
+import net.prismclient.aether.core.util.property.UIProperty
 import net.prismclient.aether.core.util.shorthands.ifNotNull
 import net.prismclient.aether.core.util.shorthands.lerp
 import net.prismclient.aether.core.util.shorthands.or
@@ -21,7 +21,7 @@ open class Radius(
     var topRight: UIUnit<*>? = null,
     var bottomRight: UIUnit<*>? = null,
     var bottomLeft: UIUnit<*>? = null
-) : Property<Radius> {
+) : UIProperty<Radius> {
     override fun compose(composable: Composable?) {
         composable!!
         topLeft?.compute(composable, true)

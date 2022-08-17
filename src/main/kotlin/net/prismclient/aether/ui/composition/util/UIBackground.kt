@@ -10,7 +10,7 @@ import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.Radius
-import net.prismclient.aether.core.util.property.Property
+import net.prismclient.aether.core.util.property.UIProperty
 
 /**
  * [UIBackground] is a property for a component's Modifier. It represents the background of a [Composable].
@@ -18,7 +18,7 @@ import net.prismclient.aether.core.util.property.Property
  * @author sen
  * @since 1.0
  */
-open class UIBackground : ComposableShape(), Property<UIBackground> {
+open class UIBackground : ComposableShape(), UIProperty<UIBackground> {
     override var width: UIUnit<*>? = 1.crel
     override var height: UIUnit<*>? = 1.crel
 
