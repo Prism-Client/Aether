@@ -1,6 +1,6 @@
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.alignment.UITextAlignment
-import net.prismclient.aether.ui.debug.UIDebug
+import net.prismclient.aether.core.debug.UIDebug
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.core.util.extensions.toByteBuffer
 import net.prismclient.aether.ui.util.input.UIKey

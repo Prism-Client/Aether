@@ -1,10 +1,14 @@
 package net.prismclient.aether.ui.composition
 
+import net.prismclient.aether.core.event.UIEvent
 import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.core.util.shorthands.dp
+import net.prismclient.aether.core.event.type.MousePress
+import java.util.function.Consumer
 import kotlin.math.roundToInt
+import kotlin.reflect.KClass
 
 /**
  * [Composable] is the superclass for all UI objects within Aether. Anything that extends this class
@@ -42,6 +46,11 @@ abstract class Composable(open val modifier: UIModifier<*>) {
             compositionRef = value
         }
     open var parent: Composable? = null
+
+    /**
+     * The events of a [Composable] it is automatically allocated if necessary
+     */
+    open var events: HashMap<KClass<out UIEvent>, HashMap<String, Consumer<out UIEvent>>>? = null
 
     /**
      * Returns true if this has been composed at least once.
@@ -131,6 +140,25 @@ abstract class Composable(open val modifier: UIModifier<*>) {
 //        composition.recompose()
     }
 
+    // -- Event -- //
+
+    /**
+     * Unsafely invokes each listener of the [event].
+     */
+    open fun <T : UIEvent> publish(event: T) {
+        events?.get(event::class)?.forEach {
+            (it.value as Consumer<T>).accept(event)
+        }
+    }
+
+    /**
+     * Adds the listener [listener] with the key as [listenerName] to [event]. The HashMaps are allocated automatically.
+     */
+    inline fun <reified T : UIEvent> addListener(listenerName: String, listener: Consumer<T>) = apply {
+        events = events ?: hashMapOf()
+        events!!.computeIfAbsent(T::class) { HashMap() }[listenerName] = listener
+    }
+
     // -- Util -- //
 
     /**
@@ -158,9 +186,18 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      */
     @Suppress
     protected fun UIUnit<*>?.compute(yaxis: Boolean) {
-        this?.compute(this@Composable, parentWidth().toFloat(), parentHeight().toFloat(), yaxis)
+        this?.compute(this@Composable, parentWidth(), parentHeight(), yaxis)
     }
 }
+
+fun <T : Composable> T.mousePressed(listenerName: String = MousePress::class.size(this), action: Consumer<MousePress>) = apply {
+    addListener(listenerName, action)
+}
+
+/**
+ * Returns the size of the given event for the given [composable] or 0 if not found or intiialized.
+ */
+internal inline fun <reified T : KClass<out UIEvent>> T.size(composable: Composable) = "$${(composable.events?.get(this)?.size ?: 0)}"
 
 // -- Events -- //
 

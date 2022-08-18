@@ -1,13 +1,13 @@
 package net.prismclient.aether.core
 
-import net.prismclient.aether.core.event.UIEventBus
-import net.prismclient.aether.core.event.type.MouseMoveEvent
+import net.prismclient.aether.core.util.other.MouseButtonType
+import net.prismclient.aether.core.util.shorthands.notNull
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.screen.UIScreen
-import net.prismclient.aether.core.util.other.MouseButtonType
-import net.prismclient.aether.core.util.shorthands.notNull
+
+// TODO: Event plotting optimizations (invoke only when the composition is within range)
 
 /**
  * [Aether]
@@ -74,8 +74,12 @@ open class Aether(renderer: UIRenderer) {
      * @see mouseButton
      */
     open fun mouseChanged(mouseX: Float, mouseY: Float, mouseButton: MouseButtonType, isRelease: Boolean) {
-        if (mouseButton == MouseButtonType.None) {
-            UIEventBus.publish(MouseMoveEvent(mouseX, mouseY))
+        if (mouseButton == MouseButtonType.None) { // Mouse moved
+//            val event = Mou(mouseX, mouseY)
+//            compositions?.forEach { a -> a.children.forEach { it.mousePressed(event) } }
+//            UIEventBus.publish(MouseMoveEvent(mouseX, mouseY))
+        } else {
+
         }
     }
 
@@ -104,10 +108,11 @@ open class Aether(renderer: UIRenderer) {
     /**
      * Creates a new composition from the given [name].
      */
-    open fun createComposition(name: String, modifier: CompositionModifier): Composition = Composition(name, modifier).also {
-        check()
-        compositions!!.add(it)
-    }
+    open fun createComposition(name: String, modifier: CompositionModifier): Composition =
+        Composition(name, modifier).also {
+            check()
+            compositions!!.add(it)
+        }
 
     open fun check() {
         if (activeScreen == null || compositions == null)
@@ -119,8 +124,10 @@ open class Aether(renderer: UIRenderer) {
      *
      */
     companion object {
-        @JvmStatic lateinit var instance: Aether
-        @JvmStatic lateinit var renderer: UIRenderer
+        @JvmStatic
+        lateinit var instance: Aether
+        @JvmStatic
+        lateinit var renderer: UIRenderer
 
         @JvmStatic
         fun displayScreen(screen: UIScreen) = instance.screen(screen)

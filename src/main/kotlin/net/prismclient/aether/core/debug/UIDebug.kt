@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.debug
+package net.prismclient.aether.core.debug
 
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.core.color.UIColor

@@ -6,6 +6,7 @@ import net.prismclient.aether.ui.component.component
 import net.prismclient.aether.ui.component.compose
 import net.prismclient.aether.ui.component.label
 import net.prismclient.aether.ui.composition.CompositionModifier
+import net.prismclient.aether.ui.composition.mousePressed
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.layout.DefaultLayoutModifier
 import net.prismclient.aether.ui.layout.LayoutModifier
@@ -56,7 +57,9 @@ class TestScreen : UIScreen {
                     .fontSize(16.px)
                     .fontColor(RGBA(255, 255, 255).rgb)
                     .offsetBaseline(false)
-            )
+            ).mousePressed {
+                println("The mouse was pressed ${it.mouseX}, ${it.mouseY}")
+            }
 
             val layout = component(UIListLayout(
                 LayoutDirection.VERTICAL,

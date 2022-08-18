@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.debug
+package net.prismclient.aether.core.debug
 
 enum class LogLevel {
     DEBUG,
