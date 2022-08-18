@@ -154,6 +154,11 @@ abstract class LayoutModifier<T : LayoutModifier<T>> : UIModifier<T>() {
         horizontalScrollbar?.compose(component as UILayout)
         verticalScrollbar?.compose(component as UILayout)
     }
+
+    override fun render() {
+        horizontalScrollbar?.render()
+        verticalScrollbar?.render()
+    }
 }
 
 /**

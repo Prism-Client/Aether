@@ -10,8 +10,10 @@ import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.layout.DefaultLayoutModifier
 import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.layout.UIListLayout
+import net.prismclient.aether.ui.layout.scroll.DefaultScrollbar
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.layout.util.LayoutOrder
+import net.prismclient.aether.ui.layout.util.Overflow
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.registry.register
 import net.prismclient.aether.ui.screen.UIScreen
@@ -65,9 +67,18 @@ class TestScreen : UIScreen {
                     .size(250, 250)
                     .anchor(UIAlignment.CENTER)
                     .backgroundColor(RGBA(255, 255, 255).rgb)
-                    .backgroundRadius(9.radius)
+                    .backgroundRadius(9.radius).apply {
+                        verticalScrollbar = DefaultScrollbar().apply {
+                            overflow = Overflow.SCROLLBAR
+                            x = 1.crel - 8.px
+                            y = 0.05.crel
+                            width = 8.px
+                            height = 0.9.crel
+                            thumbColor = RGBA(255, 0, 0).rgb
+                        }
+                    }
             )) {
-                for (i in 0..2) {
+                for (i in 0..10) {
                     button(
                         text = "AgdCiLMmzjt ${i * 10}",
                         modifier = Modifier()

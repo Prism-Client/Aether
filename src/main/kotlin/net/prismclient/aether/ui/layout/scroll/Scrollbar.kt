@@ -1,16 +1,17 @@
 package net.prismclient.aether.ui.layout.scroll
 
-import net.prismclient.aether.core.util.property.UIProperty
+import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.property.UIUniqueProperty
 import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.composition.util.UIBackground
+import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.layout.util.Overflow
 import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.shape.Shape
-import java.util.function.Consumer
 
 /**
  * [Scrollbar], as the name suggests, represents a Scrollbar which can be applied to a layout on an axis. Because
@@ -34,19 +35,24 @@ import java.util.function.Consumer
  * @see DefaultScrollbar
  */
 abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollbar, UILayout> {
-    var direction: LayoutDirection = LayoutDirection.HORIZONTAL
+    open var direction: LayoutDirection = LayoutDirection.HORIZONTAL
 
     /**
      * Determined how the scrollbar appears/acts depending on the circumstance.
      *
      * @see Overflow
      */
-    var overflow: Overflow = Overflow.AUTO
+    open var overflow: Overflow = Overflow.AUTO
+
+    /**
+     * Indicates if the scrollbar implementation should skip rendering or not.
+     */
+    open var shouldRender: Boolean = false
 
     /**
      * The value of the scrollbar, represented as a value between 0 and 1.
      */
-    var value: Double = 0.0
+    open var value: Float = 0f
 
     /**
      * The size of the thumb, known the objet used to scroll. By default, the thumb size
@@ -54,14 +60,34 @@ abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollb
      *
      *      (size / layoutSize) * scrollbarSize
      */
-    var thumbSize: Float = 0f
+    open var actualThumbSize: Float = 0f
+
+    /**
+     * The offset of the mouse relative to the x or y of the thumb
+     */
+    protected open var mouseOffset: Float = 0f
 
     override fun compose(composable: UILayout?) {
         super.compose(composable); composable!!
 
-        thumbSize = if (direction == LayoutDirection.HORIZONTAL)
-                    (composable.width / composable.layoutSize.width) * width.dp
-            else    (composable.height / composable.layoutSize.height) * height.dp
+        // Compute if the scrollbar should be
+        // rendered and the size of the thumb.
+        if (direction == LayoutDirection.HORIZONTAL) {
+            shouldRender = when (overflow) {
+                Overflow.SCROLLBAR -> true
+                Overflow.AUTO -> composable.widthOverflow() > 0f
+                else -> false
+            }
+            actualThumbSize = (composable.width / composable.layoutSize.width.coerceAtLeast(composable.width)) * width.dp
+        } else {
+            shouldRender = when (overflow) {
+                Overflow.SCROLLBAR -> true
+                Overflow.AUTO -> composable.heightOverflow() > 0f
+                else -> false
+            }
+            actualThumbSize = (composable.height / (composable.layoutSize.height.coerceAtLeast(composable.height))) * height.dp
+        }
+
     }
 }
 
@@ -69,4 +95,42 @@ abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollb
  * @author sen
  * @since 1.0
  */
-class DefaultScrollbar
+class DefaultScrollbar : Scrollbar() {
+    var thumbColor: UIColor? = null
+    var background: UIBackground? = null
+
+    override fun render() {
+        if (!shouldRender) return
+        background?.render()
+        var x = initialX + x.dp
+        var y = initialY + y.dp
+        var w = width.dp
+        var h = height.dp
+
+        // Compute the offset
+        if (direction == LayoutDirection.HORIZONTAL) {
+            x += (width.dp - actualThumbSize) * value
+            w = actualThumbSize
+        } else {
+            y += (height.dp - actualThumbSize) * value
+            h = actualThumbSize
+        }
+
+        renderer {
+            color(thumbColor)
+            rect(x, y, w, h)
+        }
+    }
+
+    override fun copy(): Scrollbar {
+        TODO("Not yet implemented")
+    }
+
+    override fun merge(other: Scrollbar?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun animate(start: Scrollbar?, end: Scrollbar?, fraction: Float) {
+        TODO("Not yet implemented")
+    }
+}

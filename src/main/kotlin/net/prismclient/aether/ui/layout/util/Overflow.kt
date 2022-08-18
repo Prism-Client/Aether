@@ -29,12 +29,12 @@ enum class Overflow {
     HIDDEN,
 
     /**
-     * Introduces a scrollbar.
+     * Introduces a scrollbar. The [Overflow.HIDDEN] state applies.
      */
     SCROLLBAR,
 
     /**
-     * Introduces a scrollbar **ONLY** if the content overflows (exceeds) the layout.
+     * Introduces a scrollbar **ONLY** if the content overflows (exceeds) the layout. The [Overflow.HIDDEN] state applies.
      */
     AUTO
 }
