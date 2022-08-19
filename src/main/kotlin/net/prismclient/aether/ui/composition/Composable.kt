@@ -1,11 +1,12 @@
 package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.core.event.UIEvent
+import net.prismclient.aether.core.event.type.*
 import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.core.util.shorthands.dp
-import net.prismclient.aether.core.event.type.MousePress
+import net.prismclient.aether.ui.input.UIInput
 import java.util.function.Consumer
 import kotlin.math.roundToInt
 import kotlin.reflect.KClass
@@ -23,7 +24,7 @@ import kotlin.reflect.KClass
  *
  * @see UIModifier
  */
-abstract class Composable(open val modifier: UIModifier<*>) {
+abstract class Composable(open val modifier: UIModifier<*>) : UIInput {
     /**
      * Overridden is intended to be controlled externally. It is used to indicate whether the
      * position properties of this are changed based on an external source, such as [UILayout].
@@ -128,12 +129,12 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     abstract fun compose()
 
     /**
-     * Invoked when this should be rendered.
+     * todo be doced
      */
     abstract fun render()
 
     /**
-     * Informs the [Composition] of this [Composable] to recompose (update the layout), and re-rasterize.
+     * todo be doced
      */
     open fun recompose() {
         // TODO: Recompose only necessary elements
@@ -141,6 +142,20 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     }
 
     // -- Event -- //
+
+    override fun mouseMoved(event: MouseMove) = publish(event)
+
+    override fun mousePressed(event: MousePress) {
+        publish(event)
+        event.propagate()
+        // TODO: require recompose?
+    }
+
+    override fun mouseReleased(event: MouseReleased) = publish(event)
+
+    override fun mouseScrolled(event: MouseScrolled) = publish(event)
+
+    override fun keyPressed(event: KeyPressed) = publish(event)
 
     /**
      * Unsafely invokes each listener of the [event].
@@ -154,10 +169,15 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     /**
      * Adds the listener [listener] with the key as [listenerName] to [event]. The HashMaps are allocated automatically.
      */
-    inline fun <reified T : UIEvent> addListener(listenerName: String, listener: Consumer<T>) = apply {
+    inline fun <reified T : UIEvent> addListener(listenerName: String = "", listener: Consumer<T>) = apply {
         events = events ?: hashMapOf()
         events!!.computeIfAbsent(T::class) { HashMap() }[listenerName] = listener
     }
+
+    /**
+     * Returns the size of the given event for the given [composable] or 0 if not found or initialized.
+     */
+    internal inline fun <reified T : KClass<out UIEvent>> T.size(composable: Composable) = "$${(composable.events?.get(this)?.size ?: 0)}"
 
     // -- Util -- //
 
@@ -182,6 +202,11 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     open fun parentHeight(): Float = parent?.height ?: composition.height
 
     /**
+     * Returns true if the given [event] is registered within this composable
+     */
+    inline fun <reified T : UIEvent> hasEventListener(event: T): Boolean = events?.get(T::class) != null
+
+    /**
      * Computes the given unit with the [parentWidth] and [parentHeight].
      */
     @Suppress
@@ -190,14 +215,9 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     }
 }
 
-fun <T : Composable> T.mousePressed(listenerName: String = MousePress::class.size(this), action: Consumer<MousePress>) = apply {
-    addListener(listenerName, action)
-}
-
-/**
- * Returns the size of the given event for the given [composable] or 0 if not found or intiialized.
- */
-internal inline fun <reified T : KClass<out UIEvent>> T.size(composable: Composable) = "$${(composable.events?.get(this)?.size ?: 0)}"
+//fun <T : Composable> T.mousePressed(listenerName: String = MousePress::class.size(this), action: Consumer<MousePress>) = apply {
+//    addListener(listenerName, action)
+// }
 
 // -- Events -- //
 

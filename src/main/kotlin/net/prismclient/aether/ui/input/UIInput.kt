@@ -1,6 +1,6 @@
 package net.prismclient.aether.ui.input
 
-import net.prismclient.aether.core.event.type.MousePress
+import net.prismclient.aether.core.event.type.*
 
 /**
  * [UIInput] contains the functions used for handling different input changes, such as the mouse
@@ -11,7 +11,7 @@ import net.prismclient.aether.core.event.type.MousePress
  * @since 1.0
  */
 interface UIInput {
-    fun mouseMoved()
+    fun mouseMoved(event: MouseMove)
 
     /**
      * A propagating event which is invoked when the mouse is pressed and this is
@@ -19,11 +19,13 @@ interface UIInput {
      */
     fun mousePressed(event: MousePress)
 
-    fun mouseReleased()
+    fun mouseReleased(event: MouseReleased)
 
-    fun mouseScrolled()
 
-    fun keyPressed()
+    fun mouseScrolled(event: MouseScrolled)
+
+    fun keyPressed(event: KeyPressed)
+
 
     // TODO: Other events eg Mouse enter/leave
     // TODO: Focusable objects

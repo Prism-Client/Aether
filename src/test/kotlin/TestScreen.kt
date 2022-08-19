@@ -1,3 +1,4 @@
+import net.prismclient.aether.core.event.type.MousePress
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
@@ -57,8 +58,8 @@ class TestScreen : UIScreen {
                     .fontSize(16.px)
                     .fontColor(RGBA(255, 255, 255).rgb)
                     .offsetBaseline(false)
-            ).mousePressed {
-                println("The mouse was pressed ${it.mouseX}, ${it.mouseY}")
+            ).addListener<MousePress> {
+
             }
 
             val layout = component(UIListLayout(
