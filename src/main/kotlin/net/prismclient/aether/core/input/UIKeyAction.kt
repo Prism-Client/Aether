@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.util.input
+package net.prismclient.aether.core.input
 
 /**
  * [UIKeyAction] describes the action of a key press. See

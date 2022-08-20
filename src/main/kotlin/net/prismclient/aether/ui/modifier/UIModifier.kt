@@ -58,8 +58,8 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
      */
     open fun preCompose(component: Composable) {}
 
-    open fun compose(component: Composable) {
-        background?.compose(component)
+    open fun compose(composable: Composable) {
+        background?.compose(composable)
     }
 
     /**

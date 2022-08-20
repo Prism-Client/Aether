@@ -1,12 +1,13 @@
 package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.core.event.UIEvent
-import net.prismclient.aether.core.event.type.*
+import net.prismclient.aether.core.event.UIEventBus
+import net.prismclient.aether.core.event.*
+import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.UIModifier
+import net.prismclient.aether.ui.registry.register
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.core.util.shorthands.dp
-import net.prismclient.aether.ui.input.UIInput
 import java.util.function.Consumer
 import kotlin.math.roundToInt
 import kotlin.reflect.KClass
@@ -24,7 +25,7 @@ import kotlin.reflect.KClass
  *
  * @see UIModifier
  */
-abstract class Composable(open val modifier: UIModifier<*>) : UIInput {
+abstract class Composable(open val modifier: UIModifier<*>) {
     /**
      * Overridden is intended to be controlled externally. It is used to indicate whether the
      * position properties of this are changed based on an external source, such as [UILayout].
@@ -137,47 +138,47 @@ abstract class Composable(open val modifier: UIModifier<*>) : UIInput {
      * todo be doced
      */
     open fun recompose() {
-        // TODO: Recompose only necessary elements
-//        composition.recompose()
+        // TODO: Determine when to recompose only necessary elements if necesssary
+        composition.recompose()
     }
-
-    // -- Event -- //
-
-    override fun mouseMoved(event: MouseMove) = publish(event)
-
-    override fun mousePressed(event: MousePress) {
-        publish(event)
-        event.propagate()
-        // TODO: require recompose?
-    }
-
-    override fun mouseReleased(event: MouseReleased) = publish(event)
-
-    override fun mouseScrolled(event: MouseScrolled) = publish(event)
-
-    override fun keyPressed(event: KeyPressed) = publish(event)
 
     /**
      * Unsafely invokes each listener of the [event].
      */
     open fun <T : UIEvent> publish(event: T) {
         events?.get(event::class)?.forEach {
+            @Suppress("UNCHECKED_CAST")
             (it.value as Consumer<T>).accept(event)
         }
+        if (event is PropagatingEvent) event.propagate()
     }
 
     /**
-     * Adds the listener [listener] with the key as [listenerName] to [event]. The HashMaps are allocated automatically.
+     * Adds the listener [listener] with the key as [listenerName] to the event, [T]. When [allocateEventListener] is
+     * true, an event listener will be added to [UIEventBus] to listen to the event. If the event is a propagating event
+     * it is likely that Aether is already manually handling the event, and the listener does not need ot be added.
      */
-    inline fun <reified T : UIEvent> addListener(listenerName: String = "", listener: Consumer<T>) = apply {
+    inline fun <reified T : UIEvent> addListener(
+        listenerName: String = "${T::class.simpleName}:${(events?.get(T::class)?.size ?: 0)}",
+        allocateEventListener: Boolean = true,
+        listener: Consumer<T>
+    ) {
+        // Allocate the event HashMap if necessary.
         events = events ?: hashMapOf()
-        events!!.computeIfAbsent(T::class) { HashMap() }[listenerName] = listener
+        events!!.computeIfAbsent(T::class) {
+            // If the given event is absent, allocate it and add
+            // the listener mentioned above. Propagating events
+            // can be assumed to be handled manually.
+            if (allocateEventListener && T::class !is PropagatingEvent) {
+                UIEventBus.register<T>(it) { event ->
+                    publish(event)
+                    recompose()
+                }
+            }
+            HashMap()
+        }[listenerName] = listener
     }
 
-    /**
-     * Returns the size of the given event for the given [composable] or 0 if not found or initialized.
-     */
-    internal inline fun <reified T : KClass<out UIEvent>> T.size(composable: Composable) = "$${(composable.events?.get(this)?.size ?: 0)}"
 
     // -- Util -- //
 
@@ -202,6 +203,22 @@ abstract class Composable(open val modifier: UIModifier<*>) : UIInput {
     open fun parentHeight(): Float = parent?.height ?: composition.height
 
     /**
+     * Returns true if the given coordinates are within the normal bounds (non relative values) of this.
+     *
+     * @see isWithinBounds
+     */
+    open fun isWithin(xBound: Float, yBound: Float): Boolean =
+        (x <= xBound && y <= yBound && x + width >= xBound && y + height >= xBound)
+
+    /**
+     * Returns true if the given coordinates are within the bounds (relative values) of this.
+     *
+     * @see isWithin
+     */
+    open fun isWithinBounds(xBound: Float, yBound: Float): Boolean =
+        (relX <= xBound && relY <= yBound && relX + relWidth >= xBound && relY + relHeight >= yBound)
+
+    /**
      * Returns true if the given [event] is registered within this composable
      */
     inline fun <reified T : UIEvent> hasEventListener(event: T): Boolean = events?.get(T::class) != null
@@ -215,23 +232,8 @@ abstract class Composable(open val modifier: UIModifier<*>) : UIInput {
     }
 }
 
-//fun <T : Composable> T.mousePressed(listenerName: String = MousePress::class.size(this), action: Consumer<MousePress>) = apply {
-//    addListener(listenerName, action)
-// }
-
 // -- Events -- //
 
-//fun <T : UIButton> T.onClick(event: Consumer<MouseMoveEvent>) = apply {
-//    UIEventBus.register(event)
-//}
-
-///**
-// * Wraps the [consumer] within another consumer which recomposes the layout after being invoked. The
-// * new consumer is registered to the event bus.
-// */
-//private inline fun <T : Composable, reified E : UIEvent> T.addRecompose(consumer: Consumer<E>) {
-//    UIEventBus.register(Consumer<E> {
-//        consumer.accept(it)
-//        recompose()
-//    })
-//}
+fun <T : Composable> T.onClick(eventListener: Consumer<MousePress>) = apply {
+    addListener(listener = eventListener)
+}

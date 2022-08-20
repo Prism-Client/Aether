@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.util.input
+package net.prismclient.aether.core.input
 
 /**
  * [UIModifierKey] are keys which cannot be converted into characters. They are keys

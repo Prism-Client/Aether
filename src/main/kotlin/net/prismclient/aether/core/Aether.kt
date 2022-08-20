@@ -1,7 +1,15 @@
 package net.prismclient.aether.core
 
-import net.prismclient.aether.core.util.other.MouseButtonType
+import net.prismclient.aether.core.event.UIEventBus
+import net.prismclient.aether.core.event.MouseMove
+import net.prismclient.aether.core.event.MousePress
+import net.prismclient.aether.core.event.MouseReleased
+import net.prismclient.aether.core.event.MouseScrolled
+import net.prismclient.aether.core.input.MouseButtonType
+import net.prismclient.aether.core.util.other.ComposableGroup
+import net.prismclient.aether.core.util.property.Focusable
 import net.prismclient.aether.core.util.shorthands.notNull
+import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.renderer.UIRenderer
@@ -17,7 +25,7 @@ import net.prismclient.aether.ui.screen.UIScreen
  */
 open class Aether(renderer: UIRenderer) {
     var activeScreen: UIScreen? = null
-
+    var focusedComponent: Focusable? = null
     var displayWidth: Float = 0f
         private set
     var displayHeight: Float = 0f
@@ -74,13 +82,49 @@ open class Aether(renderer: UIRenderer) {
      * @see mouseButton
      */
     open fun mouseChanged(mouseX: Float, mouseY: Float, mouseButton: MouseButtonType, isRelease: Boolean) {
-        if (mouseButton == MouseButtonType.None) { // Mouse moved
-//            val event = Mou(mouseX, mouseY)
-//            compositions?.forEach { a -> a.children.forEach { it.mousePressed(event) } }
-//            UIEventBus.publish(MouseMoveEvent(mouseX, mouseY))
+        if (!safeCheck()) throw RuntimeException("Attempted to change mouse, but the check failed.")
+        if (mouseButton != MouseButtonType.None) {
+            if (!isRelease) {
+                compositions!!.filter(Composition::isTopLayer).forEach { composition ->
+                    if (composition.isWithinBounds(mouseX, mouseY)) {
+                        val item = findDeepest(mouseX, mouseY, composition)
+                        if (item != null) {
+                            item.publish(MousePress(mouseX, mouseY, mouseButton, item))
+                            return
+                        }
+                    }
+                }
+            } else {
+                UIEventBus.publish(MouseReleased(mouseX, mouseY, mouseButton))
+            }
         } else {
-
+            UIEventBus.publish(MouseMove(mouseX, mouseY))
         }
+    }
+
+    /**
+     * Invoked when the mouse scroll or trackpad is interacted with.
+     */
+    open fun mouseScrolled(dstX: Float, dstY: Float) {
+        // Focus the best possible layout
+    }
+
+    /**
+     * Returns the deepest item within the [boundX] and [boundY] from the given [group].
+     */
+    private fun findDeepest(boundX: Float, boundY: Float, group: ComposableGroup): Composable? {
+        for (composable in group.children.size - 1 downTo 0) {
+            val item = group.children[composable]
+
+            if (item.isWithinBounds(boundX, boundY)) {
+                return if (item is ComposableGroup) {
+                    findDeepest(boundX, boundY, item) ?: item
+                } else {
+                    item
+                }
+            }
+        }
+        return null
     }
 
     open fun render() {
@@ -114,6 +158,12 @@ open class Aether(renderer: UIRenderer) {
             compositions!!.add(it)
         }
 
+    /**
+     * Returns true if the activeScreen and composition doesn't equal null
+     */
+    // TODO: Remove temp safeCheck
+    open fun safeCheck(): Boolean = activeScreen != null && compositions != null
+
     open fun check() {
         if (activeScreen == null || compositions == null)
             throw RuntimeException("[Aether] -> Failed check because activeScreen or compositions was null.")
@@ -126,9 +176,9 @@ open class Aether(renderer: UIRenderer) {
     companion object {
         @JvmStatic
         lateinit var instance: Aether
+
         @JvmStatic
         lateinit var renderer: UIRenderer
-
         @JvmStatic
         fun displayScreen(screen: UIScreen) = instance.screen(screen)
     }

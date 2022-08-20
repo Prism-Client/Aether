@@ -1,9 +1,10 @@
-package net.prismclient.aether.core.event.type
+package net.prismclient.aether.core.event
 
 import net.prismclient.aether.core.event.UIEvent
-import net.prismclient.aether.core.util.other.MouseButtonType
+import net.prismclient.aether.core.input.MouseButtonType
 import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.util.input.UIKey
+import net.prismclient.aether.core.input.UIKey
+import net.prismclient.aether.ui.composition.Composition
 
 /**
  * Indicates an event where a singular composable is invoked, and the event moves (propagates) up the
@@ -13,23 +14,44 @@ import net.prismclient.aether.ui.util.input.UIKey
  * @since 1.0
  */
 abstract class PropagatingEvent(val initialComposable: Composable) : UIEvent {
+    /**
+     * The amount of [Composable] (nodes) which this [PropagatingEvent] has passed through; the amount
+     * of times this has been propagated
+     */
+    var propagationIndex: Int = 0
+
+    /**
+     * The active [Composable] which is being propagated
+     */
     var currentComposable: Composable = initialComposable
+
+    /**
+     * The [Composable] which propagated to the [currentComposable] level.
+     */
     var previousComposable: Composable = initialComposable
 
+    // TODO: Cancellable Propagating Events
+
+    /**
+     * Updates the [currentComposable] and [previousComposable] up one node of the tree and publishes this to the new [Composable].
+     */
     fun propagate() {
+        propagationIndex++
+        if (currentComposable is Composition && (currentComposable as Composition).isTopLayer()) {
+            currentComposable.recompose()
+            return
+        }
         previousComposable = currentComposable
         currentComposable = currentComposable.parent ?: currentComposable.composition
-        // TODO: When peak recompose
+        currentComposable.publish(this)
     }
 
-    // todo: Cancelling
+    /**
+     * Returns true if the [initialComposable] is equal to the [currentComposable], and the [propagationIndex]
+     * is 0. In other words, if this is at the first propagation level, this will return true.
+     */
+    fun isInitial(): Boolean = currentComposable == initialComposable && propagationIndex == 0
 }
-
-/**
- * A type of event which indicates that the only composable invoked is the focused component. Events like keyPress
- * and scrolling are a [FocusedEvent] because only a singular listener should listen.
- */
-abstract class FocusedEvent : UIEvent
 
 class MouseMove(val mouseX: Float, val mouseY: Float) : UIEvent
 
@@ -51,20 +73,5 @@ class MousePress(val mouseX: Float, val mouseY: Float, val button: MouseButtonTy
  */
 class MouseReleased(val mouseX: Float, val mouseY: Float, val button: MouseButtonType) : UIEvent
 
-/**
- * A [FocusedEvent] which invokes the focused composable. [dstX] and [dstY] represents the distance
- * the mouse or trackpad was scrolled in the given axis.
- *
- * @author sen
- * @since 1.0
- */
-class MouseScrolled(val dstX: Float, val dstY: Float) : FocusedEvent()
-
-/**
- * A [FocusedEvent] which invokes the focused composable. If the key cannot be mapped to a character,
- * [character] will equal to '\u0000'.
- *
- * @author sen
- * @since 1.0
- */
-class KeyPressed(val character: Char, val key: UIKey) : FocusedEvent()
+// MouseScrolled && KeyPressed are within FocusableEvents.kt !!!
+// ~ sen ~

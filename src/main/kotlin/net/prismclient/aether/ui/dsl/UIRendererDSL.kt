@@ -11,7 +11,6 @@ import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.resource.UIResourceProvider
 import net.prismclient.aether.ui.unit.other.Radius
-import net.prismclient.aether.ui.util.*
 import net.prismclient.aether.ui.renderer.UIStrokeDirection
 
 /**

@@ -1,10 +1,10 @@
 import net.prismclient.aether.core.Aether
-import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.core.debug.UIDebug
-import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.core.util.extensions.toByteBuffer
-import net.prismclient.aether.ui.util.input.UIKey
-import net.prismclient.aether.core.util.other.MouseButtonType
+import net.prismclient.aether.core.input.MouseButtonType
+import net.prismclient.aether.ui.alignment.UITextAlignment
+import net.prismclient.aether.ui.dsl.renderer
+import net.prismclient.aether.core.input.UIKey
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -69,6 +69,14 @@ object Runner {
 
         glfwSetMouseButtonCallback(window) { _: Long, button: Int, action: Int, _: Int ->
             //core!!.mouseChanged(button, action == GLFW_RELEASE)
+            core!!.mouseChanged(
+                mouseX.toFloat(), mouseY.toFloat(), when (button) {
+                    GLFW_MOUSE_BUTTON_1 -> MouseButtonType.Primary
+                    GLFW_MOUSE_BUTTON_2 -> MouseButtonType.Secondary
+                    GLFW_MOUSE_BUTTON_3 -> MouseButtonType.Middle
+                    else -> throw RuntimeException("Weird button pressed: $button")
+                }, action == GLFW_RELEASE
+            )
         }
         glfwSetCursorPosCallback(window) { _: Long, xpos: Double, ypos: Double ->
             mouseX = xpos
@@ -186,7 +194,11 @@ object Runner {
 
             renderer {
                 // 400 100, 250, 50
-                beginFrame(framebufferWidth / contentScaleX, framebufferHeight / contentScaleY, max(contentScaleX, contentScaleY))
+                beginFrame(
+                    framebufferWidth / contentScaleX,
+                    framebufferHeight / contentScaleY,
+                    max(contentScaleX, contentScaleY)
+                )
                 color(-1)
                 font("Poppins", 16f, UITextAlignment.CENTER, UITextAlignment.TOP, 0f)
                 fpsstring.render((framebufferWidth / contentScaleX) / 2f, 0f)

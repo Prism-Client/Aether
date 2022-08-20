@@ -1,32 +1,38 @@
 package net.prismclient.aether.ui.layout
 
 import net.prismclient.aether.core.metrics.Size
-import net.prismclient.aether.ui.component.UIComponent
-import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.core.util.other.ComposableGroup
+import net.prismclient.aether.core.util.property.Focusable
 import net.prismclient.aether.core.util.shorthands.ifNotNull
 import net.prismclient.aether.core.util.shorthands.lerp
 import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.core.util.shorthands.px
-import net.prismclient.aether.ui.composition.CompositionModifier
+import net.prismclient.aether.ui.component.UIComponent
+import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.layout.scroll.Scrollbar
 import net.prismclient.aether.ui.layout.util.LayoutDirection
+import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
 
 /**
- * [UILayout] is a composable used for controlling a group of components in a specific way. For example,
+ * [UILayout] is a composable used for controlling a group of components in a specific way. It is a Focusable
+ * composable, as it introduces the opportunity for scrollbars.
+ *
+ * //todo: doc this stuff xd
  *
  * @author sen
  * @since 1.0
  *
  * @param overrideChildren When true, the children's property overridden is enabled during the compose stage.
  */
-abstract class UILayout(modifier: LayoutModifier<*>, protected val overrideChildren: Boolean) : Composable(modifier),
-    ComposableGroup {
-    //override val modifier: UIModifier<*, Composable> = super.modifier as LayoutModifier<*>
+abstract class UILayout(
+    modifier: LayoutModifier<*>,
+    protected val overrideChildren: Boolean
+) : Composable(modifier), ComposableGroup, Focusable {
+    override val modifier: LayoutModifier<*> = super.modifier as LayoutModifier<*>
 
     override val children: ArrayList<Composable> = arrayListOf()
 
@@ -97,9 +103,14 @@ abstract class UILayout(modifier: LayoutModifier<*>, protected val overrideChild
     abstract fun updateLayout(): Size
 
     override fun render() {
+        if (modifier.clipContent) {
+            UIRendererDSL.renderer.save()
+            UIRendererDSL.renderer.scissor(relX, relY, relWidth, relHeight)
+        }
         modifier.preRender()
         children.forEach(Composable::render)
         modifier.render()
+        if (modifier.clipContent) UIRendererDSL.renderer.restore()
     }
 
     // -- Utility -- //
@@ -120,8 +131,7 @@ abstract class UILayout(modifier: LayoutModifier<*>, protected val overrideChild
      * @return True if the component was removed.
      */
     open fun removeChild(component: UIComponent<*>) {
-        if (component.parent == this)
-            component.parent = null
+        if (component.parent == this) component.parent = null
         children.remove(component)
     }
 }
@@ -136,23 +146,24 @@ abstract class UILayout(modifier: LayoutModifier<*>, protected val overrideChild
  * @see DefaultLayoutModifier
  */
 abstract class LayoutModifier<T : LayoutModifier<T>> : UIModifier<T>() {
-    var horizontalScrollbar: Scrollbar? = null
+    open var horizontalScrollbar: Scrollbar? = null
         set(value) {
             value?.direction = LayoutDirection.HORIZONTAL
             field = value
         }
-    var verticalScrollbar: Scrollbar? = null
+    open var verticalScrollbar: Scrollbar? = null
         set(value) {
             value?.direction = LayoutDirection.VERTICAL
             field = value
         }
+    open var clipContent: Boolean = true
 
-    override fun compose(component: Composable) {
-        super.compose(component)
+    override fun compose(composable: Composable) {
+        super.compose(composable)
 
         // Update the scrollbars after the layout has been updated
-        horizontalScrollbar?.compose(component as UILayout)
-        verticalScrollbar?.compose(component as UILayout)
+        horizontalScrollbar?.compose(composable as UILayout)
+        verticalScrollbar?.compose(composable as UILayout)
     }
 
     override fun render() {
@@ -225,5 +236,4 @@ class DefaultLayoutModifier : LayoutModifier<DefaultLayoutModifier>() {
         }
         TODO("Animate not yet implemented.")
     }
-
 }

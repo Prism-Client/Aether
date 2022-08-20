@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.util.input
+package net.prismclient.aether.core.input
 
 /**
  * [UIKey] is an enum class which represents the keys on a keyboard. When accepting input,

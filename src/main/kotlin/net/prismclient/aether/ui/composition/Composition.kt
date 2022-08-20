@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.event.MousePress
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.modifier.UIModifier
@@ -113,6 +114,11 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
 
     // -- Shorthands -- //
 
+    /**
+     * Returns true if this Composition is at the top of the Composition tree. A composition within
+     * another composition would return false as it is not at the top.
+     */
+    open fun isTopLayer(): Boolean = composition == this // TODO: Update to fit Compositions within Compositions
 }
 
 /**
