@@ -45,10 +45,17 @@ open class UIListLayout constructor(
                 }
                 child.compose()
 
-                w = w.coerceAtLeast(child.x + child.width - this.x)
-                h = h.coerceAtLeast(child.y + child.height - this.y)
+                w = w.coerceAtLeast(child.x + child.relWidth - this.x)
+                h = h.coerceAtLeast(child.y + child.relHeight - this.y)
             }
         } else { TODO("Reverse order direction") }
+
+        // Remove the extra space calculated at the last child
+        if (direction == LayoutDirection.HORIZONTAL) {
+            w -= spacing
+        } else {
+            h -= spacing
+        }
 
         return Size(w, h)
     }
