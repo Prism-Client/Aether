@@ -1,6 +1,5 @@
 package net.prismclient.aether.core.util.other
 
-import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.composition.Composable
 
 /**
