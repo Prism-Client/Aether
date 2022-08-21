@@ -16,7 +16,7 @@ import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
-import net.prismclient.aether.ui.unit.other.Radius
+import net.prismclient.aether.ui.unit.other.UIRadius
 import net.prismclient.aether.ui.unit.type.dynamic.SizeUnit
 import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
@@ -36,7 +36,7 @@ import net.prismclient.aether.ui.alignment.UIAlignment.*
  * @see DefaultModifier
  */
 @Suppress("Unchecked_Cast", "LeakingThis")
-abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animatable<M> {
+abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animatable<M> { // TODO: Generic Composable type
     open var x: UIUnit<*>? = null
     open var y: UIUnit<*>? = null
     open var width: UIUnit<*>? = null
@@ -243,7 +243,7 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     /**
      * Sets the background radius of this [Modifier] to the given [radius]. A background is allocated if none is set.
      */
-    fun backgroundRadius(radius: Radius): M {
+    fun backgroundRadius(radius: UIRadius): M {
         background = background ?: UIBackground()
         background!!.radius(radius)
         return this as M

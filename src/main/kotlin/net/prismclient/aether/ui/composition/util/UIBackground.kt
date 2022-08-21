@@ -9,7 +9,7 @@ import net.prismclient.aether.core.util.shorthands.lerp
 import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.unit.other.Radius
+import net.prismclient.aether.ui.unit.other.UIRadius
 import net.prismclient.aether.core.util.property.UIProperty
 
 /**
@@ -25,7 +25,7 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
     // TODO: Border
 
     var backgroundColor: UIColor? = null
-    var backgroundRadius: Radius? = null
+    var backgroundRadius: UIRadius? = null
 
     override fun compose(composable: Composable?) {
         super.compose(composable)
@@ -88,7 +88,7 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
             backgroundColor!!.animate(start?.backgroundColor, end?.backgroundColor, fraction)
         }
         ifNotNull(start?.backgroundRadius, end?.backgroundRadius) {
-            backgroundRadius = backgroundRadius ?: Radius()
+            backgroundRadius = backgroundRadius ?: UIRadius()
             backgroundRadius!!.animate(start?.backgroundRadius, end?.backgroundRadius, fraction)
         }
     }
@@ -100,6 +100,6 @@ fun UIBackground.color(color: UIColor) = apply {
     backgroundColor = color
 }
 
-fun UIBackground.radius(radius: Radius) = apply {
+fun UIBackground.radius(radius: UIRadius) = apply {
     backgroundRadius = radius
 }

@@ -2,7 +2,7 @@ package net.prismclient.aether.core.util.shorthands
 
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.unit.other.Radius
+import net.prismclient.aether.ui.unit.other.UIRadius
 import net.prismclient.aether.ui.unit.type.dynamic.RelativeUnit
 import net.prismclient.aether.ui.unit.type.dynamic.SizeUnit
 import net.prismclient.aether.ui.unit.type.other.OperationUnit
@@ -44,17 +44,17 @@ inline val Number.rel: RelativeUnit get() = RelativeUnit(this.toFloat())
 inline val Number.crel: SizeUnit get() = SizeUnit(this.toFloat())
 
 /**
- * Creates a [Radius] with the given value for each corner.
+ * Creates a [UIRadius] with the given value for each corner.
  */
 @get:JvmName("radius")
-inline val Number.radius: Radius get() = px.radii
+inline val Number.radius: UIRadius get() = px.radii
 
 /**
- * Creates a [Radius] with the given unit. The unit is copied for each corner except the topLeft, where
+ * Creates a [UIRadius] with the given unit. The unit is copied for each corner except the topLeft, where
  * the original UIUnit reference is placed.
  */
 @get:JvmName("radii")
-inline val UIUnit<*>.radii: Radius get() = Radius(this, this.copy(), this.copy(), this.copy())
+inline val UIUnit<*>.radii: UIRadius get() = UIRadius(this, this.copy(), this.copy(), this.copy())
 
 // -- Util -- //
 

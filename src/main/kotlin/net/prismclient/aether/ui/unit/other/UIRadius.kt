@@ -10,18 +10,18 @@ import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.core.util.shorthands.px
 
 /**
- * [Radius] represents a 4 corner shape, such as rectangle which can be used to create
+ * [UIRadius] represents a 4 corner shape, such as rectangle which can be used to create
  * rounded corners.
  *
  * @author sen
  * @since 1.0
  */
-open class Radius(
+open class UIRadius(
     var topLeft: UIUnit<*>? = null,
     var topRight: UIUnit<*>? = null,
     var bottomRight: UIUnit<*>? = null,
     var bottomLeft: UIUnit<*>? = null
-) : UIProperty<Radius> {
+) : UIProperty<UIRadius> {
     override fun compose(composable: Composable?) {
         composable!!
         topLeft?.compute(composable, true)
@@ -30,9 +30,9 @@ open class Radius(
         bottomLeft?.compute(composable,false)
     }
 
-    override fun copy(): Radius = Radius(topLeft?.copy(), topRight?.copy(), bottomRight?.copy(), bottomLeft?.copy())
+    override fun copy(): UIRadius = UIRadius(topLeft?.copy(), topRight?.copy(), bottomRight?.copy(), bottomLeft?.copy())
 
-    override fun merge(other: Radius?) {
+    override fun merge(other: UIRadius?) {
         if (other != null) {
             topLeft = other.topLeft or topLeft
             topRight = other.topRight or topRight
@@ -41,7 +41,7 @@ open class Radius(
         }
     }
 
-    override fun animate(start: Radius?, end: Radius?, fraction: Float) {
+    override fun animate(start: UIRadius?, end: UIRadius?, fraction: Float) {
         ifNotNull(start?.topLeft, end?.topLeft) {
             topLeft = topLeft ?: 0.px
             topLeft!!.lerp(topLeft, start?.topLeft, end?.topLeft, fraction)

@@ -10,7 +10,7 @@ import net.prismclient.aether.core.util.shorthands.Block
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.resource.UIResourceProvider
-import net.prismclient.aether.ui.unit.other.Radius
+import net.prismclient.aether.ui.unit.other.UIRadius
 import net.prismclient.aether.ui.renderer.UIStrokeDirection
 
 /**
@@ -132,7 +132,7 @@ object UIRendererDSL {
      * renders a rectangle with the given bounds and [radius].
      */
     @JvmStatic
-    fun rect(x: Float, y: Float, width: Float, height: Float, radius: Radius?) = rect(
+    fun rect(x: Float, y: Float, width: Float, height: Float, radius: UIRadius?) = rect(
         x,
         y,
         width,
