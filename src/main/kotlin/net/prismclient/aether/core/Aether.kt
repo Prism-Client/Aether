@@ -3,7 +3,7 @@ package net.prismclient.aether.core
 import net.prismclient.aether.core.event.UIEventBus
 import net.prismclient.aether.core.event.MouseMove
 import net.prismclient.aether.core.event.MousePress
-import net.prismclient.aether.core.event.MouseReleased
+import net.prismclient.aether.core.event.MouseRelease
 import net.prismclient.aether.core.event.MouseScrolled
 import net.prismclient.aether.core.input.MouseButtonType
 import net.prismclient.aether.core.util.other.ComposableGroup
@@ -31,6 +31,10 @@ open class Aether(renderer: UIRenderer) {
     var displayHeight: Float = 0f
         protected set
     var devicePixelRatio: Float = 0f
+        protected set
+    var mouseX: Float = 0f
+        protected set
+    var mouseY: Float = 0f
         protected set
 
     /**
@@ -68,9 +72,7 @@ open class Aether(renderer: UIRenderer) {
         }
     }
 
-    open fun renderFrames() {
-
-    }
+    //open fun renderFrames() {}
 
     /**
      * Invoked when the mouse changes its state. This can be when it is pressed, released, or moved.
@@ -83,19 +85,25 @@ open class Aether(renderer: UIRenderer) {
      */
     open fun mouseChanged(mouseX: Float, mouseY: Float, mouseButton: MouseButtonType, isRelease: Boolean) {
         if (!safeCheck()) throw RuntimeException("Attempted to change mouse, but the check failed.")
+
+        this.mouseX = mouseX
+        this.mouseY = mouseY
+
         if (mouseButton != MouseButtonType.None) {
             if (!isRelease) {
                 compositions!!.filter(Composition::isTopLayer).forEach { composition ->
                     if (composition.isWithinBounds(mouseX, mouseY)) {
                         val item = findDeepest(mouseX, mouseY, composition)
                         if (item != null) {
-                            item.publish(MousePress(mouseX, mouseY, mouseButton, item))
+                            val event = MousePress(mouseX, mouseY, mouseButton, item)
+                            item.publish(event)
+                            UIEventBus.publish(event)
                             return
                         }
                     }
                 }
             } else {
-                UIEventBus.publish(MouseReleased(mouseX, mouseY, mouseButton))
+                UIEventBus.publish(MouseRelease(mouseX, mouseY, mouseButton))
             }
         } else {
             UIEventBus.publish(MouseMove(mouseX, mouseY))
@@ -106,7 +114,44 @@ open class Aether(renderer: UIRenderer) {
      * Invoked when the mouse scroll or trackpad is interacted with.
      */
     open fun mouseScrolled(dstX: Float, dstY: Float) {
-        // Focus the best possible layout
+        // TODO: Optimze
+        for (i in compositions!!.size - 1 downTo  0) {
+            val composition = compositions!![i]
+            if (composition.isWithinBounds(mouseX, mouseY)) {
+                val item = scrollFind(composition)
+
+                if (item != null){
+                    focusedComponent = item
+                    break
+                }
+            }
+        }
+
+        val composable = (focusedComponent as? Composable)
+
+        composable?.publish(MouseScrolled(dstX, dstY, composable))
+        composable?.recompose()
+    }
+
+    /**
+     * Finds the deepest focusable within the mouse bounds
+     */
+    private fun scrollFind(group: ComposableGroup): Focusable? {
+        for (composable in group.children.size - 1 downTo 0) {
+            val item = group.children[composable]
+
+            if (item.isWithinBounds(mouseX, mouseY)) {
+                if (item is ComposableGroup) {
+                    val output = scrollFind(item)
+                    if (output != null) return output
+                }
+
+                if (item is Focusable) {
+                    return item
+                }
+            }
+        }
+        return null
     }
 
     /**

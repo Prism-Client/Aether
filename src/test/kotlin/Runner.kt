@@ -144,6 +144,10 @@ object Runner {
 //            Aether.instance.keyPressed(Character.toChars(codepoint)[0])
         }
 
+        glfwSetScrollCallback(window) { _, xDst, yDst ->
+            core!!.mouseScrolled(xDst.toFloat(), yDst.toFloat())
+        }
+
 //        glfwSetScrollCallback(window) { _: Long, _: Double, yscroll: Double -> core!!.mouseScrolled(yscroll.toFloat()) }
 
         glfwMakeContextCurrent(window)
@@ -184,7 +188,7 @@ object Runner {
         while (!glfwWindowShouldClose(window)) {
             //updateMouse(mouseX.toFloat(), mouseY.toFloat())
 
-            core!!.renderFrames()
+//            core!!.renderFrames()
 
             GL11.glViewport(0, 0, framebufferWidth, framebufferHeight)
             GL11.glClearColor(0.3f, 0.3f, 0.3f, 0f)

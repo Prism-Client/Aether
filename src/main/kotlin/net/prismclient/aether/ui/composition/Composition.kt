@@ -1,13 +1,11 @@
 package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.core.Aether
-import net.prismclient.aether.core.event.MousePress
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.core.util.other.ComposableGroup
-import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.core.util.shorthands.or
 
 // TODO: disable optimize composition
@@ -22,13 +20,12 @@ import net.prismclient.aether.core.util.shorthands.or
  * @author sen
  * @since 1.0
  */
-@Suppress("LeakingThis")
 open class Composition(val name: String, modifier: CompositionModifier) : Composable(modifier), ComposableGroup {
     override val modifier: CompositionModifier get() = super.modifier as CompositionModifier
     override val children: ArrayList<Composable> = arrayListOf()
 
-    override fun parentWidth(): Float = Aether.instance.displayWidth.toFloat()
-    override fun parentHeight(): Float = Aether.instance.displayHeight.toFloat()
+    override fun parentWidth(): Float = Aether.instance.displayWidth
+    override fun parentHeight(): Float = Aether.instance.displayHeight
 
     /**
      * Returns the parent composition or this.
@@ -92,6 +89,8 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
      */
     open fun rasterize() {
         if (!modifier.optimizeComposition) return
+
+//        println("Rasterized the composition")
 
         framebuffer = framebuffer ?: Aether.renderer.createFBO(width, height)
 

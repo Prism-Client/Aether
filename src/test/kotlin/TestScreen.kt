@@ -81,12 +81,13 @@ class TestScreen : UIScreen {
                             width = 8.px
                             height = 0.9.crel
                             thumbColor = RGBA(255, 0, 0).rgb
+                            thumbRadius = 4.radius
                         }
                     }
             )) {
                 for (i in 0..10) {
                     val btn = button(
-                        text = "AgdCiLMmzjt ${i * 10}",
+                        text = "AgdCiLMmzjt $i",
                         modifier = Modifier()
                             .control(UIAlignment.CENTER)
                             .backgroundColor(0x29CC97.rgb)

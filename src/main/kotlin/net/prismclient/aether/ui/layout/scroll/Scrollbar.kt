@@ -1,8 +1,13 @@
 package net.prismclient.aether.ui.layout.scroll
 
 import net.prismclient.aether.core.color.UIColor
+import net.prismclient.aether.core.event.MouseMove
+import net.prismclient.aether.core.event.MousePress
+import net.prismclient.aether.core.event.MouseRelease
+import net.prismclient.aether.core.event.MouseScrolled
 import net.prismclient.aether.core.util.property.UIUniqueProperty
 import net.prismclient.aether.core.util.shorthands.dp
+import net.prismclient.aether.core.util.shorthands.within
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.dsl.renderer
@@ -12,6 +17,7 @@ import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.layout.util.Overflow
 import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.shape.Shape
+import net.prismclient.aether.ui.unit.other.UIRadius
 
 /**
  * [Scrollbar], as the name suggests, represents a Scrollbar which can be applied to a layout on an axis. Because
@@ -53,6 +59,10 @@ abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollb
      * The value of the scrollbar, represented as a value between 0 and 1.
      */
     open var value: Float = 0f
+        set(value) {
+            field = value.coerceAtLeast(0f)
+                    .coerceAtMost(1f)
+        }
 
     /**
      * The size of the thumb, known the objet used to scroll. By default, the thumb size
@@ -63,9 +73,10 @@ abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollb
     open var actualThumbSize: Float = 0f
 
     /**
-     * The offset of the mouse relative to the x or y of the thumb
+     * Indicates if the thumb of this scrollbar is actively selected, which is defined as if
+     * the mouse was pressed, and has not been release within the bounds of the thumb.
      */
-    protected open var mouseOffset: Float = 0f
+    open var thumbSelected: Boolean = false
 
     override fun compose(composable: UILayout?) {
         super.compose(composable); composable!!
@@ -87,8 +98,40 @@ abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollb
             }
             actualThumbSize = (composable.height / (composable.layoutSize.height.coerceAtLeast(composable.height))) * height.dp
         }
-
+        composable.addListener("$this:$direction", listener = ::onScroll)
+        composable.addListener("$this:$direction", listener = ::onMousePress)
+        composable.addListener("$this:$direction", listener = ::onMouseRelease)
+        composable.addListener("$this:$direction", listener = ::onMouseMove)
     }
+
+    /**
+     * Invoked when the mouse is scrolled. [event] gives the necessary
+     * data to determine how to adjust the scrollbar.
+     */
+    open fun onScroll(event: MouseScrolled) {
+        value -= if (direction == LayoutDirection.HORIZONTAL) {
+            event.dstX / width.dp.coerceAtLeast(1f)
+        } else {
+            event.dstY / height.dp.coerceAtLeast(1f)
+        }
+    }
+
+    /**
+     * Invoked whe the mouse is pressed, within the [compose] function.
+     */
+    abstract fun onMousePress(event: MousePress)
+
+    /**
+     * Invoked when the mouse is released, within the [compose] function.
+     */
+    open fun onMouseRelease(event: MouseRelease) {
+        thumbSelected = false
+    }
+
+    /**
+     * Invoked when the mouse is moved, within the [compose] function,
+     */
+    abstract fun onMouseMove(event: MouseMove)
 }
 
 /**
@@ -97,28 +140,67 @@ abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollb
  */
 class DefaultScrollbar : Scrollbar() {
     var thumbColor: UIColor? = null
+    var thumbRadius: UIRadius? = null
     var background: UIBackground? = null
+
+    var thumbBounds: FloatArray = FloatArray(4)
+
+    /**
+     * The offset of the mouse relative to the x or y of the thumb
+     */
+    private var mouseOffset: Float = 0f
+
+    override var value: Float = super.value
+        set(value) {
+            field = value.coerceAtLeast(0f).coerceAtMost(1f)
+            var x = initialX + x.dp
+            var y = initialY + y.dp
+            var w = width.dp
+            var h = height.dp
+
+            // Compute the offset
+            if (direction == LayoutDirection.HORIZONTAL) {
+                x += (width.dp - actualThumbSize) * value
+                w = actualThumbSize
+            } else {
+                y += (height.dp - actualThumbSize) * value
+                h = actualThumbSize
+            }
+            thumbBounds[0] = x
+            thumbBounds[1] = y
+            thumbBounds[2] = w
+            thumbBounds[3] = h
+        }
+
+    override fun compose(composable: UILayout?) {
+        super.compose(composable)
+        thumbRadius?.compose(composable)
+        value = value // Update the thumbBounds
+    }
 
     override fun render() {
         if (!shouldRender) return
         background?.render()
-        var x = initialX + x.dp
-        var y = initialY + y.dp
-        var w = width.dp
-        var h = height.dp
-
-        // Compute the offset
-        if (direction == LayoutDirection.HORIZONTAL) {
-            x += (width.dp - actualThumbSize) * value
-            w = actualThumbSize
-        } else {
-            y += (height.dp - actualThumbSize) * value
-            h = actualThumbSize
-        }
-
         renderer {
             color(thumbColor)
-            rect(x, y, w, h)
+            rect(thumbBounds[0], thumbBounds[1], thumbBounds[2], thumbBounds[3], thumbRadius)
+        }
+    }
+
+    override fun onMousePress(event: MousePress) {
+        if (within(event.mouseX, event.mouseY, thumbBounds[0], thumbBounds[1], thumbBounds[2], thumbBounds[3])) {
+            thumbSelected = true
+            mouseOffset = if (direction == LayoutDirection.HORIZONTAL)
+                event.mouseX - thumbBounds[0]
+                else event.mouseY - thumbBounds[1]
+        }
+    }
+
+    override fun onMouseMove(event: MouseMove) {
+        if (thumbSelected) {
+            value = if (direction == LayoutDirection.HORIZONTAL)
+                (event.mouseX - initialX - x.dp - mouseOffset) / (width.dp - actualThumbSize)
+                else (event.mouseY - initialY - y.dp - mouseOffset) / (height.dp - actualThumbSize)
         }
     }
 

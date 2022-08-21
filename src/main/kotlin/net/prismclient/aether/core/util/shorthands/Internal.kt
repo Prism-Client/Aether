@@ -1,8 +1,8 @@
 package net.prismclient.aether.core.util.shorthands
 
-import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.property.Mergable
+import net.prismclient.aether.ui.unit.UIUnit
 import kotlin.math.roundToInt
 
 // Internal shorthands for Aether to reduce the amount of boilerplate code.
@@ -29,6 +29,20 @@ internal infix fun <T : Copyable<*>> T?.or(other: T?): T? = (this?.copy() ?: oth
 internal inline fun ifNotNull(value: Any?, value1: Any? = null, block: () -> Unit) {
     if (value != null || value1 != null) block()
 }
+
+// -- Bounds -- //
+
+/**
+ * Returns ture if [positionX] and [positionY] are within or equal to the bounds of [x], [y], [width] and [height].
+ */
+internal fun within(
+        positionX: Float,
+        positionY: Float,
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float
+) = positionX >= x && positionY >= y && positionX <= x + width && positionY <= y + height
 
 // -- Lerping -- //
 

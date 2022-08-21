@@ -1,19 +1,19 @@
 package net.prismclient.aether.core.event
 
-import net.prismclient.aether.core.event.UIEvent
 import net.prismclient.aether.core.input.MouseButtonType
 import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.core.input.UIKey
 import net.prismclient.aether.ui.composition.Composition
 
 /**
  * Indicates an event where a singular composable is invoked, and the event moves (propagates) up the
  * composition tree until the composition. [propagate] informs this to propagate up.
  *
+ * //todo: better documentatino for PropagatingEvents
+ *
  * @author sen
  * @since 1.0
  */
-abstract class PropagatingEvent(val initialComposable: Composable) : UIEvent {
+abstract class PropagatingEvent(val initialComposable: Composable) : UIEvent, CustomEvent {
     /**
      * The amount of [Composable] (nodes) which this [PropagatingEvent] has passed through; the amount
      * of times this has been propagated
@@ -53,6 +53,9 @@ abstract class PropagatingEvent(val initialComposable: Composable) : UIEvent {
     fun isInitial(): Boolean = currentComposable == initialComposable && propagationIndex == 0
 }
 
+/**
+ * Invoked when the mouse is moved. [mouseX] and [mouseY] represent the mouse coordinates.
+ */
 class MouseMove(val mouseX: Float, val mouseY: Float) : UIEvent
 
 /**
@@ -67,11 +70,8 @@ class MousePress(val mouseX: Float, val mouseY: Float, val button: MouseButtonTy
 /**
  * Invoked when the mouse is released. [mouseX] and [mouseY] represent the mouse coordinates, and [button]
  * represents the button of which was released.
- *
- * @author sen
- * @since 1.0
  */
-class MouseReleased(val mouseX: Float, val mouseY: Float, val button: MouseButtonType) : UIEvent
+class MouseRelease(val mouseX: Float, val mouseY: Float, val button: MouseButtonType) : UIEvent
 
 // MouseScrolled && KeyPressed are within FocusableEvents.kt !!!
 // ~ sen ~

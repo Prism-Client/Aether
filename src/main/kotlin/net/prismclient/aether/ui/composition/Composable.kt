@@ -6,11 +6,11 @@ import net.prismclient.aether.core.event.*
 import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.UIModifier
-import net.prismclient.aether.ui.registry.register
 import net.prismclient.aether.ui.unit.UIUnit
 import java.util.function.Consumer
 import kotlin.math.roundToInt
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 
 /**
  * [Composable] is the superclass for all UI objects within Aether. Anything that extends this class
@@ -52,7 +52,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     /**
      * The events of a [Composable] it is automatically allocated if necessary
      */
-    open var events: HashMap<KClass<out UIEvent>, HashMap<String, Consumer<out UIEvent>>>? = null
+    open var listeners: HashMap<KClass<out UIEvent>, HashMap<String, Consumer<out UIEvent>>>? = null
 
     /**
      * Returns true if this has been composed at least once.
@@ -146,7 +146,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      * Unsafely invokes each listener of the [event].
      */
     open fun <T : UIEvent> publish(event: T) {
-        events?.get(event::class)?.forEach {
+        listeners?.get(event::class)?.forEach {
             @Suppress("UNCHECKED_CAST")
             (it.value as Consumer<T>).accept(event)
         }
@@ -159,17 +159,19 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      * it is likely that Aether is already manually handling the event, and the listener does not need ot be added.
      */
     inline fun <reified T : UIEvent> addListener(
-        listenerName: String = "${T::class.simpleName}:${(events?.get(T::class)?.size ?: 0)}",
-        allocateEventListener: Boolean = true,
-        listener: Consumer<T>
+            listenerName: String = "${T::class.simpleName}:${(listeners?.get(T::class)?.size ?: 0)}",
+            allocateEventListener: Boolean = true,
+            listener: Consumer<T>
     ) {
         // Allocate the event HashMap if necessary.
-        events = events ?: hashMapOf()
-        events!!.computeIfAbsent(T::class) {
-            // If the given event is absent, allocate it and add
-            // the listener mentioned above. Propagating events
-            // can be assumed to be handled manually.
-            if (allocateEventListener && T::class !is PropagatingEvent) {
+        listeners = listeners ?: hashMapOf()
+        listeners!!.computeIfAbsent(T::class) {
+            // If the given event is absent, allocate it and add that event
+            // to the global eventbus if allocateEventListener is true, and
+            // it is not a subclass of CustomEvent, as CustomEvents automatically
+            // handle publishing and composing itself.
+
+            if (allocateEventListener && !T::class.isSubclassOf(CustomEvent::class)) {
                 UIEventBus.register<T>(it) { event ->
                     publish(event)
                     recompose()
@@ -221,7 +223,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     /**
      * Returns true if the given [event] is registered within this composable
      */
-    inline fun <reified T : UIEvent> hasEventListener(event: T): Boolean = events?.get(T::class) != null
+    inline fun <reified T : UIEvent> hasEventListener(event: T): Boolean = listeners?.get(T::class) != null
 
     /**
      * Computes the given unit with the [parentWidth] and [parentHeight].

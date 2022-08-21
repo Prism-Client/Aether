@@ -3,10 +3,10 @@ package net.prismclient.aether.ui.layout
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.property.Focusable
+import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.core.util.shorthands.ifNotNull
 import net.prismclient.aether.core.util.shorthands.lerp
 import net.prismclient.aether.core.util.shorthands.or
-import net.prismclient.aether.core.util.shorthands.px
 import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.UIRendererDSL
@@ -22,6 +22,7 @@ import net.prismclient.aether.ui.unit.other.Padding
  * composable, as it introduces the opportunity for scrollbars.
  *
  * //todo: doc this stuff xd
+ * // todo: automatically calculate the layout size after composition
  *
  * @author sen
  * @since 1.0
@@ -29,8 +30,8 @@ import net.prismclient.aether.ui.unit.other.Padding
  * @param overrideChildren When true, the children's property overridden is enabled during the compose stage.
  */
 abstract class UILayout(
-    modifier: LayoutModifier<*>,
-    protected val overrideChildren: Boolean
+        modifier: LayoutModifier<*>,
+        protected val overrideChildren: Boolean
 ) : Composable(modifier), ComposableGroup, Focusable {
     override val modifier: LayoutModifier<*> = super.modifier as LayoutModifier<*>
 
@@ -103,36 +104,28 @@ abstract class UILayout(
     abstract fun updateLayout(): Size
 
     override fun render() {
+        // Clip the content if necessary
         if (modifier.clipContent) {
-            UIRendererDSL.renderer.save()
+            if (UIRendererDSL.shouldSave) UIRendererDSL.renderer.save()
             UIRendererDSL.renderer.scissor(relX, relY, relWidth, relHeight)
         }
+
+        // Calculate the offset of the scrollbars
+        val xOffset = (modifier.horizontalScrollbar?.value ?: 0f) * (layoutSize.width - this.width)
+        val yOffset = (modifier.verticalScrollbar?.value ?: 0f) * (layoutSize.height - this.height)
+
         modifier.preRender()
+
+        // Translate by the offset of the scrollbars
+        UIRendererDSL.renderer.translate(-xOffset, -yOffset)
         children.forEach(Composable::render)
+
+        // Return by inverting the value and render the scrollbar
+        UIRendererDSL.renderer.translate(xOffset, yOffset)
         modifier.render()
-        if (modifier.clipContent) UIRendererDSL.renderer.restore()
-    }
 
-    // -- Utility -- //
-
-    /**
-     * Adds the given [component] to this layout.
-     *
-     * @return True if the component was not already added.
-     */
-    open fun addChild(component: UIComponent<*>) {
-        component.parent = this
-        children.add(component)
-    }
-
-    /**
-     * Removes the given [component] from this. The parent of the child is set to null if it is this.
-     *
-     * @return True if the component was removed.
-     */
-    open fun removeChild(component: UIComponent<*>) {
-        if (component.parent == this) component.parent = null
-        children.remove(component)
+        // Restore the state necessary
+        if (modifier.clipContent && UIRendererDSL.shouldSave) UIRendererDSL.renderer.restore()
     }
 }
 
