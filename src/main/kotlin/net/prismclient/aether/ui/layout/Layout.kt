@@ -1,5 +1,6 @@
 package net.prismclient.aether.ui.layout
 
+import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.property.Focusable
@@ -51,6 +52,14 @@ abstract class UILayout(
      * Returns the height of area exceeding the bounds of this layout, or 0.
      */
     open fun heightOverflow(): Float = (layoutSize.height - height).coerceAtLeast(0f)
+
+    override fun layoutXOffset(): Float = (modifier.horizontalScrollbar?.value ?: 0f) * (layoutSize.width - this.width) + super.layoutXOffset()
+
+    override fun layoutYOffset(): Float = (modifier.verticalScrollbar?.value ?: 0f) * (layoutSize.height - this.height) + super.layoutYOffset()
+
+    override fun mouseX(): Float =  Aether.instance.mouseX + super.layoutXOffset()
+
+    override fun mouseY(): Float =  Aether.instance.mouseY + super.layoutYOffset()
 
     override fun compose() {
         modifier.preCompose(this)

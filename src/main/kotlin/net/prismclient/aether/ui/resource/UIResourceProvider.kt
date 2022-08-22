@@ -1,7 +1,7 @@
 package net.prismclient.aether.ui.resource
 
 import net.prismclient.aether.ui.font.UIFontFamily
-import net.prismclient.aether.ui.resource.image.UIImageData
+import net.prismclient.aether.ui.image.UIImageData
 
 /**
  * [UIResourceProvider] manages fonts and images for Aether.

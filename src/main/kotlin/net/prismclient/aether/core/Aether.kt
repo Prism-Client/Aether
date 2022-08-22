@@ -92,7 +92,7 @@ open class Aether(renderer: UIRenderer) {
         if (mouseButton != MouseButtonType.None) {
             if (!isRelease) {
                 compositions!!.filter(Composition::isTopLayer).forEach { composition ->
-                    if (composition.isWithinBounds(mouseX, mouseY)) {
+                    if (composition.mouseWithinBounds()) {
                         val item = findDeepest(mouseX, mouseY, composition)
                         if (item != null) {
                             val event = MousePress(mouseX, mouseY, mouseButton, item)
@@ -117,7 +117,7 @@ open class Aether(renderer: UIRenderer) {
         // TODO: Optimze
         for (i in compositions!!.size - 1 downTo  0) {
             val composition = compositions!![i]
-            if (composition.isWithinBounds(mouseX, mouseY)) {
+            if (composition.mouseWithinBounds()) {
                 val item = scrollFind(composition)
 
                 if (item != null){
@@ -140,7 +140,7 @@ open class Aether(renderer: UIRenderer) {
         for (composable in group.children.size - 1 downTo 0) {
             val item = group.children[composable]
 
-            if (item.isWithinBounds(mouseX, mouseY)) {
+            if (item.mouseWithinBounds()) {
                 if (item is ComposableGroup) {
                     val output = scrollFind(item)
                     if (output != null) return output
@@ -161,7 +161,7 @@ open class Aether(renderer: UIRenderer) {
         for (composable in group.children.size - 1 downTo 0) {
             val item = group.children[composable]
 
-            if (item.isWithinBounds(boundX, boundY)) {
+            if (item.mouseWithinBounds()) {
                 return if (item is ComposableGroup) {
                     findDeepest(boundX, boundY, item) ?: item
                 } else {

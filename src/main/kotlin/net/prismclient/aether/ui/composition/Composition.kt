@@ -27,6 +27,9 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
     override fun parentWidth(): Float = Aether.instance.displayWidth
     override fun parentHeight(): Float = Aether.instance.displayHeight
 
+    override fun layoutXOffset(): Float = 0f
+    override fun layoutYOffset(): Float = 0f
+
     /**
      * Returns the parent composition or this.
      */
@@ -111,7 +114,7 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
         }
     }
 
-    // -- Shorthands -- //
+    // -- Util -- //
 
     /**
      * Returns true if this Composition is at the top of the Composition tree. A composition within

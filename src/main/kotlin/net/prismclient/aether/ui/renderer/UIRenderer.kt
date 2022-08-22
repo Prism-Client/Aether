@@ -1,7 +1,7 @@
 package net.prismclient.aether.ui.renderer
 
 import net.prismclient.aether.ui.alignment.UITextAlignment
-import net.prismclient.aether.ui.resource.image.UIImageData
+import net.prismclient.aether.ui.image.UIImageData
 import java.nio.ByteBuffer
 
 /**

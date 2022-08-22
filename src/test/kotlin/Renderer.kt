@@ -2,7 +2,7 @@ import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.ui.renderer.UIRenderer
-import net.prismclient.aether.ui.resource.image.UIImageData
+import net.prismclient.aether.ui.image.UIImageData
 import net.prismclient.aether.core.util.shorthands.alpha
 import net.prismclient.aether.core.util.shorthands.blue
 import net.prismclient.aether.core.util.shorthands.green

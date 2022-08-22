@@ -1,7 +1,6 @@
 package net.prismclient.aether.ui.composition
 
-import net.prismclient.aether.core.event.UIEvent
-import net.prismclient.aether.core.event.UIEventBus
+import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.event.*
 import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.ui.layout.UILayout
@@ -159,9 +158,9 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      * it is likely that Aether is already manually handling the event, and the listener does not need ot be added.
      */
     inline fun <reified T : UIEvent> addListener(
-            listenerName: String = "${T::class.simpleName}:${(listeners?.get(T::class)?.size ?: 0)}",
-            allocateEventListener: Boolean = true,
-            listener: Consumer<T>
+        listenerName: String = "${T::class.simpleName}:${(listeners?.get(T::class)?.size ?: 0)}",
+        allocateEventListener: Boolean = true,
+        listener: Consumer<T>
     ) {
         // Allocate the event HashMap if necessary.
         listeners = listeners ?: hashMapOf()
@@ -180,6 +179,11 @@ abstract class Composable(open val modifier: UIModifier<*>) {
             HashMap()
         }[listenerName] = listener
     }
+
+    /**
+     * Returns true if the given [event] is registered within this composable
+     */
+    fun hasEventListener(event: UIEvent): Boolean = listeners?.get(event::class) != null
 
 
     // -- Util -- //
@@ -204,8 +208,32 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      */
     open fun parentHeight(): Float = parent?.height ?: composition.height
 
+    open fun layoutXOffset(): Float = parent?.layoutXOffset() ?: 0f
+
+    open fun layoutYOffset(): Float = parent?.layoutYOffset() ?: 0f
+
     /**
-     * Returns true if the given coordinates are within the normal bounds (non relative values) of this.
+     * Returns the mouseX position offset by the layout scrollbar (if applicable).
+     */
+    open fun mouseX(): Float = Aether.instance.mouseX + layoutXOffset()
+
+    /**
+     * Returns the mouseY position offset by the layout scrollbar (if applicable).
+     */
+    open fun mouseY(): Float = Aether.instance.mouseY + layoutYOffset()
+
+    /**
+     * Returns true if the mouse is within the normal bounds (non-relative values) of this.
+     */
+    open fun mouseWithin(): Boolean = isWithin(mouseX(), mouseY())
+
+    /**
+     * Returns true if the mouse is within the bounds (relative values) of this.
+     */
+    open fun mouseWithinBounds(): Boolean = isWithinBounds(mouseX(), mouseY())
+
+    /**
+     * Returns true if the given coordinates are within the normal bounds (non-relative values) of this.
      *
      * @see isWithinBounds
      */
@@ -219,11 +247,6 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      */
     open fun isWithinBounds(xBound: Float, yBound: Float): Boolean =
         (relX <= xBound && relY <= yBound && relX + relWidth >= xBound && relY + relHeight >= yBound)
-
-    /**
-     * Returns true if the given [event] is registered within this composable
-     */
-    inline fun <reified T : UIEvent> hasEventListener(event: T): Boolean = listeners?.get(T::class) != null
 
     /**
      * Computes the given unit with the [parentWidth] and [parentHeight].

@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.resource.image
+package net.prismclient.aether.ui.image
 
 import java.nio.ByteBuffer
 
