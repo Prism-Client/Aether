@@ -1,5 +1,6 @@
 package net.prismclient.aether.ui.registry
 
+import net.prismclient.aether.core.util.shorthands.copy
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.style.Style
 
@@ -83,9 +84,9 @@ fun register(modifier: UIModifier<*>, name: String = modifier::class.simpleName!
 }
 
 /**
- * Registers the given style with the given [name] to [UIRegistry]. When set to the active modifier,
- * all properties of it are applied to the active modifier.
+ * Creates a copy of the [style] and registers it with the given [name] to [UIRegistry]. When set
+ * to the active modifier, all properties of it are applied to the active modifier.
  */
 fun register(style: Style<*>, name: String = style::class.simpleName!!) {
-    UIRegistry.registerStyle(name, style)
+    UIRegistry.registerStyle(name, style.copy)
 }

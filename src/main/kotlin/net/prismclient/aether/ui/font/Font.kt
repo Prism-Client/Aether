@@ -11,6 +11,7 @@ import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.font.FontType.*
+import net.prismclient.aether.ui.registry.UIRegistry
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.style.Style
@@ -98,7 +99,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
         super.compose(composable)
         style.compose(composable)
         updateFont()
-        anchor?.update(composable, fontMetrics.maxX - fontMetrics.minX, fontMetrics.maxY - fontMetrics.minY)// width.dp, height.dp)
+        anchor?.update(composable, width.dp, height.dp)
     }
 
     /**
@@ -269,7 +270,7 @@ open class FontStyle : Style<FontStyle>() {
     override fun compose(composable: Composable?) {
         composable!!
         ifNotNull(fontFamily) {
-            println("here")
+            //println("here")
             actualFontName = "${fontFamily!!.familyName}-${fontFaceType?.name?.lowercase()}"
         }
         fontSize?.compute(composable, composable.width, composable.height, false)
@@ -321,6 +322,13 @@ open class FontStyle : Style<FontStyle>() {
     override fun animate(start: FontStyle?, end: FontStyle?, fraction: Float) {
         TODO("Feature yet to be implemented")
     }
+}
+
+/**
+ * Applies the given [style] to this, [T] from [UIRegistry].
+ */
+fun <T : FontStyle> T.of(style: String): T = apply {
+    this.applyStyle(style)
 }
 
 /**

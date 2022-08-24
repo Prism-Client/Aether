@@ -21,13 +21,18 @@ class Label internal constructor(
         set(value) {
             field = value
             font.actualText = value
+            // Require recompose
         }
 
     override fun update() {
         font.actualText = text
         font.compose(this)
-        if (dynamic)
+        if (dynamic) {
             composePosition()
+            font.initialX = x
+            font.initialY = y
+            // TODO: Updating the initial x as the position might be updated after
+        }
     }
 
     override fun renderComponent() {

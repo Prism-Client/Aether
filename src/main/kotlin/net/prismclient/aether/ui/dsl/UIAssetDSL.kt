@@ -5,7 +5,9 @@ import net.prismclient.aether.core.debug.inform
 import net.prismclient.aether.core.debug.warn
 import net.prismclient.aether.core.util.extensions.safeByteBuffer
 import net.prismclient.aether.core.util.extensions.toByteBuffer
+import net.prismclient.aether.ui.font.UIFontFamily
 import net.prismclient.aether.ui.image.*
+import net.prismclient.aether.ui.resource.UIResourceProvider
 import org.apache.commons.io.FilenameUtils
 import java.io.File
 import java.nio.ByteBuffer
@@ -139,6 +141,11 @@ object UIAssetDSL {
                 when (fileExtension) {
                     "png", "jpeg", "jpg" -> image(name, file.inputStream().safeByteBuffer(), imageFlags)
                     "svg" -> svg(name, file.inputStream().safeByteBuffer(), svgScale)
+                    "ttf" -> {
+                        val data = file.inputStream().safeByteBuffer()!!
+                        font(name, file.inputStream().safeByteBuffer())
+                        UIResourceProvider.registerFont(name, data)
+                    }
                     else -> {
                         warn("Unsupported file type: ${file.name}")
                         continue

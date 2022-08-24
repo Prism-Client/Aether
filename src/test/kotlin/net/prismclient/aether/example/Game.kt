@@ -8,11 +8,15 @@ import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL.createCapabilities
 import org.lwjgl.opengl.GL11.*
+import org.lwjgl.system.Configuration
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import org.lwjgl.system.Platform
 import kotlin.math.max
 
+/**
+ * An example game using LWJGL 3 and GLFW to run Aether.
+ */
 abstract class Game(val windowTitle: String) {
     lateinit var aether: Aether
     lateinit var window: Window
@@ -37,6 +41,8 @@ abstract class Game(val windowTitle: String) {
     
     open fun createWindow() {
         GLFWErrorCallback.createPrint().set()
+
+//        Configuration.GLFW_CHECK_THREAD0.set(false)
 
         if (!glfwInit()) throw RuntimeException("Failed to init GLFW")
         if (Platform.get() === Platform.MACOSX) {
@@ -94,16 +100,14 @@ abstract class Game(val windowTitle: String) {
 
             // Update Aether and pass the properties of the window. For
             // content scale, return the larger value of the two axes.
-            aether.update(window.width.toFloat(), window.height.toFloat(), max(window.contentScaleX, window.contentScaleY))
+            aether.update(window.width / window.contentScaleX, window.height / window.contentScaleY, max(window.contentScaleX, window.contentScaleY))
         }
     }
 
     /**
      * Creates the callbacks for input events. The window resize callback is set within [createWindow].
      */
-    open fun createCallbacks() {
-
-    }
+    abstract fun createCallbacks()
 
     open fun run() {
         while (!glfwWindowShouldClose(window.handle)) {

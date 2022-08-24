@@ -10,6 +10,9 @@ import java.nio.ByteBuffer
  * @since 1.0
  */
 class UIFontFamily(val familyName: String, val thin: Font?, val extraLight: Font?, val light: Font?, val regular: Font?, val medium: Font?, val semiBold: Font?, val bold: Font?, val extraBold: Font?, val black: Font?) {
+    // TODO: Improve this
+    // TODO: Dont allocate if it alreasdy exists within the UIResourceProvider
+
     constructor(familyName: String, thin: ByteBuffer?, extraLight: ByteBuffer?, light: ByteBuffer?, regular: ByteBuffer?, medium: ByteBuffer?, semiBold: ByteBuffer?, bold: ByteBuffer?, extraBold: ByteBuffer?, black: ByteBuffer?) : this(
             familyName,
             if (thin != null) Font("$familyName-thin", thin) else null,
@@ -36,5 +39,11 @@ class UIFontFamily(val familyName: String, val thin: Font?, val extraLight: Font
             "$location/$familyName-black.ttf".safeByteBuffer()
     )
 
+    /**
+     * Represents a single font with its memory, and it's [name].
+     *
+     * @author sen
+     * @since 1.0
+     */
     class Font(val name: String, val buffer: ByteBuffer)
 }

@@ -115,7 +115,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     }
 
     open fun composeAnchor() {
-        modifier.anchorPoint?.update(this, width.toFloat(), height.toFloat())
+        modifier.anchorPoint?.update(this, width, height)
     }
 
     open fun composePadding() {

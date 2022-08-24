@@ -9,6 +9,7 @@ import net.prismclient.aether.core.util.shorthands.alpha
 import net.prismclient.aether.core.util.shorthands.blue
 import net.prismclient.aether.core.util.shorthands.green
 import net.prismclient.aether.core.util.shorthands.red
+import net.prismclient.aether.ui.resource.UIResourceProvider
 import org.lwjgl.nanovg.*
 import org.lwjgl.nanovg.NanoVG.*
 import org.lwjgl.nanovg.NanoVGGL3.*
