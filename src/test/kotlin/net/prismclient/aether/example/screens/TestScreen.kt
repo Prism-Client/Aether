@@ -1,3 +1,5 @@
+package net.prismclient.aether.example.screens
+
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.shorthands.*
@@ -37,6 +39,7 @@ class TestScreen : UIScreen {
             name = "Test",
             modifier = CompositionModifier()
                 .constrain(50.px, 50.px, 500.px, 500.px)
+                .backgroundColor(RGBA(0f, 1f, 0f).rgb)
         ) {
 
         }

@@ -1,3 +1,5 @@
+package net.prismclient.aether.example
+
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.renderer.UIFramebuffer
@@ -15,7 +17,6 @@ import org.lwjgl.stb.STBImage
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
-import kotlin.math.max
 
 /**
  * Aether allows for the ability to provide your own rendering system. However, you might not

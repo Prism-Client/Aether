@@ -1,10 +1,11 @@
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.debug.UIDebug
-import net.prismclient.aether.core.util.extensions.toByteBuffer
 import net.prismclient.aether.core.input.MouseButtonType
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.core.input.UIKey
+import net.prismclient.aether.example.Renderer
+import net.prismclient.aether.example.screens.TestScreen
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -19,7 +20,7 @@ import kotlin.math.max
 /**
  * An example runner class with LWJGL 3 & glfw
  */
-object Runner {
+object Runner_ {
     var mouseX = 0.0
         private set
     var mouseY = 0.0
@@ -179,17 +180,10 @@ object Runner {
         var time = System.currentTimeMillis()
         var fpsstring = "FPS: $fps"
 
-        val buffer = "/Poppins.ttf".toByteBuffer()
-        Aether.renderer.createFont("Poppins", buffer)
-
         UIDebug.debug()
         createScreen(args)
 
         while (!glfwWindowShouldClose(window)) {
-            //updateMouse(mouseX.toFloat(), mouseY.toFloat())
-
-//            core!!.renderFrames()
-
             GL11.glViewport(0, 0, framebufferWidth, framebufferHeight)
             GL11.glClearColor(0.3f, 0.3f, 0.3f, 0f)
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT or GL11.GL_STENCIL_BUFFER_BIT)
@@ -197,7 +191,6 @@ object Runner {
             core!!.render()
 
             renderer {
-                // 400 100, 250, 50
                 beginFrame(
                     framebufferWidth / contentScaleX,
                     framebufferHeight / contentScaleY,
