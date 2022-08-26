@@ -68,3 +68,6 @@ fun RGBA(r: Float, g: Float, b: Float, a: Float = 1f): Int =
  * Returns an ARGB formatted Int from the given [r], [g], [b] and [a].
  */
 fun RGBA(r: Int, g: Int, b: Int, a: Float) = RGBA(r, g, b, (a * 255 + 0.5).toInt())
+
+// TODO: RGB(A) functions for UIColor
+// fun cRGBA(r: Float, g: Float, b: Float, a: Float = 1f): UIColor = RGBA(r, g, b, a).rgb

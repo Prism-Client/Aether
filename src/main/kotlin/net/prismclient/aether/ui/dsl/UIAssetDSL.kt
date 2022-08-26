@@ -5,7 +5,6 @@ import net.prismclient.aether.core.debug.inform
 import net.prismclient.aether.core.debug.warn
 import net.prismclient.aether.core.util.extensions.safeByteBuffer
 import net.prismclient.aether.core.util.extensions.toByteBuffer
-import net.prismclient.aether.ui.font.UIFontFamily
 import net.prismclient.aether.ui.image.*
 import net.prismclient.aether.ui.resource.UIResourceProvider
 import org.apache.commons.io.FilenameUtils
@@ -40,7 +39,9 @@ object UIAssetDSL {
             warn("Failed to load image name, as the buffer was null.")
             return null
         }
-        return Aether.renderer.createImage(name, buffer, flags)
+        return Aether.renderer.createImage(name, buffer, flags).also {
+            UIResourceProvider.registerImage(name, it)
+        }
     }
 
     @JvmStatic
@@ -49,13 +50,15 @@ object UIAssetDSL {
         svg(name, path.safeByteBuffer(), scale)
 
     @JvmOverloads
-    fun svg(name: String, byteBuffer: ByteBuffer?, scale: Float = Aether.instance.devicePixelRatio): UIImageData? {
-        if (byteBuffer == null) {
+    fun svg(name: String, buffer: ByteBuffer?, scale: Float = Aether.instance.devicePixelRatio): UIImageData? {
+        if (buffer == null) {
             warn("Failed to load svg $name, as the buffer was null.")
             return null
         }
 
-        return Aether.renderer.createSvg(name, byteBuffer, scale)
+        return Aether.renderer.createSvg(name, buffer, scale).also {
+            UIResourceProvider.registerImage(name, it)
+        }
     }
 
     @JvmStatic
@@ -67,7 +70,9 @@ object UIAssetDSL {
             warn("Failed to load font $name, as the buffer was null.")
             return
         }
-        Aether.renderer.createFont(name, buffer)
+        Aether.renderer.createFont(name, buffer).also {
+            UIResourceProvider.registerFont(name, buffer)
+        }
     }
 
     // TODO: Append stuff to bulk load and stuff
@@ -103,7 +108,7 @@ object UIAssetDSL {
         appendedString: String = "",
         imageFlags: Int = DEFAULT_IMAGE_FLAGS,
         svgScale: Float = Aether.instance.devicePixelRatio
-    ): Int {
+    ): Int { // TODO: Improve: resource, duplicate, metadata etc..
         val file = Aether::class.java.getResource(folderLocation) ?: run {
             error("Failed to bulk load [$folderLocation] as the file was null.")
             return 0
@@ -138,14 +143,11 @@ object UIAssetDSL {
             } else {
                 val name = loc + FilenameUtils.removeExtension(file.name)
 
+
                 when (fileExtension) {
                     "png", "jpeg", "jpg" -> image(name, file.inputStream().safeByteBuffer(), imageFlags)
                     "svg" -> svg(name, file.inputStream().safeByteBuffer(), svgScale)
-                    "ttf" -> {
-                        val data = file.inputStream().safeByteBuffer()!!
-                        font(name, file.inputStream().safeByteBuffer())
-                        UIResourceProvider.registerFont(name, data)
-                    }
+                    "ttf" -> font(name, file.inputStream().safeByteBuffer())
                     else -> {
                         warn("Unsupported file type: ${file.name}")
                         continue

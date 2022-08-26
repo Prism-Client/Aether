@@ -115,7 +115,7 @@ abstract class Game(val windowTitle: String) {
             glClearColor(0.3f, 0.3f, 0.3f, 0f)
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT or GL_STENCIL_BUFFER_BIT)
 
-            // Render Aether !
+            // Render Aether :)
             aether.render()
 
             glfwSwapBuffers(window.handle)

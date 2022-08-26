@@ -228,6 +228,23 @@ object UIRendererDSL {
     }
 
     /**
+     * Renders an ellipse with the given [x]. [y], [width], and [height].
+     */
+    @JvmStatic
+    fun ellipse(x: Float, y: Float, width: Float, height: Float) {
+        path {
+            ellipse(x, y, width, height)
+        }.fillPath()
+    }
+
+    /**
+     * Renders an image with the given [imageName] at the given coordinates with no corner rounding.
+     */
+    @JvmStatic
+    fun renderImage(imageName: String, x: Float, y: Float, width: Float, height: Float) =
+            renderImage(imageName, x, y, width, height, 0f, 0f, 0f, 0f)
+
+    /**
      * Renders an image of [imageName] at the given positions with varying rounded corners. If the [imageName] is
      * not found, the image will not be rendered, and instead a rectangle with the color of the image is rendered.
      */

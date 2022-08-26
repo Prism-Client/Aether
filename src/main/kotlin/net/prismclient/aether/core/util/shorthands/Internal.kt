@@ -7,6 +7,11 @@ import kotlin.math.roundToInt
 
 // Internal shorthands for Aether to reduce the amount of boilerplate code.
 
+/**
+ * Indicates a high order function which specifies the receiver object as [T], accepts no
+ * parameters / arguments and returns nothing. In other words it is a function which is
+ * applied to [T] and is executed with no argument and returns nothing.
+ */
 internal typealias Block<T> = T.() -> Unit
 
 // -- Null Checking -- //

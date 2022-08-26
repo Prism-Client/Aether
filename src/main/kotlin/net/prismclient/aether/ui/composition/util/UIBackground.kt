@@ -26,12 +26,14 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
 
     var backgroundColor: UIColor? = null
     var backgroundRadius: UIRadius? = null
+    var backgroundBorder: UIBorder? = null
 
     override fun compose(composable: Composable?) {
         super.compose(composable)
         initialX = composable!!.relX
         initialY = composable.relY
         backgroundRadius?.compose(composable)
+        backgroundBorder?.compose(this)
     }
 
     override fun render() {
@@ -39,6 +41,7 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
             color(backgroundColor)
             rect(initialX + x.dp, initialY + y.dp, width.dp, height.dp, backgroundRadius)
         }
+        backgroundBorder?.render()
     }
 
     override fun UIUnit<*>?.compute(composable: Composable, yaxis: Boolean) {
@@ -51,8 +54,9 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
         it.y = y?.copy()
         it.width = width?.copy()
         it.height = height?.copy()
-        it.backgroundColor = backgroundColor?.copy()
-        it.backgroundRadius = backgroundRadius?.copy()
+        it.backgroundColor = backgroundColor.copy
+        it.backgroundRadius = backgroundRadius.copy
+        it.backgroundBorder = backgroundBorder.copy
     }
 
     override fun merge(other: UIBackground?) {
