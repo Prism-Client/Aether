@@ -70,7 +70,7 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
             if (modifier.optimizeComposition) {
                 color(-1)
                 path {
-                    imagePattern(framebuffer!!.imagePattern, x, y, width, height, 0f, 1f)
+                    renderer.imagePattern(framebuffer!!.imagePattern, x, y, width, height, 0f, 1f)
                     rect(x, y, width, height, modifier.background?.backgroundRadius)
                 }.fillPaint()
             } else {

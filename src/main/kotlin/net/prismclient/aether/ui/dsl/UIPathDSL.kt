@@ -197,8 +197,8 @@ object UIPathDSL {
     fun ellipse(x: Float, y: Float, width: Float, height: Float) = renderer.ellipse(x, y, width, height)
 
     @JvmStatic
-    fun imagePattern(imageHandle: Int, x: Float, y: Float, width: Float, height: Float, angle: Float, alpha: Float) =
-            renderer.imagePattern(imageHandle, x, y, width, height, angle, alpha)
+    fun imagePattern(imageName: String, x: Float, y: Float, width: Float, height: Float, angle: Float, alpha: Float) =
+            renderer.imagePattern(imageName, x, y, width, height, angle, alpha)
 
     /**
      * Creates a linear gradient for the active path with the [x] and [y] as the

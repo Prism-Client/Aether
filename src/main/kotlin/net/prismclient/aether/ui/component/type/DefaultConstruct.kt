@@ -13,15 +13,19 @@ import net.prismclient.aether.ui.modifier.UIModifier
  * which simply is executed during [renderComponent]. This class removes the need for a lot of
  * simple boilerplate [UIComponent]s as drawing shapes becomes a lot easier.
  *
+ * This is an abstract class, and the default implementation is [DefaultConstruct].
+ *
  * @author sen
  * @since 1.0
  *
  * @see [net.prismclient.aether.ui.component.ComponentsKt.construct]
  * @see ConstructionDSL
+ * @see DefaultConstruct
  */
-open class Construct(modifier: UIModifier<*>) : UIComponent<Construct>(modifier) {
+abstract class Construct<T : Construct<T>>(modifier: UIModifier<*>) : UIComponent<T>(modifier) {
     // TODO: Property Constructs: A Construction which stores a sequence of properties
     // TODO: Construct database to remove the need for unnecessary action duplicates
+
     /**
      * Runs this [Runnable] every time the [UIComponent.renderComponent] function would normally be invoked.
      */
@@ -30,8 +34,17 @@ open class Construct(modifier: UIModifier<*>) : UIComponent<Construct>(modifier)
     override fun renderComponent() {
         action?.run()
     }
+}
 
-    override fun copy(): Construct = Construct(modifier.copy).also {
+/**
+ * The default implementation of a [Construct] see [Construct] for more information
+ *
+ * @author sen
+ * @since 1.0
+ * @see Construct
+ */
+open class DefaultConstruct(modifier: UIModifier<*>) : Construct<DefaultConstruct>(modifier) {
+    override fun copy(): DefaultConstruct = DefaultConstruct(modifier.copy).also {
         it.action = action
     }
 }

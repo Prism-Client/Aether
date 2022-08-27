@@ -5,7 +5,7 @@ import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.core.input.UIKey
 import net.prismclient.aether.example.Renderer
-import net.prismclient.aether.example.screens.TestScreen
+import net.prismclient.aether.example.screens.MacrosExample
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -221,7 +221,7 @@ object Runner_ {
     }
 
     fun createScreen(args: Array<String>) {
-        Aether.displayScreen(TestScreen())
+        Aether.displayScreen(MacrosExample())
 //        if (args.isNotEmpty()) {
 //            Aether.displayScreen(
 //                    when (args[0]) {

@@ -1,7 +1,7 @@
 package net.prismclient.aether.ui.renderer
 
 import net.prismclient.aether.ui.alignment.UITextAlignment
-import net.prismclient.aether.ui.image.UIImageData
+import net.prismclient.aether.ui.image.UIImage
 import java.nio.ByteBuffer
 
 /**
@@ -139,29 +139,28 @@ interface UIRenderer {
     fun unbindFBO()
 
     // -- Asset Loading --/
-    /**
-     * Creates an image from the given [data] registered to the [imageName].
-     *
-     * @return The created image.
-     */
-    fun createImage(imageName: String, data: ByteBuffer, flags: Int): UIImageData
 
     /**
-     * Deallocates the given image from memory.
+     * Generates an image from the given [imageBuffer]. The returned [GeneratedImage.buffer] should
+     * be stored something to avoid a memory access violation.
      */
-    fun deleteImage(imageData: String)
+    fun createImage(imageBuffer: ByteBuffer): GeneratedImage
 
     /**
-     * Creates a svg from the given [svgName] and [data].
-     *
-     * @return The created image (svg).
+     * Registers the image into the renderer's memory. The [buffer] is not intended to be stored anywhere
+     * within the renderer. [flags] are the images flags which can be found within [UIImage].
      */
-    fun createSvg(svgName: String, data: ByteBuffer?, scale: Float): UIImageData
+    fun registerImage(image: String, width: Float, height: Float, flags: Int, buffer: ByteBuffer)
 
     /**
-     * Creates an image from an existing OpenGL image.
+     * Deletes any references that this might hold to the handle.
      */
-    fun createImageFromHandle(imageName: String, handle: Int, imageWidth: Int, imageHeight: Int): UIImageData
+    fun deleteImage(image: String)
+
+    /**
+     * Rasterizes the given SVG ByteBuffer and returns a [RasterizedSVG].
+     */
+    fun rasterizeSVG(buffer: ByteBuffer, scale: Float): GeneratedImage
 
     /**
      * Creates a font from the given [fontData], with the name [fontName].
@@ -171,6 +170,12 @@ interface UIRenderer {
     fun createFont(fontName: String, fontData: ByteBuffer?): Boolean
 
     /** Image **/
+
+    /**
+     * todo
+     */
+    fun imagePattern(imageName: String, x: Float, y: Float, width: Float, height: Float, angle: Float, alpha: Float)
+
     fun imagePattern(imageHandle: Int, x: Float, y: Float, width: Float, height: Float, angle: Float, alpha: Float)
 
     // -- Font -- //
@@ -214,7 +219,14 @@ interface UIRenderer {
      *
      * @return The row count
      */
-    fun renderText(text: String, x: Float, y: Float, lineWidth: Float, lineHeight: Float, lines: ArrayList<String>?): Int
+    fun renderText(
+        text: String,
+        x: Float,
+        y: Float,
+        lineWidth: Float,
+        lineHeight: Float,
+        lines: ArrayList<String>?
+    ): Int
 
     /**
      * Calculates the bounds given the array of [text] splitting it by the [lineHeight].
@@ -454,6 +466,18 @@ interface UIRenderer {
     fun radToDeg(rad: Float): Float
 
     /**
+     * Accepts the given [buffer] which is a 4 channel (RGBA) image and expects a new [ByteBuffer] with a
+     * resized version of tha timage given the initial and expected dimensions of the image.
+     */
+    fun resizeImage(
+        buffer: ByteBuffer,
+        initialWidth: Int,
+        initialHeight: Int,
+        expectedWidth: Int,
+        expectedHeight: Int
+    ): ByteBuffer
+
+    /**
      * [WindingOrder] describes the winding direction of the path.
      *
      * @author sen
@@ -487,4 +511,9 @@ interface UIRenderer {
         Round,
         Bevel
     }
+
+    /**
+     * A class used to represent an image with the generated [buffer], [width], and [height].
+     */
+    class GeneratedImage(val buffer: ByteBuffer, val width: Float, val height: Float)
 }

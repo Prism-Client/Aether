@@ -29,7 +29,7 @@ class Runner(private val screen: UIScreen) : Game("Runner") {
         }
 
         // Mouse press / release input
-        glfwSetMouseButtonCallback(window.handle) { _: Long, button: Int, action: Int, _: Int ->
+        glfwSetMouseButtonCallback(window.handle) { _, button, action, _ ->
             val mouseButton = when (button) {
                 GLFW_MOUSE_BUTTON_LEFT -> MouseButtonType.Primary
                 GLFW_MOUSE_BUTTON_RIGHT -> MouseButtonType.Secondary

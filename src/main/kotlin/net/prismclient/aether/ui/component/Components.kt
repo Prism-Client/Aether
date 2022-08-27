@@ -3,7 +3,7 @@ package net.prismclient.aether.ui.component
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.shorthands.Block
-import net.prismclient.aether.ui.component.type.Construct
+import net.prismclient.aether.ui.component.type.DefaultConstruct
 import net.prismclient.aether.ui.component.type.Label
 import net.prismclient.aether.ui.component.type.UIButton
 import net.prismclient.aether.ui.composition.Composable
@@ -34,6 +34,7 @@ object ComponentUtil {
  * TODO: doc
  */
 inline fun <T : Composable> component(composable: T, block: Block<T> = {}): T {
+    // TODO: Error when composition not foudn n stuff
     ComponentUtil.activeComposition = ComponentUtil.activeComposition!!// ?: Aether.instance.defaultComposition
     composable.composition = ComponentUtil.activeComposition!!
     composable.parent = ComponentUtil.activeComposable ?: ComponentUtil.activeComposition!!
@@ -73,7 +74,7 @@ inline fun label(
 ): Label = component(Label(text, modifier, fontStyle), block)
 
 /**
- * Creates a new [Construct], a component which executes the [block] when rendered. An example
+ * Creates a new [DefaultConstruct], a component which executes the [block] when rendered. An example
  * use case is creating a shape without using components. [ConstructionDSL] is intended to be
  * used along with this function.
  *
@@ -81,8 +82,8 @@ inline fun label(
  */
 inline fun construct(
         modifier: UIModifier<*> = Modifier(),
-        block: ConstructionDSL.(construct: Construct) -> Unit = {}
-) = component(Construct(modifier)) {
+        block: ConstructionDSL.(construct: DefaultConstruct) -> Unit = {}
+) = component(DefaultConstruct(modifier)) {
     val previousConstruct = ConstructionDSL.activeConstructor
     ConstructionDSL.activeConstructor = this
     ConstructionDSL.block(this)

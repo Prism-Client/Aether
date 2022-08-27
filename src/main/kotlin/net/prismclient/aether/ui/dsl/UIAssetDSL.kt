@@ -6,7 +6,7 @@ import net.prismclient.aether.core.debug.warn
 import net.prismclient.aether.core.util.extensions.safeByteBuffer
 import net.prismclient.aether.core.util.extensions.toByteBuffer
 import net.prismclient.aether.ui.image.*
-import net.prismclient.aether.ui.resource.UIResourceProvider
+import net.prismclient.aether.ui.resource.ResourceProvider
 import org.apache.commons.io.FilenameUtils
 import java.io.File
 import java.nio.ByteBuffer
@@ -19,47 +19,47 @@ import java.nio.ByteBuffer
 object UIAssetDSL {
     private var DEFAULT_IMAGE_FLAGS = PREMULTIPLIED or GENERATE_MIPMAPS or REPEATX or REPEATY
 
-    /**
-     * Loads an image from the classpath. Supports general images formats such as PNG, JPEG, etc...
-     *
-     * @see svg
-     */
-    @JvmStatic
-    fun image(name: String, path: String, flags: Int = DEFAULT_IMAGE_FLAGS) =
-        image(name, path.toByteBuffer(), flags)
+//    /**
+//     * Loads an image from the classpath. Supports general images formats such as PNG, JPEG, etc...
+//     *
+//     * @see svg
+//     */
+//    @JvmStatic
+//    fun image(name: String, path: String, flags: Int = DEFAULT_IMAGE_FLAGS) =
+//        image(name, path.toByteBuffer(), flags)
 
-    /**
-     * Loads an image from the given [buffer]. The image is registered with the [flags] and is named [name].
-     *
-     * @see svg
-     */
-    @JvmStatic
-    fun image(name: String, buffer: ByteBuffer?, flags: Int): UIImageData? {
-        if (buffer == null) {
-            warn("Failed to load image name, as the buffer was null.")
-            return null
-        }
-        return Aether.renderer.createImage(name, buffer, flags).also {
-            UIResourceProvider.registerImage(name, it)
-        }
-    }
+//    /**
+//     * Loads an image from the given [buffer]. The image is registered with the [flags] and is named [name].
+//     *
+//     * @see svg
+//     */
+//    @JvmStatic
+//    fun image(name: String, buffer: ByteBuffer?, flags: Int): UIImageData? {
+//        if (buffer == null) {
+//            warn("Failed to load image name, as the buffer was null.")
+//            return null
+//        }
+//        return Aether.renderer.createImage(name, buffer, flags).also {
+//            ResourceProvider.registerImage(name, it)
+//        }
+//    }
 
-    @JvmStatic
-    @JvmOverloads
-    fun svg(name: String, path: String, scale: Float = Aether.instance.devicePixelRatio) =
-        svg(name, path.safeByteBuffer(), scale)
-
-    @JvmOverloads
-    fun svg(name: String, buffer: ByteBuffer?, scale: Float = Aether.instance.devicePixelRatio): UIImageData? {
-        if (buffer == null) {
-            warn("Failed to load svg $name, as the buffer was null.")
-            return null
-        }
-
-        return Aether.renderer.createSvg(name, buffer, scale).also {
-            UIResourceProvider.registerImage(name, it)
-        }
-    }
+//    @JvmStatic
+//    @JvmOverloads
+//    fun svg(name: String, path: String, scale: Float = Aether.instance.devicePixelRatio) =
+//        svg(name, path.safeByteBuffer(), scale)
+//
+//    @JvmOverloads
+//    fun svg(name: String, buffer: ByteBuffer?, scale: Float = Aether.instance.devicePixelRatio): UIImageData? {
+//        if (buffer == null) {
+//            warn("Failed to load svg $name, as the buffer was null.")
+//            return null
+//        }
+//
+//        return Aether.renderer.createSvg(name, buffer, scale).also {
+//            ResourceProvider.registerImage(name, it)
+//        }
+//    }
 
     @JvmStatic
     fun font(name: String, path: String) = font(name, path.toByteBuffer())
@@ -71,7 +71,7 @@ object UIAssetDSL {
             return
         }
         Aether.renderer.createFont(name, buffer).also {
-            UIResourceProvider.registerFont(name, buffer)
+            ResourceProvider.registerFont(name, buffer)
         }
     }
 
@@ -145,8 +145,8 @@ object UIAssetDSL {
 
 
                 when (fileExtension) {
-                    "png", "jpeg", "jpg" -> image(name, file.inputStream().safeByteBuffer(), imageFlags)
-                    "svg" -> svg(name, file.inputStream().safeByteBuffer(), svgScale)
+//                    "png", "jpeg", "jpg" -> image(name, file.inputStream().safeByteBuffer(), imageFlags)
+//                    "svg" -> svg(name, file.inputStream().safeByteBuffer(), svgScale)
                     "ttf" -> font(name, file.inputStream().safeByteBuffer())
                     else -> {
                         warn("Unsupported file type: ${file.name}")

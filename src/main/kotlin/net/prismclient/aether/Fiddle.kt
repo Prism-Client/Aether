@@ -7,20 +7,7 @@ package net.prismclient.aether
 class fiddle {
 
     fun func() {
-        // Composition.attachListener<MouseChange>(::mousePressed, allowRepeat = false)
-
-//        keyPressed { event ->
-//            val composition = event.composition
-//            val key = event.key
-//            val character = event.character
-//
-//
-//        }
-//
-//        mouseMoved {
-//            if (it.inside) {
-//
-//            }
-//        }
+        // retrieveImage -> expectedSize
+        // rasterize a new image reszied based on the expected vs actual loaded size
     }
 }

@@ -1,21 +1,20 @@
 package net.prismclient.aether.ui.resource
 
-import net.prismclient.aether.ui.font.Font
-import net.prismclient.aether.ui.font.UIFont
 import net.prismclient.aether.ui.font.UIFontFamily
-import net.prismclient.aether.ui.image.UIImageData
+import net.prismclient.aether.ui.image.ImageProvider
 import java.nio.ByteBuffer
 
 /**
- * [UIResourceProvider] manages fonts and images for Aether.
+ * [ResourceProvider] manages fonts and images for Aether.
  *
  * @author sen
  * @since 1.0
  */
-object UIResourceProvider {
+object ResourceProvider {
+    val images: HashMap<String, ByteBuffer> = hashMapOf()
+
     val fonts: HashMap<String, UIFontFamily.Font> = hashMapOf()
     val fontFamilies: HashMap<String, UIFontFamily> = hashMapOf()
-    val images: HashMap<String, UIImageData> = hashMapOf()
 
     fun registerFontFamily(family: UIFontFamily) {
         fontFamilies[family.familyName] = family
@@ -29,7 +28,12 @@ object UIResourceProvider {
         fonts[font.name] = font
     }
 
-    fun registerImage(imageName: String, image: UIImageData) {
+    /**
+     * Registers the image handle, [imageName] to the [images] HashMap with [image] as the value.
+     *
+     * For creating images use [ImageProvider.createImage] or [ImageProvider.createSVG] for creating images.
+     */
+    fun registerImage(imageName: String, image: ByteBuffer) {
         images[imageName] = image
     }
 }

@@ -9,7 +9,7 @@ import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.core.util.shorthands.Block
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.ui.renderer.UIRenderer
-import net.prismclient.aether.ui.resource.UIResourceProvider
+import net.prismclient.aether.ui.resource.ResourceProvider
 import net.prismclient.aether.ui.unit.other.UIRadius
 import net.prismclient.aether.ui.renderer.UIStrokeDirection
 
@@ -262,7 +262,7 @@ object UIRendererDSL {
     ) {
         path {
             imagePattern(
-                UIResourceProvider.images[imageName]?.handle ?: 0,
+                imageName,
                 x,
                 y,
                 width,

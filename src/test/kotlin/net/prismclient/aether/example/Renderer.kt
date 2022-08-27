@@ -4,20 +4,20 @@ import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.ui.renderer.UIRenderer
-import net.prismclient.aether.ui.image.UIImageData
 import net.prismclient.aether.core.util.shorthands.alpha
 import net.prismclient.aether.core.util.shorthands.blue
 import net.prismclient.aether.core.util.shorthands.green
 import net.prismclient.aether.core.util.shorthands.red
-import net.prismclient.aether.ui.resource.UIResourceProvider
 import org.lwjgl.nanovg.*
 import org.lwjgl.nanovg.NanoVG.*
 import org.lwjgl.nanovg.NanoVGGL3.*
 import org.lwjgl.opengl.GL11
 import org.lwjgl.stb.STBImage
+import org.lwjgl.stb.STBImageResize
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
+import java.nio.FloatBuffer
 
 /**
  * Aether allows for the ability to provide your own rendering system. However, you might not
@@ -29,13 +29,14 @@ import java.nio.ByteBuffer
  */
 object Renderer : UIRenderer {
     private val framebuffers: HashMap<UIFramebuffer, NVGLUFramebuffer> = hashMapOf()
+    private val images: HashMap<String, Int> = hashMapOf()
 
     private val ctx: Long = nvgCreate(NVG_ANTIALIAS)
     private val fillColor: NVGColor = NVGColor.create()
     private val strokeColor: NVGColor = NVGColor.create()
     private val gradient1: NVGColor = NVGColor.create()
     private val gradient2: NVGColor = NVGColor.create()
-    private var paint: NVGPaint = NVGPaint.create()
+    private var paint: NVGPaint = NVGPaint.create() // TODO: Remove allocating paints
 
     private var activeColor: Int = 0
 
@@ -120,71 +121,42 @@ object Renderer : UIRenderer {
         nvgluBindFramebuffer(ctx, null)
     }
 
-    override fun createImage(imageName: String, data: ByteBuffer, flags: Int): UIImageData {
-        val imageData = UIImageData()
+    override fun createImage(imageBuffer: ByteBuffer): UIRenderer.GeneratedImage {
         val width = IntArray(1)
         val height = IntArray(1)
-        imageData.buffer = STBImage.stbi_load_from_memory(data, width, height, intArrayOf(0), 4)
-        imageData.width = width[0]
-        imageData.height = height[0]
-        imageData.handle = nvgCreateImageRGBA(
-            ctx,
-            imageData.width,
-            imageData.height,
-            flags,
-            imageData.buffer ?: throw NullPointerException("Failed to load image. Is it corrupted?")
-        )
-        imageData.loaded = true
-        // TODO: Asset provider
-        return imageData
+        val image: ByteBuffer = STBImage.stbi_load_from_memory(imageBuffer, width, height, intArrayOf(0), 4)
+            ?: throw RuntimeException("Failed to load the image.")
+        return UIRenderer.GeneratedImage(image, width[0].toFloat(), height[0].toFloat())
     }
 
-    override fun deleteImage(imageData: String) {
-//        nvgDeleteImage(ctx, UIProvider.getImage(imageData)?.handle ?: return)
-        // TODO: Asset provider
+    // TODO: Convert units from Float to Int in actual constructor
+
+    override fun registerImage(image: String, width: Float, height: Float, flags: Int, buffer: ByteBuffer) {
+        images[image] = nvgCreateImageRGBA(ctx, width.toInt(), height.toInt(), flags, buffer)
     }
 
-    override fun createSvg(svgName: String, data: ByteBuffer?, scale: Float): UIImageData {
-        val image = UIImageData()
-        image.buffer = data
-        image.imageType = UIImageData.ImageType.Svg
-        val img: NSVGImage?
+    override fun deleteImage(image: String) {
+
+    }
+
+    var rasterizer: Long = 0L
+
+    override fun rasterizeSVG(buffer: ByteBuffer, scale: Float): UIRenderer.GeneratedImage {
+        val svg: NSVGImage
         MemoryStack.stackPush().use {
-            if (image.buffer == null) {
-                println("Failed to load the svg: $svgName")
-                return image
-            }
-            img = NanoSVG.nsvgParse(image.buffer!!, it.ASCII("px"), 96f)
-            if (img == null) {
-                throw RuntimeException("Failed to parse SVG. name: $svgName, scale:$scale")
-            }
+            svg = NanoSVG.nsvgParse(buffer, it.ASCII("px"), 96f) ?:
+                throw RuntimeException("Failed to parse the given SVG.")
         }
+        // Create the rasterizer if necessary
+        if (rasterizer == 0L)
+            rasterizer = NanoSVG.nsvgCreateRasterizer()
+        val width = (svg.width() * scale).toInt()
+        val height = (svg.height() * scale).toInt()
+        val rast = MemoryUtil.memAlloc(width * height * 4)
 
-        val rasterizer = NanoSVG.nsvgCreateRasterizer()
-        val w = (img!!.width() * scale).toInt()
-        val h = (img.height() * scale).toInt()
-        val rast = MemoryUtil.memAlloc(w * h * 4)
-        NanoSVG.nsvgRasterize(
-            rasterizer, img, 0f, 0f, scale, rast, w, h, w * 4
-        )
-        NanoSVG.nsvgDeleteRasterizer(rasterizer)
-        image.handle = nvgCreateImageRGBA(
-            ctx, w, h, NVG_IMAGE_REPEATX or NVG_IMAGE_REPEATY or NVG_IMAGE_GENERATE_MIPMAPS, rast
-        )
-        image.width = w
-        image.height = h
-        image.loaded = true
+        NanoSVG.nsvgRasterize(rasterizer, svg, 0f, 0f, scale, rast, width, height, width * 4)
 
-        // TODO: Asset provider
-        return image
-    }
-
-    override fun createImageFromHandle(imageName: String, handle: Int, imageWidth: Int, imageHeight: Int): UIImageData {
-        val image = UIImageData()
-        image.handle = nnvglCreateImageFromHandle(ctx, handle, imageWidth, imageHeight, 0)
-        image.imageType = UIImageData.ImageType.Image
-        image.loaded = true
-        return image
+        return UIRenderer.GeneratedImage(rast, svg.width(), svg.height())
     }
 
     override fun createFont(fontName: String, fontData: ByteBuffer?): Boolean {
@@ -197,14 +169,24 @@ object Renderer : UIRenderer {
     }
 
     override fun imagePattern(
-        imageHandle: Int, x: Float, y: Float, width: Float, height: Float, angle: Float, alpha: Float
+        imageName: String, x: Float, y: Float, width: Float, height: Float, angle: Float, alpha: Float
+    ) = imagePattern(images[imageName] ?: 0, x, y, width, height, angle, alpha)
+
+    override fun imagePattern(
+        imageHandle: Int,
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        angle: Float,
+        alpha: Float
     ) {
         allocPaint()
         nvgImagePattern(
-            ctx, x, y, width, height, angle, imageHandle, alpha, paint!!
+            ctx, x, y, width, height, angle, imageHandle, alpha, paint
         )
-        paint!!.innerColor(fillColor)
-        paint!!.outerColor(fillColor)
+        paint.innerColor(fillColor)
+        paint.outerColor(fillColor)
     }
 
     override fun fontFace(fontName: String) = nvgFontFace(ctx, fontName)
@@ -479,6 +461,32 @@ object Renderer : UIRenderer {
     override fun degToRad(deg: Float): Float = nvgDegToRad(deg)
 
     override fun radToDeg(rad: Float): Float = nvgRadToDeg(rad)
+
+    override fun resizeImage(
+        buffer: ByteBuffer,
+        initialWidth: Int,
+        initialHeight: Int,
+        expectedWidth: Int,
+        expectedHeight: Int
+    ): ByteBuffer {
+        // Used for UIImage for resizing textures not equal to the
+        // normal bounds. See if for more information.
+
+        // Allocate the new buffer with the new width * height * 4 for a total of 32 bytes per pixel.
+        val resizedImage: ByteBuffer = MemoryUtil.memAlloc(expectedWidth * expectedHeight * 4)
+
+        STBImageResize.stbir_resize_uint8_generic(
+            buffer, initialWidth, initialHeight, initialWidth * 4,
+            resizedImage, expectedWidth, expectedHeight, expectedWidth * 4,
+            4, 3, STBImageResize.STBIR_FLAG_ALPHA_PREMULTIPLIED,
+            STBImageResize.STBIR_EDGE_CLAMP,
+            // Use the Mitchel filter.
+            STBImageResize.STBIR_FILTER_MITCHELL,
+            STBImageResize.STBIR_COLORSPACE_SRGB
+        )
+
+        return resizedImage
+    }
 
     private fun nvgColor(color: Int, nvgColor: NVGColor) {
         nvgRGBA(

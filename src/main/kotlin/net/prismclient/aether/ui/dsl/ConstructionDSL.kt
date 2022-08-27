@@ -1,20 +1,20 @@
 package net.prismclient.aether.ui.dsl
 
 import net.prismclient.aether.core.util.shorthands.Block
-import net.prismclient.aether.ui.component.type.Construct
+import net.prismclient.aether.ui.component.type.DefaultConstruct
 import java.lang.RuntimeException
 
 /**
- * Introduces a Kotlin DSL for the [Construct] component which allows creating them much easier.
+ * Introduces a Kotlin DSL for the [DefaultConstruct] component which allows creating them much easier.
  *
  * @author sen
  * @since 1.0
  */
 object ConstructionDSL {
-    var activeConstructor: Construct? = null
+    var activeConstructor: DefaultConstruct? = null
 
     /**
-     * Sets the [Construct.action] to the [block] and executes it every frame. The [block] provides
+     * Sets the [DefaultConstruct.action] to the [block] and executes it every frame. The [block] provides
      * access to all of [UIRendererDSL] which allows you to use the functions it provides.
      */
     fun render(block: Block<UIRendererDSL>) {
