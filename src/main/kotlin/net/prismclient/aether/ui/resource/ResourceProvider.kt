@@ -36,4 +36,11 @@ object ResourceProvider {
     fun registerImage(imageName: String, image: ByteBuffer) {
         images[imageName] = image
     }
+
+    /**
+     * Removes the image data reference from this.
+     */
+    fun deleteImage(imageName: String) {
+        images.remove(imageName)
+    }
 }

@@ -136,7 +136,7 @@ object Renderer : UIRenderer {
     }
 
     override fun deleteImage(image: String) {
-
+        nvgDeleteImage(ctx, images[image] ?: return)
     }
 
     var rasterizer: Long = 0L
@@ -144,12 +144,19 @@ object Renderer : UIRenderer {
     override fun rasterizeSVG(buffer: ByteBuffer, scale: Float): UIRenderer.GeneratedImage {
         val svg: NSVGImage
         MemoryStack.stackPush().use {
-            svg = NanoSVG.nsvgParse(buffer, it.ASCII("px"), 96f) ?:
+            val copy = ByteBuffer.allocateDirect(buffer.capacity())
+            buffer.rewind()
+            copy.put(buffer)
+            buffer.rewind()
+            copy.flip()
+
+            svg = NanoSVG.nsvgParse(copy, it.ASCII("px"), 96f) ?:
                 throw RuntimeException("Failed to parse the given SVG.")
         }
         // Create the rasterizer if necessary
         if (rasterizer == 0L)
             rasterizer = NanoSVG.nsvgCreateRasterizer()
+
         val width = (svg.width() * scale).toInt()
         val height = (svg.height() * scale).toInt()
         val rast = MemoryUtil.memAlloc(width * height * 4)

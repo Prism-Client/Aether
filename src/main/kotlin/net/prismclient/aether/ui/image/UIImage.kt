@@ -1,9 +1,11 @@
 package net.prismclient.aether.ui.image
 
 import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.util.extensions.toByteBuffer
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.resource.ResourceProvider
 import java.nio.ByteBuffer
+import kotlin.math.max
 
 
 /**
@@ -34,7 +36,7 @@ abstract class UIImage(
      * The actual image data used when initially loaded. Depending on the renderer, the
      * image might need to be saved to avoid garbage collection.
      */
-    val imageBuffer: ByteBuffer
+    var imageBuffer: ByteBuffer
 ) {
     /**
      * Creates this by invoking the necessary [UIRenderer] functions, and
@@ -49,9 +51,9 @@ abstract class UIImage(
 
     /**
      * Returns the string reference of this image which can be passed to [UIRenderer]. Depending on the type
-     * of [UIImage], the image might be resized to fit [wantedWidth] and [wantedHeight].
+     * of [UIImage], the image might be resized to fit [width] and [height].
      */
-    abstract fun retrieveImage(wantedWidth: Float, wantedHeight: Float): String
+    abstract fun retrieveImage(width: Float, height: Float): String
 }
 
 // Image flags
@@ -103,6 +105,9 @@ class Image(
     }
 
     override fun deallocate() {
+        Aether.renderer.deleteImage(imageName)
+        ResourceProvider.deleteImage(imageName)
+        resizedImages?.forEach(ResizedImage::deallocate)
     }
 
     /**
@@ -114,10 +119,10 @@ class Image(
      *
      * This does not happen if MipMaps are enabled with [imageFlags].
      */
-    override fun retrieveImage(wantedWidth: Float, wantedHeight: Float): String {
+    override fun retrieveImage(width: Float, height: Float): String {
         // Resize the texture if not using MipMaps.
-        return if ((wantedWidth != initialWidth || wantedHeight != initialHeight) && !usesMipMaps() && !disableScaling) {
-            val expectedImage = "${imageName}_${wantedWidth}x${wantedHeight}"
+        return if ((width != initialWidth || height != initialHeight) && (imageFlags and GENERATE_MIPMAPS) == 0 && !disableScaling) {
+            val expectedImage = "${imageName}_${width}x${height}"
 
             // If the texture does not already exist, generate it.
             if (!ImageProvider.images.contains(expectedImage)) {
@@ -126,12 +131,12 @@ class Image(
                 val resizedImage = Aether.renderer.resizeImage(
                     imageBuffer,
                     initialWidth.toInt(), initialHeight.toInt(),
-                    wantedWidth.toInt(), wantedHeight.toInt()
+                    width.toInt(), height.toInt()
                 )
 
                 // Register the newly generated image.
                 // todo: change flags
-                Aether.renderer.registerImage(expectedImage, wantedWidth, wantedHeight, REPEATX or REPEATY or PREMULTIPLIED, resizedImage)
+                Aether.renderer.registerImage(expectedImage, width, height, REPEATX or REPEATY or PREMULTIPLIED, resizedImage)
 
                 resizedImages!!.add(ResizedImage(expectedImage, resizedImage))
             }
@@ -141,69 +146,85 @@ class Image(
     }
 
     /**
-     * Returns true if this image uses MipMaps.
-     */
-    fun usesMipMaps(): Boolean = (imageFlags and GENERATE_MIPMAPS) != 0
-
-    /**
      * Represents a resized image.
      */
     class ResizedImage(val imageName: String, val imageBuffer: ByteBuffer) {
         /**
          * The time of which this resized image was created
          */
-        val creationDate: Long = System.currentTimeMillis()
-    }
+        val creationDate: Long = System.currentTimeMillis() // TODO: Automatically deallocate images
 
-    /**
-     * Deallocates the given resized image from memory and from [resizedImages]
-     */
-    fun ResizedImage.deallocate() {
-        TODO("Deallocate Resized Image")
-        // Memfree...
+        fun deallocate() {
+            Aether.renderer.deleteImage(imageName)
+            ResourceProvider.deleteImage(imageName)
+        }
     }
 }
 
 /**
- * Represents an SVG which is considered a type of image.
+ * Represents an SVG which is considered a type of image. The [imageBuffer] represents
+ * the svg image, and [svgBuffer] represents the actual SVG data.
  *
  * @author sen
  * @since 1.0
  */
 class SVG(
     imageName: String,
-    actualWidth: Float,
-    actualHeight: Float,
+    initialWidth: Float,
+    initialHeight: Float,
 
     /**
      * The scale of the SVG relative to the size set within it.
      */
     val initialScale: Float,
+    val svgBuffer: ByteBuffer,
     imageBuffer: ByteBuffer
-) : UIImage(imageName, actualWidth, actualHeight, imageBuffer) {
+) : UIImage(imageName, initialWidth, initialHeight, imageBuffer) {
+    var actualWidth: Float = initialWidth
+    var actualHeight: Float = initialHeight
+
     /**
      * If the SVG is requested with a wanted size larger than the scale, the SVG will be
      * reloaded with the new scale. By default, this reflects the initial.
      */
-    var resizedScale: Float = initialScale
+    var svgScale: Float = initialScale
 
     override fun create() {
+//        imageBuffer = Aether.renderer.ras
         ResourceProvider.registerImage(imageName, imageBuffer)
-        Aether.renderer.registerImage(imageName, initialWidth, initialHeight, REPEATX or REPEATY or GENERATE_MIPMAPS, imageBuffer)
+        Aether.renderer.registerImage(
+            imageName,
+            actualWidth * svgScale, actualHeight * svgScale,
+            REPEATX or REPEATY or GENERATE_MIPMAPS, imageBuffer
+        )
     }
 
     override fun deallocate() {
-        TODO("Not yet implemented")
+        Aether.renderer.deleteImage(imageName)
+        ResourceProvider.deleteImage(imageName)
     }
 
     /**
-     * Return the actual reference of the SVG as long as the [wantedWidth] and [wantedHeight] are less than
+     * Return the actual reference of the SVG as long as the [width] and [height] are less than
      * the actual size times the [initialScale]. If it is larger than reallocate the image to fit the new size.
      */
-    override fun retrieveImage(wantedWidth: Float, wantedHeight: Float): String {
-        // If the wanted size exceeds the actual size times the resizedScale, re-rasterize the image.
-        if (wantedWidth >= initialWidth * resizedScale || wantedHeight >= initialHeight * resizedScale) {
+    override fun retrieveImage(width: Float, height: Float): String {
+        if (width > actualWidth * svgScale || height > actualHeight * svgScale) {
+            val newScale = max(width / actualWidth.coerceAtLeast(1f), height / actualHeight.coerceAtLeast(1f))
 
+            val image = Aether.renderer.rasterizeSVG(svgBuffer, newScale)
+
+            imageBuffer = image.buffer
+            actualWidth = image.width
+            actualHeight = image.height
+            svgScale = newScale
+
+            ResourceProvider.registerImage(imageName, imageBuffer)
+            Aether.renderer.registerImage(
+                imageName,
+                actualWidth * svgScale, actualHeight * svgScale,
+                REPEATX or REPEATY or GENERATE_MIPMAPS, imageBuffer
+            )
         }
         return imageName
     }

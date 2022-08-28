@@ -15,6 +15,7 @@ fun InputStream.byteBuffer(): ByteBuffer {
     val buff = ByteBuffer.allocateDirect(bytes.size + 1)
     buff.order(ByteOrder.nativeOrder())
     buff.put(bytes)
+    // Null terminating
     buff.put(0)
     buff.flip()
     return buff

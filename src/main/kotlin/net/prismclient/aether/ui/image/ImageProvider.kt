@@ -34,6 +34,6 @@ object ImageProvider {
     @JvmOverloads
     fun createSVG(svgName: String, buffer: ByteBuffer, scale: Float = 1f): SVG {
         val svg = Aether.renderer.rasterizeSVG(buffer, scale)
-        return SVG(svgName, svg.width, svg.height, scale, svg.buffer).also(UIImage::create)
+        return SVG(svgName, svg.width, svg.height, scale, buffer, svg.buffer).also(UIImage::create)
     }
 }

@@ -153,12 +153,12 @@ interface UIRenderer {
     fun registerImage(image: String, width: Float, height: Float, flags: Int, buffer: ByteBuffer)
 
     /**
-     * Deletes any references that this might hold to the handle.
+     * Deletes any references that this might hold to the given image.
      */
     fun deleteImage(image: String)
 
     /**
-     * Rasterizes the given SVG ByteBuffer and returns a [RasterizedSVG].
+     * Rasterizes the given SVG, [buffer] with the dimensions of the SVG times the [scale]. Returns a [GeneratedImage].
      */
     fun rasterizeSVG(buffer: ByteBuffer, scale: Float): GeneratedImage
 
