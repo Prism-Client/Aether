@@ -62,5 +62,13 @@ open class Padding(
         }
     }
 
+    operator fun component1() = top
+
+    operator fun component2() = right
+
+    operator fun component3() = bottom
+
+    operator fun component4() = left
+
     override fun toString(): String = "Padding(top=$top, right=$right, bottom=$bottom, left=$left)"
 }

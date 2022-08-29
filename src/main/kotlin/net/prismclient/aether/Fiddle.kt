@@ -9,5 +9,10 @@ class fiddle {
     fun func() {
         // retrieveImage -> expectedSize
         // rasterize a new image reszied based on the expected vs actual loaded size
+
+        // IconButton(
+        //      icon = Icon("ImageName"),
+        //      text = Label(""),
+        // )
     }
 }

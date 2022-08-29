@@ -107,6 +107,7 @@ class Image(
     override fun deallocate() {
         Aether.renderer.deleteImage(imageName)
         ResourceProvider.deleteImage(imageName)
+        ImageProvider.deleteImage(imageName)
         resizedImages?.forEach(ResizedImage::deallocate)
     }
 
@@ -202,6 +203,7 @@ class SVG(
     override fun deallocate() {
         Aether.renderer.deleteImage(imageName)
         ResourceProvider.deleteImage(imageName)
+        ImageProvider.deleteImage(imageName)
     }
 
     /**
