@@ -38,6 +38,12 @@ abstract class UIImage(
     var imageBuffer: ByteBuffer
 ) {
     /**
+     * When false, the dimensions when [retrieveImage] is called are multiplied by the
+     * [Aether.devicePixelRatio] to support retina displays. To disable this, set this to true.
+     */
+    var ignoreDevicePx: Boolean = false
+
+    /**
      * Creates this by invoking the necessary [UIRenderer] functions, and
      * registers this to [ResourceProvider] if necessary.
      */
@@ -98,12 +104,6 @@ class Image(
      */
     var disableScaling: Boolean = false
 
-    /**
-     * When false, the dimensions when [retrieveImage] is called are multiplied by the
-     * [Aether.devicePixelRatio] to support retina displays. To disable this, set this to true.
-     */
-    var ignoreDevicePx: Boolean = false
-
     override fun create() {
         ResourceProvider.registerImage(imageName, imageBuffer)
         Aether.renderer.registerImage(imageName, initialWidth, initialHeight, imageFlags, imageBuffer)
@@ -126,8 +126,8 @@ class Image(
      * This does not happen if MipMaps are enabled with [imageFlags].
      */
     override fun retrieveImage(width: Float, height: Float): String {
-        val w = width * if (!ignoreDevicePx) Aether.instance.devicePixelRatio else 0f
-        val h = height * if (!ignoreDevicePx) Aether.instance.devicePixelRatio else 0f
+        val w = width * if (!ignoreDevicePx) Aether.instance.devicePixelRatio else 1f
+        val h = height * if (!ignoreDevicePx) Aether.instance.devicePixelRatio else 1f
 
         // Resize the texture if not using MipMaps.
         return if ((w != initialWidth || h != initialHeight) && (imageFlags and GENERATE_MIPMAPS) == 0 && !disableScaling) {
@@ -219,8 +219,11 @@ class SVG(
      * the actual size times the [initialScale]. If it is larger than reallocate the image to fit the new size.
      */
     override fun retrieveImage(width: Float, height: Float): String {
-        if (width > actualWidth * svgScale || height > actualHeight * svgScale) {
-            val newScale = max(width / actualWidth.coerceAtLeast(1f), height / actualHeight.coerceAtLeast(1f))
+        val w = width * if (!ignoreDevicePx) Aether.instance.devicePixelRatio else 1f
+        val h = height * if (!ignoreDevicePx) Aether.instance.devicePixelRatio else 1f
+
+        if (w > actualWidth * svgScale || h > actualHeight * svgScale) {
+            val newScale = max(w / actualWidth.coerceAtLeast(1f), h / actualHeight.coerceAtLeast(1f))
 
             val image = Aether.renderer.rasterizeSVG(svgBuffer, newScale)
 
