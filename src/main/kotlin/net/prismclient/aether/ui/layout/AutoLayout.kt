@@ -46,7 +46,7 @@ open class AutoLayout(modifier: LayoutModifier<*>) : UILayout(modifier, true) {
             if (layoutDirection == LayoutDirection.HORIZONTAL) {
                 width += child.relWidth + itemSpacing.dp
                 height = max(height, child.height)
-            } else { // 10 + 67 + 134 + 25 + 10= 246 second is 132 second round
+            } else {
                 width = max(width, child.relWidth)
                 height += child.relHeight + itemSpacing.dp
             }
@@ -121,14 +121,14 @@ open class AutoLayout(modifier: LayoutModifier<*>) : UILayout(modifier, true) {
         // based on the alignment and the leftover space.
         if (layoutDirection == LayoutDirection.HORIZONTAL) {
             x += when (layoutAlignment) {
-                TOPCENTER, CENTER, BOTTOMCENTER -> (width - potential.width - right) / 2f
-                TOPRIGHT, MIDDLERIGHT, BOTTOMRIGHT -> width - potential.width - right
+                TOPCENTER, CENTER, BOTTOMCENTER -> (width - potential.width - right + left) / 2f
+                TOPRIGHT, MIDDLERIGHT, BOTTOMRIGHT -> width - potential.width - right + left
                 else -> -right
             }.coerceAtLeast(0f)
         } else {
             y += when (layoutAlignment) {
-                MIDDLELEFT, CENTER, MIDDLERIGHT -> (height - potential.height - bottom) / 2f
-                BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT -> height - potential.height - bottom
+                MIDDLELEFT, CENTER, MIDDLERIGHT -> (height - potential.height - bottom + top) / 2f
+                BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT -> height - potential.height - bottom + top
                 else -> -bottom
             }.coerceAtLeast(0f)
         }
