@@ -3,6 +3,8 @@ package net.prismclient.aether.ui.unit
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.shorthands.dp
+import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 
 /**
  * [UIUnit] is the superclass of all units, which represent an amount of pixels on the screen when
@@ -34,6 +36,12 @@ abstract class UIUnit<T : UIUnit<T>>(open var value: Float) : Copyable<T> {
      * that the expected axis should be the y-axis.
      */
     abstract fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float
+
+    /**
+     * [identifiesAs] is intended to replace the `instanceof` or `is` keyword as certain [UIUnit]s might
+     * not actually be an instance of the expected type, but represent one, such as a [DynamicUnit].
+     */
+    open fun <T : UIUnit<T>> identifiesAs(clazz: KClass<T>): Boolean = this::class.isSubclassOf(clazz)
 }
 
 /**
@@ -52,5 +60,12 @@ internal class ResizeUnit : DynamicUnit<ResizeUnit>(0f) {
  * Computes and updates the unit with the provided [composable] as the width and height.
  */
 internal fun UIUnit<*>?.compute(composable: Composable?, yaxis: Boolean) {
-    this?.compute(composable, composable?.modifier?.width.dp, composable?.modifier?.height.dp, yaxis)
+    this?.compute(composable, composable?.width ?: 0f, composable?.height ?: 0f, yaxis)
 }
+
+/**
+ * An extension function used to support the [UIUnit.identifiesAs] function. Returns true if this
+ * is a subclass or equal to [other], like an instanceof type check.
+ */
+internal fun <T : UIUnit<T>> UIUnit<*>?.typeOf(other: KClass<T>): Boolean =
+        !(this == null) && (this.identifiesAs(other))

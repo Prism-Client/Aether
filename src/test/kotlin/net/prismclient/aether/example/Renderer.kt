@@ -8,6 +8,7 @@ import net.prismclient.aether.core.util.shorthands.alpha
 import net.prismclient.aether.core.util.shorthands.blue
 import net.prismclient.aether.core.util.shorthands.green
 import net.prismclient.aether.core.util.shorthands.red
+import net.prismclient.aether.ui.dsl.UIRendererDSL
 import org.lwjgl.nanovg.*
 import org.lwjgl.nanovg.NanoVG.*
 import org.lwjgl.nanovg.NanoVGGL3.*
@@ -350,7 +351,7 @@ object Renderer : UIRenderer {
 
     override fun fontBounds(text: String): FloatArray {
         nvgTextMetrics(ctx, ascender, descender, null)
-        fontBounds[4] = nvgTextBounds(ctx, 0f, 0f, text, fontBounds)
+        fontBounds[4] = nvgTextBounds(ctx, 0f, 0f, "Edit HUD", fontBounds)
         return fontBounds
     }
 

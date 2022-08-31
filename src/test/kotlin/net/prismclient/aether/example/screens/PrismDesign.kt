@@ -5,13 +5,23 @@ import net.prismclient.aether.core.util.extensions.toByteBuffer
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.example.Renderer.fontBounds
 import net.prismclient.aether.example.Runner
+import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
+import net.prismclient.aether.ui.component.button
+import net.prismclient.aether.ui.component.component
 import net.prismclient.aether.ui.component.compose
 import net.prismclient.aether.ui.component.construct
 import net.prismclient.aether.ui.composition.CompositionModifier
+import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.image.ImageProvider
+import net.prismclient.aether.ui.layout.AutoLayout
+import net.prismclient.aether.ui.layout.HugLayout
+import net.prismclient.aether.ui.layout.LayoutModifier
+import net.prismclient.aether.ui.layout.util.LayoutDirection
+import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.resource.ResourceProvider
 import net.prismclient.aether.ui.screen.UIScreen
+import net.prismclient.aether.ui.unit.other.Padding
 
 class PrismDesign : UIScreen {
     companion object {
@@ -34,6 +44,36 @@ class PrismDesign : UIScreen {
         ) {
             constructBackground()
             prismLogo().modifier.position(49, 52)
+
+            val layout = component(AutoLayout(
+                    modifier = LayoutModifier()
+//                            .size(189, 56)
+                            .size(HugLayout(), HugLayout())
+                            .control(UIAlignment.CENTER)
+                            .backgroundColor(RGBA(20, 113, 255).rgb)
+                            .backgroundRadius(15.radius)
+            )) {
+                layoutDirection = LayoutDirection.HORIZONTAL
+                layoutAlignment = UIAlignment.CENTER
+                layoutPadding = Padding(10.px, 10.px, 10.px, 10.px)
+                itemSpacing = 25.px
+
+                for (i in 1 .. 2) {
+                    button(
+                            text = "Edit HUD",
+                            modifier = Modifier()
+                                    .backgroundRadius(4.radius),
+                            fontStyle = FontStyle()
+                                    .fontColor((-1).rgb)
+                                    .fontSize((14 * i).px)
+                                    .fontName("Montserrat-Medium")
+                                    .fontType(FontType.AutoWidth)
+                    )
+                }
+            }
+
+
+
         }
     }
 
@@ -51,7 +91,7 @@ class PrismDesign : UIScreen {
 
     fun prismLogo() = construct {
         val logo = ImageProvider.createImage("PrismLogo", 0, "/icons/prismclient/PrismLogo_x128.png".toByteBuffer())
-        val handle = logo.retrieveImage(34f, 37f)
+        val handle = logo.retrieveImage(34f, 37f) // todo: times device pixel ratio (retina device)
         it.modifier.size(145, 37)
         render {
             color(-1)

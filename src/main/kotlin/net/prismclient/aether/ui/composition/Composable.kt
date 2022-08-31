@@ -97,11 +97,11 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      * units are dynamic, [Composable.dynamic] will be true. The padding is calculated.
      */
     open fun composeSize() {
-        composePadding()
         modifier.width?.compute(false)
         modifier.height?.compute(true)
         width = modifier.width.dp.roundToInt().toFloat()
         height = modifier.height.dp.roundToInt().toFloat()
+        composePadding()
     }
 
     /**

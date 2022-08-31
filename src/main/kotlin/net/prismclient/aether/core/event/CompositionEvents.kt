@@ -30,6 +30,8 @@ abstract class PropagatingEvent(val initialComposable: Composable) : UIEvent, Cu
      */
     var previousComposable: Composable = initialComposable
 
+    var requiresRecompose: Boolean = false
+
     // TODO: Cancellable Propagating Events
 
     /**
@@ -38,7 +40,7 @@ abstract class PropagatingEvent(val initialComposable: Composable) : UIEvent, Cu
     fun propagate() {
         propagationIndex++
         if (currentComposable is Composition && (currentComposable as Composition).isTopLayer()) {
-            currentComposable.recompose()
+            if (requiresRecompose) currentComposable.compose()
             return
         }
         previousComposable = currentComposable
@@ -51,6 +53,13 @@ abstract class PropagatingEvent(val initialComposable: Composable) : UIEvent, Cu
      * is 0. In other words, if this is at the first propagation level, this will return true.
      */
     fun isInitial(): Boolean = currentComposable == initialComposable && propagationIndex == 0
+
+    /**
+     * Indicates to the composition that this even is going to propagate to that the layout needs to be recomposed.
+     */
+    fun recompose() {
+        requiresRecompose = true
+    }
 }
 
 /**

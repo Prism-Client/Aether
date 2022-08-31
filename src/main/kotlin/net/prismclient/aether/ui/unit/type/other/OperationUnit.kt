@@ -1,8 +1,9 @@
 package net.prismclient.aether.ui.unit.type.other
 
+import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.core.util.shorthands.dp
+import kotlin.reflect.KClass
 
 /**
  * [OperationUnit] itself, is not a value, however, it accepts two units which it computes
@@ -15,7 +16,7 @@ import net.prismclient.aether.core.util.shorthands.dp
  */
 @Suppress("MemberVisibilityCanBePrivate")
 open class OperationUnit(val unit1: UIUnit<*>, val unit2: UIUnit<*>, val operation: Operation) :
-    UIUnit<OperationUnit>(0f) {
+        UIUnit<OperationUnit>(0f) {
 
     override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float {
         // The units automatically make the composable dynamic if necessary.
@@ -28,6 +29,9 @@ open class OperationUnit(val unit1: UIUnit<*>, val unit2: UIUnit<*>, val operati
             Operation.DIVIDE -> unit1.dp / unit2.dp
         }
     }
+
+    override fun <T : UIUnit<T>> identifiesAs(clazz: KClass<T>): Boolean =
+            super.identifiesAs(clazz) || unit1.identifiesAs(clazz) || unit2.identifiesAs(clazz)
 
     override fun copy(): OperationUnit = OperationUnit(unit1.copy(), unit2.copy(), operation)
 

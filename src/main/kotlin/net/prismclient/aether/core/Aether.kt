@@ -13,6 +13,7 @@ import net.prismclient.aether.core.util.shorthands.notNull
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
+import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.screen.UIScreen
@@ -70,7 +71,9 @@ open class Aether(renderer: UIRenderer) {
 
         if (activeScreen != null) {
             check()
+            renderer.beginFrame(displayWidth, displayHeight, devicePxRatio)
             compositions!!.forEach(Composition::compose)
+            renderer.cancelFrame()
         }
     }
 

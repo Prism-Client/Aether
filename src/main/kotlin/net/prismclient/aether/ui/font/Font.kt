@@ -107,6 +107,8 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
      * the position and size if necessary based on the [FontStyle.fontType].
      */
     open fun updateFont() {
+        style.textResizing = style.textResizing ?: FixedSize
+
         // Calculate the bounds of the text and update text
         text.clear()
         UIRendererDSL.font(style.actualFontName ?: "", style.fontSize.dp, LEFT, TOP, style.fontSpacing.dp)
@@ -138,7 +140,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
                 width = fontWidth().px
                 height = fontHeight().px
                 composable.width = x.dp + fontWidth()
-                composable.height =  y.dp + fontHeight()
+                composable.height = y.dp + fontHeight()
                 true
             }
             AutoWidth, AutoHeight -> {
@@ -185,7 +187,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
                 AutoWidth -> actualText.render(x, y)
                 AutoHeight -> renderer.renderText(text, x, y, lineHeight)
                 FixedSize -> renderer.renderText(actualText, x, y, width, lineHeight, null)
-                else -> throw NullPointerException("TextResizing of $style cannot be null.")
+                else -> throw NullPointerException("Text Resizing (Font Type) of $style cannot be null.")
             }
         }
     }

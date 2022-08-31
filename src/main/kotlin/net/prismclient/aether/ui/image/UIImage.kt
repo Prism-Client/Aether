@@ -1,7 +1,6 @@
 package net.prismclient.aether.ui.image
 
 import net.prismclient.aether.core.Aether
-import net.prismclient.aether.core.util.extensions.toByteBuffer
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.resource.ResourceProvider
 import java.nio.ByteBuffer
@@ -99,6 +98,12 @@ class Image(
      */
     var disableScaling: Boolean = false
 
+    /**
+     * When false, the dimensions when [retrieveImage] is called are multiplied by the
+     * [Aether.devicePixelRatio] to support retina displays. To disable this, set this to true.
+     */
+    var ignoreDevicePx: Boolean = false
+
     override fun create() {
         ResourceProvider.registerImage(imageName, imageBuffer)
         Aether.renderer.registerImage(imageName, initialWidth, initialHeight, imageFlags, imageBuffer)
@@ -121,9 +126,12 @@ class Image(
      * This does not happen if MipMaps are enabled with [imageFlags].
      */
     override fun retrieveImage(width: Float, height: Float): String {
+        val w = width * if (!ignoreDevicePx) Aether.instance.devicePixelRatio else 0f
+        val h = height * if (!ignoreDevicePx) Aether.instance.devicePixelRatio else 0f
+
         // Resize the texture if not using MipMaps.
-        return if ((width != initialWidth || height != initialHeight) && (imageFlags and GENERATE_MIPMAPS) == 0 && !disableScaling) {
-            val expectedImage = "${imageName}_${width}x${height}"
+        return if ((w != initialWidth || h != initialHeight) && (imageFlags and GENERATE_MIPMAPS) == 0 && !disableScaling) {
+            val expectedImage = "${imageName}_${w}x${h}"
 
             // If the texture does not already exist, generate it.
             if (!ImageProvider.images.contains(expectedImage)) {
@@ -132,12 +140,12 @@ class Image(
                 val resizedImage = Aether.renderer.resizeImage(
                     imageBuffer,
                     initialWidth.toInt(), initialHeight.toInt(),
-                    width.toInt(), height.toInt()
+                    w.toInt(), h.toInt()
                 )
 
                 // Register the newly generated image.
                 // todo: change flags
-                Aether.renderer.registerImage(expectedImage, width, height, REPEATX or REPEATY or PREMULTIPLIED, resizedImage)
+                Aether.renderer.registerImage(expectedImage, w, h, REPEATX or REPEATY or PREMULTIPLIED, resizedImage)
 
                 resizedImages!!.add(ResizedImage(expectedImage, resizedImage))
             }
