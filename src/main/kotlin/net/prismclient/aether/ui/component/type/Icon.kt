@@ -98,5 +98,8 @@ class IconModifier : UIModifier<IconModifier>() {
 
         TODO("Feature not yet implemented.")
     }
+}
 
+fun IconModifier.imageColor(color: UIColor) = apply {
+    imageColor = color
 }

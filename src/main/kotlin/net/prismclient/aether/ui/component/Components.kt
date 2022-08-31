@@ -3,14 +3,13 @@ package net.prismclient.aether.ui.component
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.shorthands.Block
-import net.prismclient.aether.ui.component.type.DefaultConstruct
-import net.prismclient.aether.ui.component.type.Label
-import net.prismclient.aether.ui.component.type.UIButton
+import net.prismclient.aether.ui.component.type.*
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.dsl.ConstructionDSL
 import net.prismclient.aether.ui.font.FontStyle
+import net.prismclient.aether.ui.image.UIImage
 import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.layout.UIListLayout
 import net.prismclient.aether.ui.layout.util.LayoutDirection
@@ -72,6 +71,18 @@ inline fun label(
         fontStyle: FontStyle = FontStyle(),
         block: Block<Label> = {}
 ): Label = component(Label(text, modifier, fontStyle), block)
+
+inline fun icon(
+        imageName: String,
+        modifier: IconModifier = IconModifier(),
+        block: Block<Icon> = {}
+): Icon = component(Icon(imageName, modifier), block)
+
+inline fun icon(
+        image: UIImage,
+        modifier: IconModifier = IconModifier(),
+        block: Block<Icon> = {}
+): Icon = component(Icon(image, modifier), block)
 
 /**
  * Creates a new [DefaultConstruct], a component which executes the [block] when rendered. An example

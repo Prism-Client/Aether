@@ -7,10 +7,9 @@ import net.prismclient.aether.example.Renderer.fontBounds
 import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
-import net.prismclient.aether.ui.component.button
-import net.prismclient.aether.ui.component.component
-import net.prismclient.aether.ui.component.compose
-import net.prismclient.aether.ui.component.construct
+import net.prismclient.aether.ui.component.*
+import net.prismclient.aether.ui.component.type.IconModifier
+import net.prismclient.aether.ui.component.type.imageColor
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.image.ImageProvider
@@ -39,6 +38,9 @@ class PrismDesign : UIScreen {
         Aether.renderer.createFont("Montserrat-Medium", medium)
         ResourceProvider.registerFont("Montserrat-Medium", medium)
 
+        ImageProvider.createSVG("frame", "/icons/vuesax/solid/frame.svg".toByteBuffer())
+
+
         compose(name = "Test", modifier = CompositionModifier()
             .size(1.rel, 1.rel)
         ) {
@@ -47,33 +49,33 @@ class PrismDesign : UIScreen {
 
             val layout = component(AutoLayout(
                     modifier = LayoutModifier()
-//                            .size(189, 56)
-                            .size(HugLayout(), HugLayout())
+                            .size(189.px, HugLayout())
+//                            .size(HugLayout(), HugLayout())
                             .control(UIAlignment.CENTER)
                             .backgroundColor(RGBA(20, 113, 255).rgb)
                             .backgroundRadius(15.radius)
             )) {
                 layoutDirection = LayoutDirection.HORIZONTAL
-                layoutAlignment = UIAlignment.CENTER
-                layoutPadding = Padding(10.px, 10.px, 10.px, 10.px)
-                itemSpacing = 25.px
+                layoutAlignment = UIAlignment.MIDDLELEFT
+                layoutPadding = Padding(21.px, 16.px, 21.px, 16.px)
+                itemSpacing = 24.px
 
-                for (i in 1 .. 2) {
-                    button(
-                            text = "Edit HUD",
-                            modifier = Modifier()
-                                    .backgroundRadius(4.radius),
-                            fontStyle = FontStyle()
-                                    .fontColor((-1).rgb)
-                                    .fontSize((14 * i).px)
-                                    .fontName("Montserrat-Medium")
-                                    .fontType(FontType.AutoWidth)
-                    )
-                }
+                icon(
+                        imageName = "frame",
+                        modifier = IconModifier()
+                                .size(24, 24)
+                                .imageColor((-1).rgb)
+                )
+
+                button(
+                        text = "Edit HUD",
+                        fontStyle = FontStyle()
+                                .fontName("Montserrat-Medium")
+                                .fontSize(14.px)
+                                .fontColor((-1).rgb)
+                                .fontType(FontType.AutoWidth)
+                )
             }
-
-
-
         }
     }
 
