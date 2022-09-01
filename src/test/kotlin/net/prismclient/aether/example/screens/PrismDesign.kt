@@ -39,7 +39,7 @@ class PrismDesign : UIScreen {
         ResourceProvider.registerFont("Montserrat-Medium", medium)
 
         ImageProvider.createSVG("frame", "/icons/vuesax/solid/frame.svg".toByteBuffer())
-
+        ImageProvider.createSVG("home", "/icons/vuesax/solid/home.svg".toByteBuffer())
 
         compose(name = "Test", modifier = CompositionModifier()
             .size(1.rel, 1.rel)
@@ -47,6 +47,30 @@ class PrismDesign : UIScreen {
 //            this.modifier.optimizeComposition = false
             constructBackground()
             prismLogo().modifier.position(49, 52)
+
+
+//            label(
+//                text = "MENU",
+//                modifier = Modifier(),
+//                fontStyle = FontStyle()
+//                    .fontName("Montserrat-Medium")
+//                    .fontSize(11.px)
+//                    .fontColor(0x697483.rgb)
+//                    .fontType(FontType.AutoWidth)
+//            )
+
+            verticalList {
+                elementButton("home", "Dashboard")
+                elementButton("home", "Dashboard")
+                elementButton("home", "Dashboard")
+                elementButton("home", "Dashboard")
+                elementButton("home", "Dashboard")
+                elementButton("home", "Dashboard")
+            }
+
+
+
+
 
             val layout = component(AutoLayout(
                     modifier = LayoutModifier()
@@ -78,6 +102,31 @@ class PrismDesign : UIScreen {
                 )
             }
         }
+    }
+
+    fun elementButton(icon: String, buttonText: String) = component(AutoLayout(
+        modifier = LayoutModifier().size(206.px, HugLayout())
+    )) {
+        layoutDirection = LayoutDirection.HORIZONTAL
+        layoutAlignment = UIAlignment.MIDDLELEFT
+        layoutPadding = Padding(8.px, 9.px, 8.px, 9.px)
+        itemSpacing = 24.px
+
+        icon(
+            imageName = icon,
+            modifier = IconModifier()
+                .size(24, 24)
+                .imageColor(0xA1B3CA.rgb)
+        )
+
+        button(
+            text = buttonText,
+            fontStyle = FontStyle()
+                .fontName("Montserrat-Regular")
+                .fontSize(14.px)
+                .fontColor(0x697483.rgb)
+                .fontType(FontType.AutoWidth)
+        )
     }
 
     fun constructBackground() = construct {
