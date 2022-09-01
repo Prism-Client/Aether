@@ -197,3 +197,28 @@ open class HugLayout : UIUnit<HugLayout>(0f) {
 
     override fun toString(): String = "HugLayout($cachedValue)"
 }
+
+/**
+ * Sets the width and height of this to [HugLayout]. This can only be applied to Auto Layouts.
+ */
+fun <T : LayoutModifier<T>> T.hug(): T {
+    hugWidth()
+    hugHeight()
+    return this
+}
+
+/**
+ * Sets the width of this to a [HugLayout]. This can only be applied to Auto Layouts.
+ */
+fun <T : LayoutModifier<T>> T.hugWidth(): T {
+    width = HugLayout()
+    return this
+}
+
+/**
+ * Sets the height of this to a [HugLayout]. This can only be applied to Auto Layouts.
+ */
+fun <T : LayoutModifier<T>> T.hugHeight(): T {
+    height = HugLayout()
+    return this
+}

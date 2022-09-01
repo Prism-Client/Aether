@@ -182,14 +182,14 @@ fun LayoutModifier(): DefaultLayoutModifier = DefaultLayoutModifier()
 
 class DefaultLayoutModifier : LayoutModifier<DefaultLayoutModifier>() {
     override fun copy(): DefaultLayoutModifier = DefaultLayoutModifier().also {
-        it.x = x?.copy()
-        it.y = y?.copy()
-        it.width = width?.copy()
-        it.height = height?.copy()
-        it.anchorPoint = anchorPoint?.copy()
-        it.padding = padding?.copy()
-        it.margin = margin?.copy()
-        it.background = background?.copy()
+        it.x = x.copy
+        it.y = y.copy
+        it.width = width.copy
+        it.height = height.copy
+        it.anchorPoint = anchorPoint.copy
+        it.padding = padding.copy
+        it.margin = margin.copy
+        it.background = background.copy
         TODO("Copy not yet implemented.")
     }
 

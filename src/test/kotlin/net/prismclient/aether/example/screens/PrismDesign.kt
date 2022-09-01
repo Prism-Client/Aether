@@ -16,6 +16,7 @@ import net.prismclient.aether.ui.image.ImageProvider
 import net.prismclient.aether.ui.layout.AutoLayout
 import net.prismclient.aether.ui.layout.HugLayout
 import net.prismclient.aether.ui.layout.LayoutModifier
+import net.prismclient.aether.ui.layout.hug
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.resource.ResourceProvider
@@ -39,73 +40,100 @@ class PrismDesign : UIScreen {
         ResourceProvider.registerFont("Montserrat-Medium", medium)
 
         ImageProvider.createSVG("frame", "/icons/vuesax/solid/frame.svg".toByteBuffer())
-        ImageProvider.createSVG("home", "/icons/vuesax/solid/home.svg".toByteBuffer())
+        ImageProvider.createSVG("home", "/icons/vuesax/custom/home.svg".toByteBuffer())
+        ImageProvider.createSVG("folder", "/icons/vuesax/custom/folder.svg".toByteBuffer())
+        ImageProvider.createSVG("profile", "/icons/vuesax/custom/profile.svg".toByteBuffer())
+        ImageProvider.createSVG("shop", "/icons/vuesax/custom/shop.svg".toByteBuffer())
 
         compose(name = "Test", modifier = CompositionModifier()
-            .size(1.rel, 1.rel)
+                .size(1.rel, 1.rel)
         ) {
 //            this.modifier.optimizeComposition = false
             constructBackground()
             prismLogo().modifier.position(49, 52)
 
-
-//            label(
-//                text = "MENU",
-//                modifier = Modifier(),
-//                fontStyle = FontStyle()
-//                    .fontName("Montserrat-Medium")
-//                    .fontSize(11.px)
-//                    .fontColor(0x697483.rgb)
-//                    .fontType(FontType.AutoWidth)
-//            )
-
-            verticalList {
-                elementButton("home", "Dashboard")
-                elementButton("home", "Dashboard")
-                elementButton("home", "Dashboard")
-                elementButton("home", "Dashboard")
-                elementButton("home", "Dashboard")
-                elementButton("home", "Dashboard")
-            }
+//            elementLabel("Hiiii")
 
 
-
-
-
-            val layout = component(AutoLayout(
+            autoLayout(
                     modifier = LayoutModifier()
-                            .size(189.px, HugLayout())
-//                            .size(HugLayout(), HugLayout())
-                            .control(UIAlignment.CENTER)
-                            .backgroundColor(RGBA(20, 113, 255).rgb)
-                            .backgroundRadius(15.radius)
-            )) {
-                layoutDirection = LayoutDirection.HORIZONTAL
-                layoutAlignment = UIAlignment.MIDDLELEFT
-                layoutPadding = Padding(21.px, 16.px, 21.px, 16.px)
-                itemSpacing = 24.px
+                            .position(49, 138)
+                            .hug()
+                            .backgroundColor(RGBA(1f, 0f, 0f, 0.3f).rgba)
+            ) {
+                layoutDirection = LayoutDirection.VERTICAL
+                layoutAlignment = UIAlignment.TOPLEFT
+                layoutPadding = Padding(14.px, 0.px, 0.px, 0.px)
+                itemSpacing = 9.px
 
-                icon(
-                        imageName = "frame",
-                        modifier = IconModifier()
-                                .size(24, 24)
-                                .imageColor((-1).rgb)
-                )
+                elementLabel("MENU")
 
-                button(
-                        text = "Edit HUD",
-                        fontStyle = FontStyle()
-                                .fontName("Montserrat-Medium")
-                                .fontSize(14.px)
-                                .fontColor((-1).rgb)
-                                .fontType(FontType.AutoWidth)
-                )
+                autoLayout(
+                        modifier = LayoutModifier().hug().backgroundColor(RGBA(0f, 1f, 0f, 0.3f).rgba)
+                ) {
+                    layoutDirection = LayoutDirection.VERTICAL
+                    layoutAlignment = UIAlignment.TOPLEFT
+                    itemSpacing = 8.px
+                    elementLabel("Some text")
+                    elementButton("home", "Dashboard")
+                    elementButton("folder", "Mods")
+                    elementButton("home", "Settings")
+                    elementButton("shop", "Store")
+                    elementButton("profile", "Profiles")
+                }
+
+                elementLabel("SOCIAL")
+                elementButton("profile", "Profiles")
+
+//                autoLayout(
+//                        modifier = LayoutModifier().hug()
+//                ) {
+//                    layoutDirection = LayoutDirection.VERTICAL
+//                    layoutAlignment = UIAlignment.TOPLEFT
+//                    itemSpacing = 8.px
+//                    elementButton("home", "Dashboard")
+//                    elementButton("folder", "Mods")
+//                    elementButton("home", "Settings")
+//                    elementButton("shop", "Store")
+//                    elementButton("profile", "Profiles")
+//                }
             }
+
+//            val layout = component(AutoLayout(
+//                    modifier = LayoutModifier()
+//                            .size(189.px, HugLayout())
+//                            .control(UIAlignment.BOTTOMLEFT)
+//                            .x(49.px)
+//                            .backgroundColor(RGBA(20, 113, 255).rgb)
+//                            .backgroundRadius(15.radius)
+//            )) {
+//                modifier.y -= 52.px
+//                layoutDirection = LayoutDirection.HORIZONTAL
+//                layoutAlignment = UIAlignment.MIDDLELEFT
+//                layoutPadding = Padding(21.px, 16.px, 21.px, 16.px)
+//                itemSpacing = 24.px
+//
+//                icon(
+//                        imageName = "frame",
+//                        modifier = IconModifier()
+//                                .size(24, 24)
+//                                .imageColor((-1).rgb)
+//                )
+//
+//                button(
+//                        text = "Edit HUD",
+//                        fontStyle = FontStyle()
+//                                .fontName("Montserrat-Medium")
+//                                .fontSize(14.px)
+//                                .fontColor((-1).rgb)
+//                                .fontType(FontType.AutoWidth)
+//                )
+//            }
         }
     }
 
     fun elementButton(icon: String, buttonText: String) = component(AutoLayout(
-        modifier = LayoutModifier().size(206.px, HugLayout())
+            modifier = LayoutModifier().size(206.px, HugLayout())
     )) {
         layoutDirection = LayoutDirection.HORIZONTAL
         layoutAlignment = UIAlignment.MIDDLELEFT
@@ -113,21 +141,32 @@ class PrismDesign : UIScreen {
         itemSpacing = 24.px
 
         icon(
-            imageName = icon,
-            modifier = IconModifier()
-                .size(24, 24)
-                .imageColor(0xA1B3CA.rgb)
+                imageName = icon,
+                modifier = IconModifier()
+                        .size(24, 24)
+                        .imageColor((-1).rgb)
         )
 
         button(
-            text = buttonText,
-            fontStyle = FontStyle()
-                .fontName("Montserrat-Regular")
-                .fontSize(14.px)
-                .fontColor(0x697483.rgb)
-                .fontType(FontType.AutoWidth)
+                text = buttonText,
+                fontStyle = FontStyle()
+                        .fontName("Montserrat-Regular")
+                        .fontSize(14.px)
+                        .fontColor(0x697483.rgb)
+                        .fontType(FontType.AutoWidth)
         )
     }
+
+    fun elementLabel(text: String) = button(
+            text = text,
+            modifier = Modifier()
+                    .backgroundColor(RGBA(1f, 1f, 0f, 0.3f).rgba),
+            fontStyle = FontStyle()
+                    .fontName("Montserrat-Medium")
+                    .fontSize(11.px)
+                    .fontColor(0x697483.rgb)
+                    .fontType(FontType.AutoWidth)
+    )
 
     fun constructBackground() = construct {
         it.modifier.size(1.rel, 1.rel)

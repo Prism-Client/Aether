@@ -3,22 +3,21 @@ package net.prismclient.aether.ui.layout
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.layout.util.LayoutOrder
-import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.core.util.shorthands.dp
 
 open class UIListLayout constructor(
-    var direction: LayoutDirection,
-    var order: LayoutOrder,
-    var childSpacing: UIUnit<*>?,
-    modifier: LayoutModifier<*>
+        var direction: LayoutDirection,
+        var order: LayoutOrder,
+        var itemSpacing: UIUnit<*>?,
+        modifier: LayoutModifier<*>
 ) : UILayout(modifier, true) {
     override fun updateUnits() {
-        childSpacing.compute(direction == LayoutDirection.VERTICAL)
+        itemSpacing.compute(direction == LayoutDirection.VERTICAL)
     }
 
     override fun updateLayout(): Size {
-        val spacing = childSpacing.dp
+        val spacing = itemSpacing.dp
 
         var x = x
         var y = y

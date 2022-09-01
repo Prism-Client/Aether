@@ -175,6 +175,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
         } - anchor?.y.dp + fontMetrics[6] / 2f
 
         renderer {
+            renderer.save()
             color(style.fontColor)
             font(
                 style.actualFontName ?: "",
@@ -189,6 +190,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
                 FixedSize -> renderer.renderText(actualText, x, y, width, lineHeight, null)
                 else -> throw NullPointerException("Text Resizing (Font Type) of $style cannot be null.")
             }
+            renderer.restore()
         }
     }
 

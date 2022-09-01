@@ -76,18 +76,18 @@ internal inline fun disableDynamicCheck(composable: Composable?, block: () -> Un
 
 // -- Operator Functions -- //
 
-operator fun UIUnit<*>.plus(other: UIUnit<*>): OperationUnit = OperationUnit(this, other, OperationUnit.Operation.ADD)
+operator fun UIUnit<*>?.plus(other: UIUnit<*>?): OperationUnit = OperationUnit(this, other, OperationUnit.Operation.ADD)
 
-operator fun UIUnit<*>.minus(other: UIUnit<*>): OperationUnit = OperationUnit(this, other, OperationUnit.Operation.SUBTRACT)
+operator fun UIUnit<*>?.minus(other: UIUnit<*>?): OperationUnit = OperationUnit(this, other, OperationUnit.Operation.SUBTRACT)
 
-operator fun UIUnit<*>.times(other: UIUnit<*>): OperationUnit = OperationUnit(this, other, OperationUnit.Operation.MULTIPLY)
+operator fun UIUnit<*>?.times(other: UIUnit<*>?): OperationUnit = OperationUnit(this, other, OperationUnit.Operation.MULTIPLY)
 
-operator fun UIUnit<*>.div(other: UIUnit<*>): OperationUnit = OperationUnit(this, other, OperationUnit.Operation.DIVIDE)
+operator fun UIUnit<*>?.div(other: UIUnit<*>?): OperationUnit = OperationUnit(this, other, OperationUnit.Operation.DIVIDE)
 
-operator fun Number.plus(other: UIUnit<*>): OperationUnit = OperationUnit(this.px, other, OperationUnit.Operation.ADD)
+operator fun Number.plus(other: UIUnit<*>?): OperationUnit = OperationUnit(this.px, other, OperationUnit.Operation.ADD)
 
-operator fun Number.minus(other: UIUnit<*>): OperationUnit = OperationUnit(this.px, other, OperationUnit.Operation.SUBTRACT)
+operator fun Number.minus(other: UIUnit<*>?): OperationUnit = OperationUnit(this.px, other, OperationUnit.Operation.SUBTRACT)
 
-operator fun Number.times(other: UIUnit<*>): OperationUnit = OperationUnit(this.px, other, OperationUnit.Operation.MULTIPLY)
+operator fun Number.times(other: UIUnit<*>?): OperationUnit = OperationUnit(this.px, other, OperationUnit.Operation.MULTIPLY)
 
-operator fun Number.div(other: UIUnit<*>): OperationUnit = OperationUnit(this.px, other, OperationUnit.Operation.DIVIDE)
+operator fun Number.div(other: UIUnit<*>?): OperationUnit = OperationUnit(this.px, other, OperationUnit.Operation.DIVIDE)

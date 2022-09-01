@@ -9,7 +9,10 @@ import net.prismclient.aether.core.input.MouseButtonType
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.property.Focusable
 import net.prismclient.aether.core.util.shorthands.RGBA
+import net.prismclient.aether.core.util.shorthands.bounds
+import net.prismclient.aether.core.util.shorthands.fontBounds
 import net.prismclient.aether.core.util.shorthands.notNull
+import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier

@@ -10,6 +10,7 @@ import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.dsl.ConstructionDSL
 import net.prismclient.aether.ui.font.FontStyle
 import net.prismclient.aether.ui.image.UIImage
+import net.prismclient.aether.ui.layout.AutoLayout
 import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.layout.UIListLayout
 import net.prismclient.aether.ui.layout.util.LayoutDirection
@@ -141,4 +142,7 @@ inline fun verticalList(
         modifier: LayoutModifier<*> = LayoutModifier(),
         block: Block<UIListLayout> = {}
 ) = listLayout(LayoutDirection.VERTICAL, order, childSpacing, modifier, block)
+
+inline fun autoLayout(modifier: LayoutModifier<*> = LayoutModifier(), block: Block<AutoLayout> = {}): AutoLayout =
+        component(AutoLayout(modifier), block)
 
