@@ -93,9 +93,9 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
     open fun rasterize() {
         if (!modifier.optimizeComposition) return
 
-//        println("Rasterized the composition")
-
-        framebuffer = framebuffer ?: Aether.renderer.createFBO(width, height)
+        if (framebuffer == null || framebuffer!!.width != width || framebuffer!!.height != height) {
+            framebuffer = Aether.renderer.createFBO(width, height)
+        }
 
         UIRendererDSL.renderToFramebuffer(framebuffer!!) {
             // Translate the composition by the inverse position. This is done

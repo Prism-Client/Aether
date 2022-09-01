@@ -44,6 +44,7 @@ class PrismDesign : UIScreen {
         compose(name = "Test", modifier = CompositionModifier()
             .size(1.rel, 1.rel)
         ) {
+//            this.modifier.optimizeComposition = false
             constructBackground()
             prismLogo().modifier.position(49, 52)
 
