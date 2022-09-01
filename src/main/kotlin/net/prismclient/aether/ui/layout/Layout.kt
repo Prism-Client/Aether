@@ -127,7 +127,10 @@ abstract class UILayout(
 
         // Translate by the offset of the scrollbars
         UIRendererDSL.renderer.translate(-xOffset, -yOffset)
-        children.forEach(Composable::render)
+        children.forEach {
+            it.render()
+            UIRendererDSL.renderer.resetScissor() // (Composable::render)
+        }
 
         // Return by inverting the value and render the scrollbar
         UIRendererDSL.renderer.translate(xOffset, yOffset)

@@ -12,9 +12,6 @@ import kotlin.reflect.full.isSubclassOf
  * pixel based properties. The provided generic value must be the class which is inheriting this class.
  * It is used for the interface [Copyable] so that the unit can be copied to be manipulated with later.
  *
- * Although editing the [cachedValue] externally is possible, and available to use, it is a risky operation
- * instead, a new units should be allocated instead to represent a value if necessary.
- *
  * @author sen
  * @since 1.0
  */

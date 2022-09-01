@@ -13,10 +13,7 @@ import net.prismclient.aether.ui.component.type.imageColor
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.image.ImageProvider
-import net.prismclient.aether.ui.layout.AutoLayout
-import net.prismclient.aether.ui.layout.HugLayout
-import net.prismclient.aether.ui.layout.LayoutModifier
-import net.prismclient.aether.ui.layout.hug
+import net.prismclient.aether.ui.layout.*
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.resource.ResourceProvider
@@ -57,9 +54,8 @@ class PrismDesign : UIScreen {
 
             autoLayout(
                     modifier = LayoutModifier()
-                            .position(49, 138)
+                            .position(48, 138)
                             .hug()
-                            .backgroundColor(RGBA(1f, 0f, 0f, 0.3f).rgba)
             ) {
                 layoutDirection = LayoutDirection.VERTICAL
                 layoutAlignment = UIAlignment.TOPLEFT
@@ -68,13 +64,15 @@ class PrismDesign : UIScreen {
 
                 elementLabel("MENU")
 
+                // TODO: Unit.max(value).min(value)
+
                 autoLayout(
-                        modifier = LayoutModifier().hug().backgroundColor(RGBA(0f, 1f, 0f, 0.3f).rgba)
+                        modifier = LayoutModifier().hugWidth().width()
                 ) {
+                    modifier.clipContent = false
                     layoutDirection = LayoutDirection.VERTICAL
                     layoutAlignment = UIAlignment.TOPLEFT
                     itemSpacing = 8.px
-                    elementLabel("Some text")
                     elementButton("home", "Dashboard")
                     elementButton("folder", "Mods")
                     elementButton("home", "Settings")
@@ -83,52 +81,21 @@ class PrismDesign : UIScreen {
                 }
 
                 elementLabel("SOCIAL")
-                elementButton("profile", "Profiles")
 
-//                autoLayout(
-//                        modifier = LayoutModifier().hug()
-//                ) {
-//                    layoutDirection = LayoutDirection.VERTICAL
-//                    layoutAlignment = UIAlignment.TOPLEFT
-//                    itemSpacing = 8.px
-//                    elementButton("home", "Dashboard")
-//                    elementButton("folder", "Mods")
-//                    elementButton("home", "Settings")
-//                    elementButton("shop", "Store")
-//                    elementButton("profile", "Profiles")
-//                }
+                autoLayout(
+                        modifier = LayoutModifier().hug()
+                ) {
+//                    modifier.clipContent = false
+                    layoutDirection = LayoutDirection.VERTICAL
+                    layoutAlignment = UIAlignment.TOPLEFT
+                    itemSpacing = 8.px
+                    elementButton("home", "Dashboard")
+                    elementButton("folder", "Mods")
+                    elementButton("home", "Settings")
+                    elementButton("shop", "Store")
+                    elementButton("profile", "Profiles")
+                }
             }
-
-//            val layout = component(AutoLayout(
-//                    modifier = LayoutModifier()
-//                            .size(189.px, HugLayout())
-//                            .control(UIAlignment.BOTTOMLEFT)
-//                            .x(49.px)
-//                            .backgroundColor(RGBA(20, 113, 255).rgb)
-//                            .backgroundRadius(15.radius)
-//            )) {
-//                modifier.y -= 52.px
-//                layoutDirection = LayoutDirection.HORIZONTAL
-//                layoutAlignment = UIAlignment.MIDDLELEFT
-//                layoutPadding = Padding(21.px, 16.px, 21.px, 16.px)
-//                itemSpacing = 24.px
-//
-//                icon(
-//                        imageName = "frame",
-//                        modifier = IconModifier()
-//                                .size(24, 24)
-//                                .imageColor((-1).rgb)
-//                )
-//
-//                button(
-//                        text = "Edit HUD",
-//                        fontStyle = FontStyle()
-//                                .fontName("Montserrat-Medium")
-//                                .fontSize(14.px)
-//                                .fontColor((-1).rgb)
-//                                .fontType(FontType.AutoWidth)
-//                )
-//            }
         }
     }
 
@@ -159,8 +126,7 @@ class PrismDesign : UIScreen {
 
     fun elementLabel(text: String) = button(
             text = text,
-            modifier = Modifier()
-                    .backgroundColor(RGBA(1f, 1f, 0f, 0.3f).rgba),
+            modifier = Modifier(),
             fontStyle = FontStyle()
                     .fontName("Montserrat-Medium")
                     .fontSize(11.px)
