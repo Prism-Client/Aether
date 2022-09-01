@@ -351,7 +351,7 @@ object Renderer : UIRenderer {
 
     override fun fontBounds(text: String): FloatArray {
         nvgTextMetrics(ctx, ascender, descender, null)
-        fontBounds[4] = nvgTextBounds(ctx, 0f, 0f, "Edit HUD", fontBounds)
+        fontBounds[4] = nvgTextBounds(ctx, 0f, 0f, text, fontBounds)
         return fontBounds
     }
 
