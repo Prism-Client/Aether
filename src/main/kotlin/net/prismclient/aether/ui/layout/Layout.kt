@@ -5,11 +5,9 @@ import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.property.Focusable
 import net.prismclient.aether.core.util.shorthands.*
-import net.prismclient.aether.core.util.shorthands.ifNotNull
-import net.prismclient.aether.core.util.shorthands.lerp
-import net.prismclient.aether.core.util.shorthands.or
-import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.composition.Composition
+import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.layout.scroll.Scrollbar
 import net.prismclient.aether.ui.layout.util.LayoutDirection
@@ -19,11 +17,11 @@ import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
 
 /**
- * [UILayout] is a composable used for controlling a group of components in a specific way. It is a Focusable
+ * [UILayout] is composition subset designed for controlling a group of components in a specific way. It is a Focusable
  * composable, as it introduces the opportunity for scrollbars.
  *
  * //todo: doc this stuff xd
- * // todo: automatically calculate the layout size after composition
+ * //todo: automatically calculate the layout size after composition
  *
  * @author sen
  * @since 1.0
@@ -31,9 +29,10 @@ import net.prismclient.aether.ui.unit.other.Padding
  * @param overrideChildren When true, the children's property overridden is enabled during the compose stage.
  */
 abstract class UILayout(
-        modifier: LayoutModifier<*>,
-        protected val overrideChildren: Boolean
-) : Composable(modifier), ComposableGroup, Focusable {
+    compositionName: String,
+    modifier: LayoutModifier<*>,
+    protected val overrideChildren: Boolean
+) : Composition(compositionName, modifier), ComposableGroup, Focusable {
     override val modifier: LayoutModifier<*> = super.modifier as LayoutModifier<*>
 
     override val children: ArrayList<Composable> = arrayListOf()
@@ -53,13 +52,15 @@ abstract class UILayout(
      */
     open fun heightOverflow(): Float = (layoutSize.height - height).coerceAtLeast(0f)
 
-    override fun layoutXOffset(): Float = (modifier.horizontalScrollbar?.value ?: 0f) * (layoutSize.width - this.width) + super.layoutXOffset()
+    override fun layoutXOffset(): Float =
+        (modifier.horizontalScrollbar?.value ?: 0f) * (layoutSize.width - this.width) + super.layoutXOffset()
 
-    override fun layoutYOffset(): Float = (modifier.verticalScrollbar?.value ?: 0f) * (layoutSize.height - this.height) + super.layoutYOffset()
+    override fun layoutYOffset(): Float =
+        (modifier.verticalScrollbar?.value ?: 0f) * (layoutSize.height - this.height) + super.layoutYOffset()
 
-    override fun mouseX(): Float =  Aether.instance.mouseX + super.layoutXOffset()
+    override fun mouseX(): Float = Aether.instance.mouseX + super.layoutXOffset()
 
-    override fun mouseY(): Float =  Aether.instance.mouseY + super.layoutYOffset()
+    override fun mouseY(): Float = Aether.instance.mouseY + super.layoutYOffset()
 
     override fun compose() {
         modifier.preCompose(this)
@@ -85,6 +86,7 @@ abstract class UILayout(
         }
 
         modifier.compose(this)
+        rasterize()
     }
 
     /**
@@ -112,32 +114,34 @@ abstract class UILayout(
      */
     abstract fun updateLayout(): Size
 
-    override fun render() {
-        // Clip the content if necessary
-        if (modifier.clipContent) {
-            if (UIRendererDSL.shouldSave) UIRendererDSL.renderer.save()
-            UIRendererDSL.renderer.scissor(relX, relY, relWidth, relHeight)
+    override fun rasterize() {
+        if (!modifier.optimizeComposition) return
+
+        if (framebuffer == null || framebuffer!!.width != width || framebuffer!!.height != height) {
+            framebuffer = Aether.renderer.createFBO(width, height)
         }
 
-        // Calculate the offset of the scrollbars
-        val xOffset = (modifier.horizontalScrollbar?.value ?: 0f) * (layoutSize.width - this.width)
-        val yOffset = (modifier.verticalScrollbar?.value ?: 0f) * (layoutSize.height - this.height)
+        UIRendererDSL.renderToFramebuffer(framebuffer!!) {
+            renderer.save()
+            translate(-x, -y) {
+                shouldSave = false
+                modifier.preRender()
 
-        modifier.preRender()
+                // Calculate the offset of the scrollbars
+                val xOffset = (modifier.horizontalScrollbar?.value ?: 0f) * (layoutSize.width - width)
+                val yOffset = (modifier.verticalScrollbar?.value ?: 0f) * (layoutSize.height - height)
 
-        // Translate by the offset of the scrollbars
-        UIRendererDSL.renderer.translate(-xOffset, -yOffset)
-        children.forEach {
-            it.render()
-            UIRendererDSL.renderer.resetScissor() // (Composable::render)
+                // Translate by the offset prior to rendering
+                renderer.translate(-xOffset, -yOffset)
+                children.forEach(Composable::render)
+                // Return by inverting the value and render the scrollbar
+                renderer.translate(xOffset, yOffset)
+
+                modifier.render()
+                shouldSave = true
+            }
+            renderer.restore()
         }
-
-        // Return by inverting the value and render the scrollbar
-        UIRendererDSL.renderer.translate(xOffset, yOffset)
-        modifier.render()
-
-        // Restore the state necessary
-        if (modifier.clipContent && UIRendererDSL.shouldSave) UIRendererDSL.renderer.restore()
     }
 }
 
@@ -150,7 +154,7 @@ abstract class UILayout(
  * @since 1.0
  * @see DefaultLayoutModifier
  */
-abstract class LayoutModifier<T : LayoutModifier<T>> : UIModifier<T>() {
+abstract class LayoutModifier<T : LayoutModifier<T>> : CompositionModifier<T>() {
     open var horizontalScrollbar: Scrollbar? = null
         set(value) {
             value?.direction = LayoutDirection.HORIZONTAL
@@ -161,7 +165,6 @@ abstract class LayoutModifier<T : LayoutModifier<T>> : UIModifier<T>() {
             value?.direction = LayoutDirection.VERTICAL
             field = value
         }
-    open var clipContent: Boolean = true
 
     override fun compose(composable: Composable) {
         super.compose(composable)
@@ -193,6 +196,7 @@ class DefaultLayoutModifier : LayoutModifier<DefaultLayoutModifier>() {
         it.padding = padding.copy
         it.margin = margin.copy
         it.background = background.copy
+        it.clipContent = clipContent
         TODO("Copy not yet implemented.")
     }
 
@@ -206,6 +210,7 @@ class DefaultLayoutModifier : LayoutModifier<DefaultLayoutModifier>() {
             padding = other.padding or padding
             margin = other.margin or margin
             background = other.background or background
+            clipContent = other.clipContent
         }
         TODO("Merge not yet implemented.")
     }

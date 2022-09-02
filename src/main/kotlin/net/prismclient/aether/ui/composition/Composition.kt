@@ -1,12 +1,12 @@
 package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.util.other.ComposableGroup
+import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.renderer.UIFramebuffer
-import net.prismclient.aether.core.util.other.ComposableGroup
-import net.prismclient.aether.core.util.shorthands.or
 
 // TODO: disable optimize composition
 // TODO: Limit composition framerate
@@ -20,8 +20,8 @@ import net.prismclient.aether.core.util.shorthands.or
  * @author sen
  * @since 1.0
  */
-open class Composition(val name: String, modifier: CompositionModifier) : Composable(modifier), ComposableGroup {
-    override val modifier: CompositionModifier get() = super.modifier as CompositionModifier
+open class Composition(val name: String, modifier: CompositionModifier<*>) : Composable(modifier), ComposableGroup {
+    override val modifier: CompositionModifier<*> get() = super.modifier as CompositionModifier
     override val children: ArrayList<Composable> = arrayListOf()
 
     override fun parentWidth(): Float = Aether.instance.displayWidth
@@ -48,21 +48,15 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
     // -- Core -- //
 
     override fun compose() {
-        //if (!composed || dynamic) {
-            modifier.preCompose(this)
+        modifier.preCompose(this)
 
-            composeSize()
-            composePosition()
+        composeSize()
+        composePosition()
 
-            // Compose all static components
-            children.filterNot(Composable::dynamic).forEach(Composable::compose)
-
-            // Compose all dynamic components after the initial composition has been created.
-//            if (dynamic)
-//                children.filter(Composable::dynamic).forEach(Composable::compose)
-            modifier.compose(this)
-            rasterize()
-//        }
+        // Compose all static components
+        children.filterNot(Composable::dynamic).forEach(Composable::compose)
+        modifier.compose(this)
+        rasterize()
     }
 
     override fun render() {
@@ -74,17 +68,18 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
                     rect(x, y, width, height, modifier.background?.backgroundRadius)
                 }.fillPaint()
             } else {
-                scissor(x, y, width, height) {
-                    modifier.preRender()
-                    children.forEach(Composable::render)
-                    modifier.render()
+                if (modifier.clipContent) {
+                    if (shouldSave) renderer.save()
+                    renderer.scissor(relX, relY, relWidth, relHeight)
                 }
+
+                modifier.preRender()
+                children.forEach(Composable::render)
+                modifier.render()
+
+                if (modifier.clipContent && shouldSave) renderer.restore()
             }
         }
-    }
-
-    override fun recompose() {
-        compose()
     }
 
     /**
@@ -128,28 +123,48 @@ open class Composition(val name: String, modifier: CompositionModifier) : Compos
  *
  * @author sen
  * @since 1.0
+ *
+ * @see DefaultCompositionModifier
  */
-open class CompositionModifier : UIModifier<CompositionModifier>() {
+abstract class CompositionModifier<T : CompositionModifier<T>> : UIModifier<T>() {
     /**
      * True by default. The composition will use a framebuffer.
      *
      * @see frameRate
      */
-    open var optimizeComposition: Boolean = true // TODO: Move to modifier
+    open var optimizeComposition: Boolean = true
 
     /**
-     * The frame rate of this composition. The frame is updated regardless of this property on an event, and does nothing
-     * if [optimizeComposition] is false.
-     *
-     *      -1 = unlimited
-     *       0 = disabled (default)
-     *      >0 = frames per second
-     *
-     * @see optimizeComposition
+     * Will clip any content that exceeds the bounds of this. The content will **always**
+     * be clipped when [optimizeComposition] is true.
      */
-    open var frameRate: Int = 0 // TODO: Convert to class
+    open var clipContent: Boolean = true
 
-    override fun copy(): CompositionModifier = CompositionModifier().also {
+//    /**
+//     * The frame rate of this composition. The frame is updated regardless of this property on an event, and does nothing
+//     * if [optimizeComposition] is false.
+//     *
+//     *      -1 = unlimited
+//     *       0 = disabled (default)
+//     *      >0 = frames per second
+//     *
+//     * @see optimizeComposition
+//     */
+//    open var frameRate: Int = 0 // TODO: Convert to class
+}
+
+/**
+ * The default implementation of [CompositionModifier].
+ *
+ * @author sen
+ * @since 1.0
+ */
+class DefaultCompositionModifier : CompositionModifier<DefaultCompositionModifier>() {
+    override fun animate(start: DefaultCompositionModifier?, end: DefaultCompositionModifier?, fraction: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun copy(): DefaultCompositionModifier = DefaultCompositionModifier().also {
         it.x = x?.copy()
         it.y = y?.copy()
         it.width = width?.copy()
@@ -159,10 +174,10 @@ open class CompositionModifier : UIModifier<CompositionModifier>() {
         it.margin = margin?.copy()
         it.background = background?.copy()
         it.optimizeComposition = optimizeComposition
-        it.frameRate = frameRate
+        it.clipContent = clipContent
     }
 
-    override fun merge(other: CompositionModifier?) {
+    override fun merge(other: DefaultCompositionModifier?) {
         if (other != null) {
             x = other.x or x
             y = other.y or y
@@ -173,20 +188,7 @@ open class CompositionModifier : UIModifier<CompositionModifier>() {
             margin = other.margin or margin
             background = other.background or background
             optimizeComposition = other.optimizeComposition
-            frameRate = other.frameRate
+            clipContent = other.clipContent
         }
     }
-
-    override fun animate(start: CompositionModifier?, end: CompositionModifier?, fraction: Float) {
-        TODO("Animate CompositionModifier")
-    }
-}
-
-/**
- * Limits the frame rate of the composition of this [CompositionModifier].
- *
- * @see [CompositionModifier.frameRate]
- */
-fun Composition.limitFrameRate(frameRate: Int) = apply {
-    modifier.frameRate = frameRate
 }

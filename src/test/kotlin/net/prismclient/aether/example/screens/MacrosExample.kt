@@ -6,6 +6,7 @@ import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.component.*
 import net.prismclient.aether.ui.composition.CompositionModifier
+import net.prismclient.aether.ui.composition.DefaultCompositionModifier
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.composition.util.UIBorder
 import net.prismclient.aether.ui.dsl.UIAssetDSL
@@ -53,7 +54,7 @@ class MacrosExample : UIScreen {
 
         register(name = "Regular", style = FONT.fontName("Montserrat/Montserrat-Regular"))
 
-        compose(name = "Test", modifier = CompositionModifier()
+        compose(name = "Test", modifier = DefaultCompositionModifier()
                 .size(546.px, 336.px)
                 .backgroundRadius(8.radius)
                 .backgroundColor(BACKGROUND_COLOR)

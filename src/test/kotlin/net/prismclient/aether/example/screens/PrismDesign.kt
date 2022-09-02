@@ -10,10 +10,12 @@ import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.component.*
 import net.prismclient.aether.ui.component.type.IconModifier
 import net.prismclient.aether.ui.component.type.imageColor
-import net.prismclient.aether.ui.composition.CompositionModifier
+import net.prismclient.aether.ui.composition.DefaultCompositionModifier
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.image.ImageProvider
-import net.prismclient.aether.ui.layout.*
+import net.prismclient.aether.ui.layout.HugLayout
+import net.prismclient.aether.ui.layout.LayoutModifier
+import net.prismclient.aether.ui.layout.hug
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.resource.ResourceProvider
@@ -42,8 +44,8 @@ class PrismDesign : UIScreen {
         ImageProvider.createSVG("profile", "/icons/vuesax/custom/profile.svg".toByteBuffer())
         ImageProvider.createSVG("shop", "/icons/vuesax/custom/shop.svg".toByteBuffer())
 
-        compose(name = "Test", modifier = CompositionModifier()
-                .size(1.rel, 1.rel)
+        compose(
+            name = "Test", modifier = DefaultCompositionModifier().size(1.rel, 1.rel)//.position(150.px, 50.px)
         ) {
 //            this.modifier.optimizeComposition = false
             constructBackground()
@@ -53,23 +55,27 @@ class PrismDesign : UIScreen {
 
 
             autoLayout(
-                    modifier = LayoutModifier()
-                            .position(48, 138)
-                            .hug()
+                modifier = LayoutModifier()
+                    .backgroundColor(RGBA(1f, 0f, 0f, 0.3f).rgba)
+                    .position(48, 138)//.hugWidth().height(HugLayout().atLeast(200.px))
+                    .hug()
+                    //.height(HugLayout().atMost(200.px))
             ) {
                 layoutDirection = LayoutDirection.VERTICAL
                 layoutAlignment = UIAlignment.TOPLEFT
                 layoutPadding = Padding(14.px, 0.px, 0.px, 0.px)
                 itemSpacing = 9.px
+                modifier.optimizeComposition = false
+                modifier.clipContent = true
 
                 elementLabel("MENU")
 
                 // TODO: Unit.max(value).min(value)
 
                 autoLayout(
-                        modifier = LayoutModifier().hugWidth().width()
+                    modifier = LayoutModifier().hug()
                 ) {
-                    modifier.clipContent = false
+//                    modifier.optimizeComposition = false
                     layoutDirection = LayoutDirection.VERTICAL
                     layoutAlignment = UIAlignment.TOPLEFT
                     itemSpacing = 8.px
@@ -83,9 +89,9 @@ class PrismDesign : UIScreen {
                 elementLabel("SOCIAL")
 
                 autoLayout(
-                        modifier = LayoutModifier().hug()
+                    modifier = LayoutModifier().hug()
                 ) {
-//                    modifier.clipContent = false
+                    modifier.clipContent = false
                     layoutDirection = LayoutDirection.VERTICAL
                     layoutAlignment = UIAlignment.TOPLEFT
                     itemSpacing = 8.px
@@ -99,39 +105,31 @@ class PrismDesign : UIScreen {
         }
     }
 
-    fun elementButton(icon: String, buttonText: String) = component(AutoLayout(
-            modifier = LayoutModifier().size(206.px, HugLayout())
-    )) {
+    fun elementButton(icon: String, buttonText: String) = autoLayout(
+        modifier = LayoutModifier().size(206.px, HugLayout())
+    ) {
+        modifier.clipContent = false
         layoutDirection = LayoutDirection.HORIZONTAL
         layoutAlignment = UIAlignment.MIDDLELEFT
         layoutPadding = Padding(8.px, 9.px, 8.px, 9.px)
         itemSpacing = 24.px
 
         icon(
-                imageName = icon,
-                modifier = IconModifier()
-                        .size(24, 24)
-                        .imageColor((-1).rgb)
+            imageName = icon, modifier = IconModifier().size(24, 24).imageColor((-1).rgb)
         )
 
         button(
-                text = buttonText,
-                fontStyle = FontStyle()
-                        .fontName("Montserrat-Regular")
-                        .fontSize(14.px)
-                        .fontColor(0x697483.rgb)
-                        .fontType(FontType.AutoWidth)
+            text = buttonText,
+            fontStyle = FontStyle().fontName("Montserrat-Regular").fontSize(14.px).fontColor(0x697483.rgb)
+                .fontType(FontType.AutoWidth)
         )
     }
 
     fun elementLabel(text: String) = button(
-            text = text,
-            modifier = Modifier(),
-            fontStyle = FontStyle()
-                    .fontName("Montserrat-Medium")
-                    .fontSize(11.px)
-                    .fontColor(0x697483.rgb)
-                    .fontType(FontType.AutoWidth)
+        text = text,
+        modifier = Modifier(),
+        fontStyle = FontStyle().fontName("Montserrat-Medium").fontSize(11.px).fontColor(0x697483.rgb)
+            .fontType(FontType.AutoWidth)
     )
 
     fun constructBackground() = construct {

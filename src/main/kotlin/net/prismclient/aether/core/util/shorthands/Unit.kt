@@ -6,6 +6,7 @@ import net.prismclient.aether.ui.unit.other.UIRadius
 import net.prismclient.aether.ui.unit.type.dynamic.RelativeUnit
 import net.prismclient.aether.ui.unit.type.dynamic.SizeUnit
 import net.prismclient.aether.ui.unit.type.other.OperationUnit
+import net.prismclient.aether.ui.unit.type.range.RangeUnit
 import net.prismclient.aether.ui.unit.type.solid.PixelUnit
 
 /**
@@ -73,7 +74,6 @@ internal inline fun disableDynamicCheck(composable: Composable?, block: () -> Un
     composable?.dynamic = isDynamic
 }
 
-
 // -- Operator Functions -- //
 
 operator fun UIUnit<*>?.plus(other: UIUnit<*>?): OperationUnit = OperationUnit(this, other, OperationUnit.Operation.ADD)
@@ -91,3 +91,42 @@ operator fun Number.minus(other: UIUnit<*>?): OperationUnit = OperationUnit(this
 operator fun Number.times(other: UIUnit<*>?): OperationUnit = OperationUnit(this.px, other, OperationUnit.Operation.MULTIPLY)
 
 operator fun Number.div(other: UIUnit<*>?): OperationUnit = OperationUnit(this.px, other, OperationUnit.Operation.DIVIDE)
+
+// -- Range Operator Functions -- //
+
+/**
+ * Creates a [RangeUnit] and ensures that this is at least the minimum value. If this is a range unit,
+ *  the minimum value is set to [min] and this is returned.
+ */
+fun UIUnit<*>.atLeast(min: UIUnit<*>): RangeUnit {
+    if (this is RangeUnit) {
+        this.min = min
+        return this
+    }
+    return RangeUnit(this, min, null)
+}
+
+/**
+ * Creates a [RangeUnit] and ensures that this is at most the maximum value. If this is a range unit,
+ *  the maximum value is set to [max] and this is returned.
+ */
+fun UIUnit<*>.atMost(max: UIUnit<*>): RangeUnit {
+    if (this is RangeUnit) {
+        this.max = max
+        return this
+    }
+    return RangeUnit(this, null, max)
+}
+
+/**
+ * Creates a [RangeUnit] and ensures that this is between the minimum and maximum values. If this is a
+ * [RangeUnit], the minimum and maximum values are set to [min] and [max] and this is returned.
+ */
+fun UIUnit<*>.range(min: UIUnit<*>? = null, max: UIUnit<*>? = null): RangeUnit {
+    if (this is RangeUnit) {
+        this.min = min
+        this.max = max
+        return this
+    }
+    return RangeUnit(this, min, max)
+}

@@ -20,7 +20,7 @@ import kotlin.math.roundToInt
  * @author sen
  * @since 1.0
  */
-open class AutoLayout(modifier: LayoutModifier<*>) : UILayout(modifier, true) {
+open class AutoLayout(layoutName: String, modifier: LayoutModifier<*>) : UILayout(layoutName, modifier, true) {
     /**
      * Indicates which direction should this align the items within.
      */
@@ -60,8 +60,8 @@ open class AutoLayout(modifier: LayoutModifier<*>) : UILayout(modifier, true) {
         }
 
         return Size(
-                width + layoutPadding?.left.dp + layoutPadding?.right.dp,
-                height + layoutPadding?.top.dp + layoutPadding?.bottom.dp
+            width + layoutPadding?.left.dp + layoutPadding?.right.dp,
+            height + layoutPadding?.top.dp + layoutPadding?.bottom.dp
         )
     }
 

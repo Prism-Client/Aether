@@ -205,7 +205,7 @@ open class Aether(renderer: UIRenderer) {
     /**
      * Creates a new composition from the given [name].
      */
-    open fun createComposition(name: String, modifier: CompositionModifier): Composition =
+    open fun createComposition(name: String, modifier: CompositionModifier<*>): Composition =
         Composition(name, modifier).also {
             check()
             compositions!!.add(it)

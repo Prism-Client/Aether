@@ -7,6 +7,7 @@ import net.prismclient.aether.ui.component.type.*
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
+import net.prismclient.aether.ui.composition.DefaultCompositionModifier
 import net.prismclient.aether.ui.dsl.ConstructionDSL
 import net.prismclient.aether.ui.font.FontStyle
 import net.prismclient.aether.ui.image.UIImage
@@ -51,7 +52,11 @@ inline fun <T : Composable> component(composable: T, block: Block<T> = {}): T {
 /**
  * Creates a new composition with the given [name], and applies the [block].
  */
-inline fun compose(name: String, modifier: CompositionModifier = CompositionModifier(), block: Block<Composition>): Composition {
+inline fun compose(
+    name: String,
+    modifier: CompositionModifier<*> = DefaultCompositionModifier(),
+    block: Block<Composition>
+): Composition {
     val composition = Aether.instance.createComposition(name, modifier)
     ComponentUtil.activeComposition = composition
     composition.block()
@@ -60,29 +65,29 @@ inline fun compose(name: String, modifier: CompositionModifier = CompositionModi
 }
 
 inline fun button(
-        text: String,
-        modifier: UIModifier<*> = Modifier(),
-        fontStyle: FontStyle = FontStyle(),
-        block: Block<UIButton> = {}
+    text: String,
+    modifier: UIModifier<*> = Modifier(),
+    fontStyle: FontStyle = FontStyle(),
+    block: Block<UIButton> = {}
 ): UIButton = component(UIButton(text, modifier, fontStyle), block)
 
 inline fun label(
-        text: String,
-        modifier: UIModifier<*> = Modifier(),
-        fontStyle: FontStyle = FontStyle(),
-        block: Block<Label> = {}
+    text: String,
+    modifier: UIModifier<*> = Modifier(),
+    fontStyle: FontStyle = FontStyle(),
+    block: Block<Label> = {}
 ): Label = component(Label(text, modifier, fontStyle), block)
 
 inline fun icon(
-        imageName: String,
-        modifier: IconModifier = IconModifier(),
-        block: Block<Icon> = {}
+    imageName: String,
+    modifier: IconModifier = IconModifier(),
+    block: Block<Icon> = {}
 ): Icon = component(Icon(imageName, modifier), block)
 
 inline fun icon(
-        image: UIImage,
-        modifier: IconModifier = IconModifier(),
-        block: Block<Icon> = {}
+    image: UIImage,
+    modifier: IconModifier = IconModifier(),
+    block: Block<Icon> = {}
 ): Icon = component(Icon(image, modifier), block)
 
 /**
@@ -93,8 +98,8 @@ inline fun icon(
  * @see ConstructionDSL
  */
 inline fun construct(
-        modifier: UIModifier<*> = Modifier(),
-        block: ConstructionDSL.(construct: DefaultConstruct) -> Unit = {}
+    modifier: UIModifier<*> = Modifier(),
+    block: ConstructionDSL.(construct: DefaultConstruct) -> Unit = {}
 ) = component(DefaultConstruct(modifier)) {
     val previousConstruct = ConstructionDSL.activeConstructor
     ConstructionDSL.activeConstructor = this
@@ -110,12 +115,12 @@ inline fun construct(
  * @see verticalList
  */
 inline fun listLayout(
-        direction: LayoutDirection,
-        order: LayoutOrder,
-        childSpacing: UIUnit<*>?,
-        modifier: LayoutModifier<*>,
-        block: Block<UIListLayout> = {}
-) = component(UIListLayout(direction, order, childSpacing, modifier), block)
+    direction: LayoutDirection,
+    order: LayoutOrder,
+    childSpacing: UIUnit<*>?,
+    modifier: LayoutModifier<*>,
+    block: Block<UIListLayout> = {}
+) = component(UIListLayout("Vertical List", direction, order, childSpacing, modifier), block)
 
 /**
  * Creates a list layout with the [UIListLayout.direction] set to horizontal.
@@ -124,25 +129,27 @@ inline fun listLayout(
  * @see verticalList
  */
 inline fun horizontalList(
-        order: LayoutOrder = LayoutOrder.FIRST,
-        childSpacing: UIUnit<*>? = null,
-        modifier: LayoutModifier<*> = LayoutModifier(),
-        block: Block<UIListLayout> = {}
+    order: LayoutOrder = LayoutOrder.FIRST,
+    childSpacing: UIUnit<*>? = null,
+    modifier: LayoutModifier<*> = LayoutModifier(),
+    block: Block<UIListLayout> = {}
 ) = listLayout(LayoutDirection.HORIZONTAL, order, childSpacing, modifier, block)
 
 /**
-* Creates a list layout with the [UIListLayout.direction] set to horizontal.
-*
-* @see listLayout
-* @see horizontalList
-*/
+ * Creates a list layout with the [UIListLayout.direction] set to horizontal.
+ *
+ * @see listLayout
+ * @see horizontalList
+ */
 inline fun verticalList(
-        order: LayoutOrder = LayoutOrder.FIRST,
-        childSpacing: UIUnit<*>? = null,
-        modifier: LayoutModifier<*> = LayoutModifier(),
-        block: Block<UIListLayout> = {}
+    order: LayoutOrder = LayoutOrder.FIRST,
+    childSpacing: UIUnit<*>? = null,
+    modifier: LayoutModifier<*> = LayoutModifier(),
+    block: Block<UIListLayout> = {}
 ) = listLayout(LayoutDirection.VERTICAL, order, childSpacing, modifier, block)
 
-inline fun autoLayout(modifier: LayoutModifier<*> = LayoutModifier(), block: Block<AutoLayout> = {}): AutoLayout =
-        component(AutoLayout(modifier), block)
-
+inline fun autoLayout(
+    layoutName: String = "AutoLayout",
+    modifier: LayoutModifier<*> = LayoutModifier(),
+    block: Block<AutoLayout> = {}
+): AutoLayout = component(AutoLayout(layoutName, modifier), block)

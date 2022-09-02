@@ -1,17 +1,18 @@
 package net.prismclient.aether.ui.layout
 
 import net.prismclient.aether.core.metrics.Size
+import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.layout.util.LayoutOrder
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.core.util.shorthands.dp
 
 open class UIListLayout constructor(
-        var direction: LayoutDirection,
-        var order: LayoutOrder,
-        var itemSpacing: UIUnit<*>?,
-        modifier: LayoutModifier<*>
-) : UILayout(modifier, true) {
+    layoutName: String,
+    var direction: LayoutDirection,
+    var order: LayoutOrder,
+    var itemSpacing: UIUnit<*>?,
+    modifier: LayoutModifier<*>
+) : UILayout(layoutName, modifier, true) {
     override fun updateUnits() {
         itemSpacing.compute(direction == LayoutDirection.VERTICAL)
     }
@@ -47,7 +48,9 @@ open class UIListLayout constructor(
                 w = w.coerceAtLeast(child.x + child.relWidth - this.x)
                 h = h.coerceAtLeast(child.y + child.relHeight - this.y)
             }
-        } else { TODO("Reverse order direction") }
+        } else {
+            TODO("Reverse order direction")
+        }
 
         // Remove the extra space calculated at the last child
         if (direction == LayoutDirection.HORIZONTAL) {
