@@ -82,6 +82,10 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
         }
     }
 
+    override fun recompose() {
+        compose()
+    }
+
     /**
      * Converts the active composition layout to a raster image.
      */
@@ -152,6 +156,8 @@ abstract class CompositionModifier<T : CompositionModifier<T>> : UIModifier<T>()
 //     */
 //    open var frameRate: Int = 0 // TODO: Convert to class
 }
+
+fun CompositionModifier(): DefaultCompositionModifier = DefaultCompositionModifier()
 
 /**
  * The default implementation of [CompositionModifier].

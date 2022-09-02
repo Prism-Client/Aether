@@ -6,6 +6,7 @@ import net.prismclient.aether.ui.alignment.UIAlignment
 import net.prismclient.aether.ui.alignment.UIAlignment.*
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.layout.util.LayoutDirection
+import net.prismclient.aether.ui.style.Style
 import net.prismclient.aether.ui.unit.DynamicUnit
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.Padding
@@ -20,16 +21,11 @@ import kotlin.math.roundToInt
  * @author sen
  * @since 1.0
  */
-open class AutoLayout(layoutName: String, modifier: LayoutModifier<*>) : UILayout(layoutName, modifier, true) {
-    /**
-     * Indicates which direction should this align the items within.
-     */
-    open var layoutAlignment: UIAlignment = CENTER
-    open var layoutDirection: LayoutDirection = LayoutDirection.HORIZONTAL
-    open var layoutPadding: Padding? = null
-
-    open var itemSpacing: UIUnit<*>? = null
-
+open class AutoLayout(
+    layoutName: String,
+    modifier: LayoutModifier<*>,
+    open protected val layoutStyle: AutoLayoutStyle
+) : UILayout(layoutName, modifier, true) {
     protected open var potentialSize: Size? = null
 
     /**
@@ -97,6 +93,7 @@ open class AutoLayout(layoutName: String, modifier: LayoutModifier<*>) : UILayou
     }
 
     override fun updateUnits() {
+        layoutStyle.compose(this)
         itemSpacing?.compute(true)
         layoutPadding?.compose(this)
         if (itemSpacing is SpaceBetween) {
@@ -107,10 +104,10 @@ open class AutoLayout(layoutName: String, modifier: LayoutModifier<*>) : UILayou
 
     override fun updateLayout(): Size {
         val potential = potentialSize!!
-        val top = layoutPadding?.top.dp
-        val right = layoutPadding?.right.dp
-        val bottom = layoutPadding?.bottom.dp
-        val left = layoutPadding?.left.dp
+        val top = layoutStyle.layoutPadding?.top.dp
+        val right = layoutStyle.layoutPadding?.right.dp
+        val bottom = layoutStyle.layoutPadding?.bottom.dp
+        val left = layoutStyle.layoutPadding?.left.dp
 
         var x = this.x + left
         var y = this.y + top
@@ -119,7 +116,7 @@ open class AutoLayout(layoutName: String, modifier: LayoutModifier<*>) : UILayou
 
         // Offset the axis of which the layout is directed
         // based on the alignment and the leftover space.
-        if (layoutDirection == LayoutDirection.HORIZONTAL) {
+        if (layoutStyle.layoutDirection == LayoutDirection.HORIZONTAL) {
             x += when (layoutAlignment) {
                 TOPCENTER, CENTER, BOTTOMCENTER -> (width - potential.width - right + left) / 2f
                 TOPRIGHT, MIDDLERIGHT, BOTTOMRIGHT -> width - potential.width - right + left
@@ -134,16 +131,16 @@ open class AutoLayout(layoutName: String, modifier: LayoutModifier<*>) : UILayou
         }
 
         for (child in children) {
-            if (layoutDirection == LayoutDirection.HORIZONTAL) {
+            if (layoutStyle.layoutDirection == LayoutDirection.HORIZONTAL) {
                 child.x = x
-                child.y = y + when (layoutAlignment) {
+                child.y = y + when (layoutStyle.layoutAlignment) {
                     MIDDLELEFT, CENTER, MIDDLERIGHT -> (height - child.relHeight - top - bottom) / 2f
                     BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT -> (height - child.relHeight - top - bottom)
                     else -> 0f
                 }
                 x += child.relWidth + itemSpacing.dp
             } else {
-                child.x = x + when (layoutAlignment) {
+                child.x = x + when (layoutStyle.layoutAlignment) {
                     TOPCENTER, CENTER, BOTTOMCENTER -> (width - child.relWidth - left - right) / 2f
                     TOPRIGHT, MIDDLERIGHT, BOTTOMRIGHT -> (width - child.relWidth - left - right)
                     else -> 0f
@@ -161,7 +158,59 @@ open class AutoLayout(layoutName: String, modifier: LayoutModifier<*>) : UILayou
 }
 
 /**
- * [SpaceBetween] is an [AutoLayout] specific unit used exclusively for the [AutoLayout.itemSpacing] property. When
+ * [AutoLayoutStyle] contains styling information for an [AutoLayout]. It provides properties similar
+ * to the Figma Auto Layout feature.
+ *
+ * @author sen
+ * @since 1.0
+ */
+class AutoLayoutStyle : Style<AutoLayoutStyle, AutoLayout>() {
+    /**
+     * The direction which the content should be laid.
+     */
+    var layoutAlignment: UIAlignment = TOPLEFT
+
+    /**
+     * The axis, or direction of which the layout should be laid.
+     */
+    var layoutDirection: LayoutDirection = LayoutDirection.HORIZONTAL
+
+    /**
+     * The layout padding represents the spacing on each side of the layout. It contributes to figuring
+     * out the potential size; however, if the size of the layout is a fixed layout, independent of the
+     * layout size (pretty much anything that isn't [HugLayout]), only the [Padding.left] and [Padding.top]
+     * will be the only ones to have a visible effect on the layout.
+     *
+     * @see itemSpacing
+     */
+    var layoutPadding: Padding? = null
+
+    /**
+     * The spacing between each child. This does not include the first and end child.
+     *
+     * @see layoutPadding
+     */
+    var itemSpacing: UIUnit<*>? = null
+
+    override fun animate(start: AutoLayoutStyle?, end: AutoLayoutStyle?, fraction: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun compose(composable: AutoLayout?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun copy(): AutoLayoutStyle {
+        TODO("Not yet implemented")
+    }
+
+    override fun merge(other: AutoLayoutStyle?) {
+        TODO("Not yet implemented")
+    }
+}
+
+/**
+ * [paceBetween] is an [AutoLayout] specific unit used exclusively for the [AutoLayout.itemSpacing] property. When
  * set, it informs the layout to evenly space the items within it based on the leftover space.
  *
  * @author sen

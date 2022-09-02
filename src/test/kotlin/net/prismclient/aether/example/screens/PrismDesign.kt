@@ -10,6 +10,7 @@ import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.component.*
 import net.prismclient.aether.ui.component.type.IconModifier
 import net.prismclient.aether.ui.component.type.imageColor
+import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.composition.DefaultCompositionModifier
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.image.ImageProvider
@@ -45,7 +46,8 @@ class PrismDesign : UIScreen {
         ImageProvider.createSVG("shop", "/icons/vuesax/custom/shop.svg".toByteBuffer())
 
         compose(
-            name = "Test", modifier = DefaultCompositionModifier().size(1.rel, 1.rel)//.position(150.px, 50.px)
+            name = "Test", modifier = CompositionModifier()
+                .size(1.rel, 1.rel)
         ) {
 //            this.modifier.optimizeComposition = false
             constructBackground()

@@ -2,19 +2,22 @@ package net.prismclient.aether.ui.style
 
 import net.prismclient.aether.ui.registry.UIRegistry
 import net.prismclient.aether.core.util.property.UIProperty
+import net.prismclient.aether.core.util.property.UIUniqueProperty
+import net.prismclient.aether.ui.composition.Composable
 
 /**
- * Most components require more information than the default properties provided by Modifier. Modifier
- * only provides more positioning/plotting information, so [Style] takes care of the rest. An example is
- * for a label, where the font size, and font color need to be changed.
+ * Some components require more information than the default properties provided by Modifier. Modifier
+ * only provides more positioning/plotting based information, so [Style] takes care of the rest. Styles
+ * target a specific property group, such as a font. Take the label, where the font size, and font color
+ * need to be changed.
  *
- * This is the superclass for all Styles. It accepts a generic property, [T] which is the type of this. All
- * [UIProperty] functions are expected to be inherited.
+ * This is the superclass for all Styles. It accepts two generic properties, [S], which is this, and [T]
+ * which, the expected [Composable] type.
  *
  * @author sen
  * @since 1.0
  */
-abstract class Style<T> : UIProperty<T> {
+abstract class Style<S, T : Composable> : UIUniqueProperty<S, T> {
     init {
         applyStyle(this::class.simpleName!!)
     }
@@ -27,7 +30,7 @@ abstract class Style<T> : UIProperty<T> {
     @Suppress("unchecked_cast", "LeakingThis")
     open fun applyStyle(name: String): T {
         val activeStyle = UIRegistry.obtainStyle(name)
-        if (activeStyle != null) merge(activeStyle as T)
+        if (activeStyle != null) merge(activeStyle as S)
         return this as T
     }
 }
