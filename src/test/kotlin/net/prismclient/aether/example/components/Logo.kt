@@ -2,7 +2,6 @@ package net.prismclient.aether.example.components
 
 import net.prismclient.aether.core.util.shorthands.copy
 import net.prismclient.aether.ui.component.type.Construct
-import net.prismclient.aether.ui.component.type.DefaultConstruct
 import net.prismclient.aether.ui.modifier.UIModifier
 
 /**

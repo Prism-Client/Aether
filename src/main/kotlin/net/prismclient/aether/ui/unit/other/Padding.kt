@@ -1,14 +1,14 @@
 package net.prismclient.aether.ui.unit.other
 
-import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.modifier.UIModifier
-import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.unit.compute
 import net.prismclient.aether.core.util.property.UIProperty
 import net.prismclient.aether.core.util.shorthands.ifNotNull
 import net.prismclient.aether.core.util.shorthands.lerp
 import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.core.util.shorthands.px
+import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.modifier.UIModifier
+import net.prismclient.aether.ui.unit.UIUnit
+import net.prismclient.aether.ui.unit.compute
 
 /**
  * Padding is a property of [UIModifier] which represents the bounds of a component. When padding is added, the content size

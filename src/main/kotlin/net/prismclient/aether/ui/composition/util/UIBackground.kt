@@ -1,16 +1,13 @@
 package net.prismclient.aether.ui.composition.util
 
+import net.prismclient.aether.core.color.UIColor
+import net.prismclient.aether.core.util.property.UIProperty
+import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.renderer
-import net.prismclient.aether.core.color.UIColor
-import net.prismclient.aether.core.util.shorthands.*
-import net.prismclient.aether.core.util.shorthands.ifNotNull
-import net.prismclient.aether.core.util.shorthands.lerp
-import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.UIRadius
-import net.prismclient.aether.core.util.property.UIProperty
 
 /**
  * [UIBackground] is a property for a component's Modifier. It represents the background of a [Composable].
@@ -97,7 +94,8 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
         }
     }
 
-    override fun toString(): String = "UIBackground(x=$x, y=$y, width=$width, height=$height, backgroundColor=$backgroundColor, backgroundRadius=$backgroundRadius)"
+    override fun toString(): String =
+        "UIBackground(x=$x, y=$y, width=$width, height=$height, backgroundColor=$backgroundColor, backgroundRadius=$backgroundRadius)"
 }
 
 fun UIBackground.color(color: UIColor) = apply {

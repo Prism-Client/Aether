@@ -23,9 +23,9 @@ import kotlin.math.roundToInt
  * @since 1.0
  */
 class AutoLayout(
-        layoutName: String,
-        modifier: LayoutModifier<*>,
-        val layoutStyle: AutoLayoutStyle
+    layoutName: String,
+    modifier: LayoutModifier<*>,
+    val layoutStyle: AutoLayoutStyle
 ) : UILayout(layoutName, modifier, true) {
     var potentialSize: Size? = null
         private set
@@ -58,8 +58,8 @@ class AutoLayout(
         }
 
         return Size(
-                width + layoutStyle.layoutPadding?.left.dp + layoutStyle.layoutPadding?.right.dp,
-                height + layoutStyle.layoutPadding?.top.dp + layoutStyle.layoutPadding?.bottom.dp
+            width + layoutStyle.layoutPadding?.left.dp + layoutStyle.layoutPadding?.right.dp,
+            height + layoutStyle.layoutPadding?.top.dp + layoutStyle.layoutPadding?.bottom.dp
         )
     }
 
@@ -189,7 +189,12 @@ class AutoLayoutStyle : Style<AutoLayoutStyle, AutoLayout>() {
     var itemSpacing: UIUnit<*>? = null
 
     override fun compose(composable: AutoLayout?) {
-        itemSpacing?.compute(composable!!, composable.width, composable.height, layoutDirection == LayoutDirection.VERTICAL)
+        itemSpacing?.compute(
+            composable!!,
+            composable.width,
+            composable.height,
+            layoutDirection == LayoutDirection.VERTICAL
+        )
         layoutPadding?.compose(composable!!)
         if (itemSpacing is SpaceBetween)
             itemSpacing!!.value = (if (layoutDirection == LayoutDirection.HORIZONTAL)
@@ -308,7 +313,7 @@ open class HugLayout : UIUnit<HugLayout>(0f) {
 /**
  * Sets the width and height of this to [HugLayout]. This can only be applied to Auto Layouts.
  */
-fun <T : LayoutModifier<T>> T.hug(): T {
+fun <T : LayoutModifier<*>> T.hug(): T {
     hugWidth()
     hugHeight()
     return this
@@ -317,7 +322,7 @@ fun <T : LayoutModifier<T>> T.hug(): T {
 /**
  * Sets the width of this to a [HugLayout]. This can only be applied to Auto Layouts.
  */
-fun <T : LayoutModifier<T>> T.hugWidth(): T {
+fun <T : LayoutModifier<*>> T.hugWidth(): T {
     width = HugLayout()
     return this
 }
@@ -325,7 +330,7 @@ fun <T : LayoutModifier<T>> T.hugWidth(): T {
 /**
  * Sets the height of this to a [HugLayout]. This can only be applied to Auto Layouts.
  */
-fun <T : LayoutModifier<T>> T.hugHeight(): T {
+fun <T : LayoutModifier<*>> T.hugHeight(): T {
     height = HugLayout()
     return this
 }

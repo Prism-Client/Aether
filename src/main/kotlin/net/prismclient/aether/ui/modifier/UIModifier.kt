@@ -1,27 +1,24 @@
 package net.prismclient.aether.ui.modifier
 
 import net.prismclient.aether.core.color.UIAlpha
+import net.prismclient.aether.core.color.UIColor
+import net.prismclient.aether.core.util.property.Animatable
+import net.prismclient.aether.core.util.property.Copyable
+import net.prismclient.aether.core.util.property.Mergable
+import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.alignment.Alignment
+import net.prismclient.aether.ui.alignment.Alignment.*
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.composition.util.color
 import net.prismclient.aether.ui.composition.util.radius
 import net.prismclient.aether.ui.registry.UIRegistry
-import net.prismclient.aether.core.color.UIColor
-import net.prismclient.aether.core.util.shorthands.*
-import net.prismclient.aether.core.util.shorthands.ifNotNull
-import net.prismclient.aether.core.util.shorthands.lerp
-import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
 import net.prismclient.aether.ui.unit.other.UIRadius
 import net.prismclient.aether.ui.unit.type.dynamic.SizeUnit
-import net.prismclient.aether.core.util.property.Animatable
-import net.prismclient.aether.core.util.property.Copyable
-import net.prismclient.aether.core.util.property.Mergable
-import net.prismclient.aether.ui.alignment.Alignment.*
 
 /**
  * [UIModifier] contains information such as the position, background, padding and other properties that
@@ -36,7 +33,7 @@ import net.prismclient.aether.ui.alignment.Alignment.*
  * @see DefaultModifier
  */
 @Suppress("Unchecked_Cast", "LeakingThis")
-abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animatable<M> { // TODO: Generic Composable type
+abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animatable<M> {
     open var x: UIUnit<*>? = null
     open var y: UIUnit<*>? = null
     open var width: UIUnit<*>? = null
@@ -45,7 +42,7 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
 
     open var padding: Padding? = null
     open var margin: Margin? = null
-    open var opacity: UIAlpha? = null // TODO: Add support for interfaces and actual implementation
+    open var opacity: UIAlpha? = null
 
     open var background: UIBackground? = null
 
@@ -112,7 +109,7 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     /**
      * Adjusts the height of this to the given [value].
      */
-    fun height(value: UIUnit<*>) : M {
+    fun height(value: UIUnit<*>): M {
         height = value
         return this as M
     }
@@ -259,7 +256,7 @@ fun Modifier(): DefaultModifier = DefaultModifier()
 /**
  * The default implementation of [UIModifier]. No unique properties are added, but the copy, merge and animate functions
  * are overridden to supply the required functions to [UIModifier].
- * 
+ *
  * @since 1.0
  * @author sen
  * @see UIModifier
@@ -267,14 +264,15 @@ fun Modifier(): DefaultModifier = DefaultModifier()
  */
 class DefaultModifier : UIModifier<DefaultModifier>() {
     override fun copy(): DefaultModifier = DefaultModifier().also {
-        it.x = x?.copy()
-        it.y = y?.copy()
-        it.width = width?.copy()
-        it.height = height?.copy()
-        it.anchorPoint = anchorPoint?.copy()
-        it.padding = padding?.copy()
-        it.margin = margin?.copy()
-        it.background = background?.copy()
+        it.x = x.copy
+        it.y = y.copy
+        it.width = width.copy
+        it.height = height.copy
+        it.anchorPoint = anchorPoint.copy
+        it.padding = padding.copy
+        it.margin = margin.copy
+        it.opacity = opacity.copy
+        it.background = background.copy
     }
 
     override fun merge(other: DefaultModifier?) {
@@ -286,6 +284,7 @@ class DefaultModifier : UIModifier<DefaultModifier>() {
             anchorPoint = other.anchorPoint or anchorPoint
             padding = other.padding or padding
             margin = other.margin or margin
+            opacity = other.opacity or opacity
             background = other.background or background
         }
     }
@@ -319,7 +318,13 @@ class DefaultModifier : UIModifier<DefaultModifier>() {
             margin = margin ?: Margin(null, null, null, null)
             margin!!.animate(start?.margin, end?.margin, fraction)
         }
-
-        // TODO: update composable properties
+        ifNotNull(start?.opacity, end?.opacity) {
+            opacity = opacity ?: UIAlpha(1f)
+            opacity!!.value = lerp(start?.opacity?.value ?: 1f, end?.opacity?.value ?: 1f, fraction)
+        }
+        ifNotNull(start?.background, end?.background) {
+            background = background ?: UIBackground()
+            background!!.animate(start?.background, end?.background, fraction)
+        }
     }
 }

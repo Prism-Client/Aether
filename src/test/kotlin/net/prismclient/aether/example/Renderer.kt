@@ -1,14 +1,13 @@
 package net.prismclient.aether.example
 
 import net.prismclient.aether.core.Aether
-import net.prismclient.aether.ui.alignment.UITextAlignment
-import net.prismclient.aether.ui.renderer.UIFramebuffer
-import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.core.util.shorthands.alpha
 import net.prismclient.aether.core.util.shorthands.blue
 import net.prismclient.aether.core.util.shorthands.green
 import net.prismclient.aether.core.util.shorthands.red
-import net.prismclient.aether.ui.dsl.UIRendererDSL
+import net.prismclient.aether.ui.alignment.UITextAlignment
+import net.prismclient.aether.ui.renderer.UIFramebuffer
+import net.prismclient.aether.ui.renderer.UIRenderer
 import org.lwjgl.nanovg.*
 import org.lwjgl.nanovg.NanoVG.*
 import org.lwjgl.nanovg.NanoVGGL3.*
@@ -18,7 +17,6 @@ import org.lwjgl.stb.STBImageResize
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
-import java.nio.FloatBuffer
 
 /**
  * Aether allows for the ability to provide your own rendering system. However, you might not
@@ -90,7 +88,10 @@ object Renderer : UIRenderer {
     override fun createFBO(width: Float, height: Float): UIFramebuffer {
         val contentScale = Aether.instance.devicePixelRatio
         val framebuffer = nvgluCreateFramebuffer(
-            ctx, (width * contentScale).toInt().coerceAtLeast(1), (height * contentScale).toInt().coerceAtLeast(1), NVG_IMAGE_REPEATX or NVG_IMAGE_REPEATY
+            ctx,
+            (width * contentScale).toInt().coerceAtLeast(1),
+            (height * contentScale).toInt().coerceAtLeast(1),
+            NVG_IMAGE_REPEATX or NVG_IMAGE_REPEATY
         ) ?: throw RuntimeException("Failed to create the framebuffer. w: $width, h: $height")
         val fbo = UIFramebuffer(
             framebuffer.image(), width, height, width * contentScale, height * contentScale, contentScale
@@ -151,8 +152,8 @@ object Renderer : UIRenderer {
             buffer.rewind()
             copy.flip()
 
-            svg = NanoSVG.nsvgParse(copy, it.ASCII("px"), 96f) ?:
-                throw RuntimeException("Failed to parse the given SVG.")
+            svg =
+                NanoSVG.nsvgParse(copy, it.ASCII("px"), 96f) ?: throw RuntimeException("Failed to parse the given SVG.")
         }
         // Create the rasterizer if necessary
         if (rasterizer == 0L)
@@ -251,7 +252,14 @@ object Renderer : UIRenderer {
 
     val rows = NVGTextRow.create(50)
 
-    override fun renderText(text: String, x: Float, y: Float, lineWidth: Float, lineHeight: Float, lines: ArrayList<String>?): Int {
+    override fun renderText(
+        text: String,
+        x: Float,
+        y: Float,
+        lineWidth: Float,
+        lineHeight: Float,
+        lines: ArrayList<String>?
+    ): Int {
         val nrows = nvgTextBreakLines(ctx, text, lineWidth, rows)
 
         var offset = y

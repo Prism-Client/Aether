@@ -45,7 +45,8 @@ enum class VerticalAlignment {
 /**
  * Returns the [Alignment] version of [HorizontalAlignment]
  */
-fun horizontalConvert(alignment: HorizontalAlignment): Alignment = when (alignment) {
+@PublishedApi
+internal fun horizontalConvert(alignment: HorizontalAlignment): Alignment = when (alignment) {
     HorizontalAlignment.LEFT -> Alignment.TOPLEFT
     HorizontalAlignment.CENTER -> Alignment.TOPCENTER
     HorizontalAlignment.RIGHT -> Alignment.TOPRIGHT
@@ -54,7 +55,8 @@ fun horizontalConvert(alignment: HorizontalAlignment): Alignment = when (alignme
 /**
  * Returns the [Alignment] version of [VerticalAlignment]
  */
-fun verticalConvert(alignment: VerticalAlignment): Alignment = when (alignment) {
+@PublishedApi
+internal fun verticalConvert(alignment: VerticalAlignment): Alignment = when (alignment) {
     VerticalAlignment.TOP -> Alignment.TOPLEFT
     VerticalAlignment.MIDDLE -> Alignment.MIDDLELEFT
     VerticalAlignment.BOTTOM -> Alignment.BOTTOMLEFT

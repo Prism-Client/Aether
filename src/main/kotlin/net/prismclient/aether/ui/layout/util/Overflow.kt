@@ -1,7 +1,7 @@
 package net.prismclient.aether.ui.layout.util
 
-import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.layout.LayoutModifier
+import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.layout.scroll.Scrollbar
 
 /**

@@ -1,8 +1,6 @@
 package net.prismclient.aether.ui.unit
 
 import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.unit.type.solid.PixelUnit
-import kotlin.reflect.KClass
 
 /**
  * Indicates to Aether that the unit is a [DynamicUnit]. Dynamic units, in essence, are units which rely on a property

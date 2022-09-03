@@ -1,17 +1,13 @@
 package net.prismclient.aether.ui.unit.other
 
-import net.prismclient.aether.core.util.shorthands.*
-import net.prismclient.aether.core.util.shorthands.disableDynamicCheck
-import net.prismclient.aether.core.util.shorthands.ifNotNull
-import net.prismclient.aether.core.util.shorthands.lerp
-import net.prismclient.aether.core.util.shorthands.or
-import net.prismclient.aether.ui.alignment.Alignment
-import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.property.Mergable
+import net.prismclient.aether.core.util.shorthands.*
+import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.Alignment.*
+import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.unit.UIUnit
 
 /**
  * Expects a width and height which is used to scale the given properties

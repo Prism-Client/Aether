@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.layout
 
 import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.color.UIAlpha
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.property.Focusable
@@ -8,7 +9,9 @@ import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
+import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.dsl.UIRendererDSL
+import net.prismclient.aether.ui.layout.scroll.DefaultScrollbar
 import net.prismclient.aether.ui.layout.scroll.Scrollbar
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.modifier.UIModifier
@@ -31,7 +34,7 @@ import net.prismclient.aether.ui.unit.other.Padding
 abstract class UILayout(
     compositionName: String,
     modifier: LayoutModifier<*>,
-    protected val overrideChildren: Boolean
+    @Suppress("MemberVisibilityCanBePrivate") protected val overrideChildren: Boolean
 ) : Composition(compositionName, modifier), ComposableGroup, Focusable {
     override val modifier: LayoutModifier<*> = super.modifier as LayoutModifier<*>
 
@@ -178,6 +181,16 @@ abstract class LayoutModifier<T : LayoutModifier<T>> : CompositionModifier<T>() 
         horizontalScrollbar?.render()
         verticalScrollbar?.render()
     }
+
+    // -- Extension Functions -- //
+
+    /**
+     * Disables rendering to a framebuffer for this layout. Some layouts might not need optimizations
+     * as they are not complex, or nested within another.
+     */
+    fun disableOptimizations() = apply {
+        optimizeComposition = false
+    }
 }
 
 /**
@@ -195,9 +208,12 @@ class DefaultLayoutModifier : LayoutModifier<DefaultLayoutModifier>() {
         it.anchorPoint = anchorPoint.copy
         it.padding = padding.copy
         it.margin = margin.copy
+        it.opacity = opacity.copy
         it.background = background.copy
+        it.optimizeComposition = optimizeComposition
         it.clipContent = clipContent
-        TODO("Copy not yet implemented.")
+        it.horizontalScrollbar = horizontalScrollbar.copy
+        it.verticalScrollbar = verticalScrollbar.copy
     }
 
     override fun merge(other: DefaultLayoutModifier?) {
@@ -209,10 +225,13 @@ class DefaultLayoutModifier : LayoutModifier<DefaultLayoutModifier>() {
             anchorPoint = other.anchorPoint or anchorPoint
             padding = other.padding or padding
             margin = other.margin or margin
+            opacity = other.opacity or opacity
             background = other.background or background
+            optimizeComposition = other.optimizeComposition
             clipContent = other.clipContent
+            horizontalScrollbar = other.horizontalScrollbar or horizontalScrollbar
+            verticalScrollbar = other.verticalScrollbar or verticalScrollbar
         }
-        TODO("Merge not yet implemented.")
     }
 
     override fun animate(start: DefaultLayoutModifier?, end: DefaultLayoutModifier?, fraction: Float) {
@@ -244,6 +263,25 @@ class DefaultLayoutModifier : LayoutModifier<DefaultLayoutModifier>() {
             margin = margin ?: Margin(null, null, null, null)
             margin!!.animate(start?.margin, end?.margin, fraction)
         }
-        TODO("Animate not yet implemented.")
+        ifNotNull(start?.opacity, end?.opacity) {
+            opacity = opacity ?: UIAlpha(1f)
+            opacity!!.value = lerp(start?.opacity?.value ?: 1f, end?.opacity?.value ?: 1f, fraction)
+        }
+        ifNotNull(start?.background, end?.background) {
+            background = background ?: UIBackground()
+            background!!.animate(start?.background, end?.background, fraction)
+        }
+        if (end != null) {
+            optimizeComposition = end.optimizeComposition
+            clipContent = end.clipContent
+        }
+        ifNotNull(start?.horizontalScrollbar, end?.horizontalScrollbar) {
+            horizontalScrollbar = horizontalScrollbar ?: DefaultScrollbar()
+            horizontalScrollbar!!.animate(start?.horizontalScrollbar, end?.horizontalScrollbar, fraction)
+        }
+        ifNotNull(start?.verticalScrollbar, end?.verticalScrollbar) {
+            verticalScrollbar = verticalScrollbar ?: DefaultScrollbar()
+            verticalScrollbar!!.animate(start?.verticalScrollbar, end?.verticalScrollbar, fraction)
+        }
     }
 }

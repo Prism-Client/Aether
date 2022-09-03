@@ -49,7 +49,27 @@ open class UIListLayout constructor(
                 h = h.coerceAtLeast(child.y + child.relHeight - this.y)
             }
         } else {
-            TODO("Reverse order direction")
+            for (i in children.size - 1 downTo 0) {
+                val child = children[i]
+
+                // Update the position as it would be normally,
+                // and only override the axis set. Update the size as well.
+                child.overridden = false
+                child.compose()
+                child.overridden = true
+
+                if (direction == LayoutDirection.HORIZONTAL) {
+                    child.x = x + child.modifier.padding?.left.dp
+                    x += child.relWidth + spacing
+                } else if (direction == LayoutDirection.VERTICAL) {
+                    child.y = y + child.modifier.padding?.top.dp
+                    y += child.relHeight + spacing
+                }
+                child.compose()
+
+                w = w.coerceAtLeast(child.x + child.relWidth - this.x)
+                h = h.coerceAtLeast(child.y + child.relHeight - this.y)
+            }
         }
 
         // Remove the extra space calculated at the last child

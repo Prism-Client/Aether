@@ -1,12 +1,17 @@
 package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.color.UIAlpha
 import net.prismclient.aether.core.util.other.ComposableGroup
-import net.prismclient.aether.core.util.shorthands.or
+import net.prismclient.aether.core.util.shorthands.*
+import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.renderer.UIFramebuffer
+import net.prismclient.aether.ui.unit.other.AnchorPoint
+import net.prismclient.aether.ui.unit.other.Margin
+import net.prismclient.aether.ui.unit.other.Padding
 
 // TODO: disable optimize composition
 // TODO: Limit composition framerate
@@ -68,16 +73,12 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
                     rect(x, y, width, height, modifier.background?.backgroundRadius)
                 }.fillPaint()
             } else {
-                if (modifier.clipContent) {
-                    if (shouldSave) renderer.save()
-                    renderer.scissor(relX, relY, relWidth, relHeight)
-                }
-
+                renderer.save()
+                if (modifier.clipContent) renderer.scissor(relX, relY, relWidth, relHeight)
                 modifier.preRender()
                 children.forEach(Composable::render)
                 modifier.render()
-
-                if (modifier.clipContent && shouldSave) renderer.restore()
+                renderer.restore()
             }
         }
     }
@@ -143,18 +144,6 @@ abstract class CompositionModifier<T : CompositionModifier<T>> : UIModifier<T>()
      * be clipped when [optimizeComposition] is true.
      */
     open var clipContent: Boolean = true
-
-//    /**
-//     * The frame rate of this composition. The frame is updated regardless of this property on an event, and does nothing
-//     * if [optimizeComposition] is false.
-//     *
-//     *      -1 = unlimited
-//     *       0 = disabled (default)
-//     *      >0 = frames per second
-//     *
-//     * @see optimizeComposition
-//     */
-//    open var frameRate: Int = 0 // TODO: Convert to class
 }
 
 fun CompositionModifier(): DefaultCompositionModifier = DefaultCompositionModifier()
@@ -166,19 +155,16 @@ fun CompositionModifier(): DefaultCompositionModifier = DefaultCompositionModifi
  * @since 1.0
  */
 class DefaultCompositionModifier : CompositionModifier<DefaultCompositionModifier>() {
-    override fun animate(start: DefaultCompositionModifier?, end: DefaultCompositionModifier?, fraction: Float) {
-        TODO("Not yet implemented")
-    }
-
     override fun copy(): DefaultCompositionModifier = DefaultCompositionModifier().also {
-        it.x = x?.copy()
-        it.y = y?.copy()
-        it.width = width?.copy()
-        it.height = height?.copy()
-        it.anchorPoint = anchorPoint?.copy()
-        it.padding = padding?.copy()
-        it.margin = margin?.copy()
-        it.background = background?.copy()
+        it.x = x.copy
+        it.y = y.copy
+        it.width = width.copy
+        it.height = height.copy
+        it.anchorPoint = anchorPoint.copy
+        it.padding = padding.copy
+        it.margin = margin.copy
+        it.opacity = opacity.copy
+        it.background = background.copy
         it.optimizeComposition = optimizeComposition
         it.clipContent = clipContent
     }
@@ -192,9 +178,53 @@ class DefaultCompositionModifier : CompositionModifier<DefaultCompositionModifie
             anchorPoint = other.anchorPoint or anchorPoint
             padding = other.padding or padding
             margin = other.margin or margin
+            opacity = other.opacity or opacity
             background = other.background or background
             optimizeComposition = other.optimizeComposition
             clipContent = other.clipContent
+        }
+    }
+
+    override fun animate(start: DefaultCompositionModifier?, end: DefaultCompositionModifier?, fraction: Float) {
+        ifNotNull(start?.x, end?.x) {
+            x = x ?: 0.px
+            x!!.lerp(x, start?.x, end?.x, fraction)
+        }
+        ifNotNull(start?.y, end?.y) {
+            y = y ?: 0.px
+            y!!.lerp(y, start?.y, end?.y, fraction)
+        }
+        ifNotNull(start?.width, end?.width) {
+            width = width ?: 0.px
+            width!!.lerp(width, start?.width, end?.width, fraction)
+        }
+        ifNotNull(start?.height, end?.height) {
+            height = height ?: 0.px
+            height!!.lerp(height, start?.height, end?.height, fraction)
+        }
+        ifNotNull(start?.anchorPoint, end?.anchorPoint) {
+            anchorPoint = anchorPoint ?: AnchorPoint()
+            anchorPoint!!.animate(start?.anchorPoint, end?.anchorPoint, fraction)
+        }
+        ifNotNull(start?.padding, end?.padding) {
+            padding = padding ?: Padding(null, null, null, null)
+            padding!!.animate(start?.padding, end?.padding, fraction)
+        }
+        ifNotNull(start?.margin, end?.margin) {
+            margin = margin ?: Margin(null, null, null, null)
+            margin!!.animate(start?.margin, end?.margin, fraction)
+        }
+        ifNotNull(start?.opacity, end?.opacity) {
+            opacity = opacity ?: UIAlpha(1f)
+            opacity!!.value = lerp(start?.opacity?.value ?: 1f, end?.opacity?.value ?: 1f, fraction)
+        }
+        ifNotNull(start?.background, end?.background) {
+            background = background ?: UIBackground()
+            background!!.animate(start?.background, end?.background, fraction)
+        }
+        if (end != null) {
+            optimizeComposition = end.optimizeComposition
+            clipContent = end.clipContent
         }
     }
 }

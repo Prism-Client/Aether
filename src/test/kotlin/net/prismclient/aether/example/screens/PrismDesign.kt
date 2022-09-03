@@ -2,7 +2,10 @@ package net.prismclient.aether.example.screens
 
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.util.extensions.toByteBuffer
-import net.prismclient.aether.core.util.shorthands.*
+import net.prismclient.aether.core.util.shorthands.RGBA
+import net.prismclient.aether.core.util.shorthands.px
+import net.prismclient.aether.core.util.shorthands.rel
+import net.prismclient.aether.core.util.shorthands.rgb
 import net.prismclient.aether.example.Renderer.fontBounds
 import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.Alignment
@@ -16,7 +19,6 @@ import net.prismclient.aether.ui.image.ImageProvider
 import net.prismclient.aether.ui.layout.AutoLayoutStyle
 import net.prismclient.aether.ui.layout.HugLayout
 import net.prismclient.aether.ui.layout.LayoutModifier
-import net.prismclient.aether.ui.layout.hug
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.resource.ResourceProvider
@@ -46,78 +48,45 @@ class PrismDesign : UIScreen {
         ImageProvider.createSVG("shop", "/icons/vuesax/custom/shop.svg".toByteBuffer())
 
         compose(
-            name = "Test", modifier = CompositionModifier()
-            .size(1.rel, 1.rel)
+            name = "Test",
+            modifier = CompositionModifier()
+                .size(1.rel, 1.rel)
         ) {
-//            this.modifier.optimizeComposition = false
             constructBackground()
-            prismLogo().modifier.position(49, 52)
+            prismLogo()
 
-//            elementLabel("Hiiii")
-
-
-            autoLayout(
+            Column(
                 modifier = LayoutModifier()
-                    .backgroundColor(RGBA(1f, 0f, 0f, 0.3f).rgba)
-                    .position(48, 138)
-                    .hug(),
+                    .position(48, 138),
                 layoutStyle = AutoLayoutStyle()
-                    .layoutDirection(LayoutDirection.VERTICAL)
-                    .layoutAlignment(Alignment.TOPLEFT)
-                    .layoutPadding(Padding(14.px, 0.px, 0.px, 0.px))// TODO: paddingOf, marginOf
-                    .layoutSpacing(9.px)
+                    .padding(Padding(14.px, 0.px, 0.px, 0.px))
+                    .spacing(9.px)
             ) {
-                modifier.optimizeComposition = false
-                modifier.clipContent = true
+                SideTitle("MENU")
 
-                elementLabel("MENU")
-
-                // TODO: Unit.max(value).min(value)
-
-                autoLayout(
-                    modifier = LayoutModifier().hug(),
-                    layoutStyle = AutoLayoutStyle()
-                        .layoutDirection(LayoutDirection.VERTICAL)
-                        .layoutAlignment(Alignment.TOPLEFT)
-                        .layoutSpacing(8.px)
-                ) {
-//                    modifier.optimizeComposition = falsepx
-                    elementButton("home", "Dashboard")
-                    elementButton("folder", "Mods")
-                    elementButton("home", "Settings")
-                    elementButton("shop", "Store")
-                    elementButton("profile", "Profiles")
+                Column {
+                    modifier.clipContent = true
+                    SideButton("home", "Dashboard")
+                    SideButton("folder", "Mods")
+                    SideButton("home", "Settings")
+                    SideButton("shop", "Store")
+                    SideButton("profile", "Profiles")
                 }
 
-                elementLabel("SOCIAL")
+                SideTitle("SOCIAL")
 
-                autoLayout(
-                    modifier = LayoutModifier().hug(),
-                    layoutStyle = AutoLayoutStyle()
-                        .layoutDirection(LayoutDirection.VERTICAL)
-                        .layoutAlignment(Alignment.TOPLEFT)
-                        .layoutSpacing(8.px)
-                ) {
-                    modifier.clipContent = false
-                    elementButton("home", "Dashboard")
-                    elementButton("folder", "Mods")
-                    elementButton("home", "Settings")
-                    elementButton("shop", "Store")
-                    elementButton("profile", "Profiles")
-                }
-
-                Row {
-                    elementButton("home", "Dashboard")
-                    elementButton("folder", "Mods")
-                    elementButton("home", "Settings")
-                    elementButton("shop", "Store")
-                    elementButton("profile", "Profiles")
+                Column {
+                    SideButton("home", "Dashboard")
+                    SideButton("folder", "Mods")
+                    SideButton("home", "Settings")
+                    SideButton("shop", "Store")
+                    SideButton("profile", "Profiles")
                 }
             }
         }
     }
 
-    fun elementButton(icon: String, buttonText: String) = autoLayout(
+    fun SideButton(iconName: String, buttonText: String) = AutoLayout(
         modifier = LayoutModifier().size(206.px, HugLayout()),
         layoutStyle = AutoLayoutStyle()
             .layoutDirection(LayoutDirection.HORIZONTAL)
@@ -128,7 +97,7 @@ class PrismDesign : UIScreen {
         modifier.clipContent = false
 
         icon(
-            imageName = icon, modifier = IconModifier().size(24, 24).imageColor((-1).rgb)
+            imageName = iconName, modifier = IconModifier().size(24, 24).imageColor((-1).rgb)
         )
 
         button(
@@ -138,7 +107,7 @@ class PrismDesign : UIScreen {
         )
     }
 
-    fun elementLabel(text: String) = button(
+    fun SideTitle(text: String) = button(
         text = text,
         modifier = Modifier(),
         fontStyle = FontStyle().fontName("Montserrat-Medium").fontSize(11.px).fontColor(0x697483.rgb)
@@ -159,7 +128,8 @@ class PrismDesign : UIScreen {
 
     fun prismLogo() = construct {
         val logo = ImageProvider.createImage("PrismLogo", 0, "/icons/prismclient/PrismLogo_x128.png".toByteBuffer())
-        val handle = logo.retrieveImage(34f, 37f) // todo: times device pixel ratio (retina device)
+        val handle = logo.retrieveImage(34f, 37f)
+        it.modifier.position(49, 52)
         it.modifier.size(145, 37)
         render {
             color(-1)

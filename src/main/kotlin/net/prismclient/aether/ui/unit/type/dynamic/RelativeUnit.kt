@@ -2,7 +2,6 @@ package net.prismclient.aether.ui.unit.type.dynamic
 
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.unit.DynamicUnit
 import net.prismclient.aether.ui.unit.UIUnit
 
 /**

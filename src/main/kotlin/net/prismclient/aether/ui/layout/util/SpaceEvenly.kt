@@ -3,7 +3,6 @@ package net.prismclient.aether.ui.layout.util
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.unit.DynamicUnit
-import net.prismclient.aether.ui.unit.UIUnit
 
 /**
  * [SpaceEvenly] is a unit used to indicate layouts to space the elements within it evenly. A RuntimeException

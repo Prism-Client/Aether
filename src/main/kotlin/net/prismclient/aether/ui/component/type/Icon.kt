@@ -1,8 +1,10 @@
 package net.prismclient.aether.ui.component.type
 
+import net.prismclient.aether.core.color.UIAlpha
 import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.component.UIComponent
+import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.image.ImageProvider
 import net.prismclient.aether.ui.image.UIImage
@@ -37,7 +39,7 @@ class Icon(val image: UIImage, modifier: IconModifier) : UIComponent<Icon>(modif
 
 class IconModifier : UIModifier<IconModifier>() {
     var imageColor: UIColor? = null
-    
+
     override fun copy(): IconModifier = IconModifier().also {
         it.x = x.copy
         it.y = y.copy
@@ -46,6 +48,7 @@ class IconModifier : UIModifier<IconModifier>() {
         it.anchorPoint = anchorPoint.copy
         it.padding = padding.copy
         it.margin = margin.copy
+        it.opacity = opacity.copy
         it.background = background.copy
         it.imageColor = imageColor.copy
     }
@@ -59,6 +62,7 @@ class IconModifier : UIModifier<IconModifier>() {
             anchorPoint = other.anchorPoint or anchorPoint
             padding = other.padding or padding
             margin = other.margin or margin
+            opacity = other.opacity or opacity
             background = other.background or background
             imageColor = other.imageColor or imageColor
         }
@@ -93,10 +97,18 @@ class IconModifier : UIModifier<IconModifier>() {
             margin = margin ?: Margin(null, null, null, null)
             margin!!.animate(start?.margin, end?.margin, fraction)
         }
-
-        TODO("Image color for icon animations not yet implemented.")
-
-        TODO("Feature not yet implemented.")
+        ifNotNull(start?.opacity, end?.opacity) {
+            opacity = opacity ?: UIAlpha(1f)
+            opacity!!.value = lerp(start?.opacity?.value ?: 1f, end?.opacity?.value ?: 1f, fraction)
+        }
+        ifNotNull(start?.background, end?.background) {
+            background = background ?: UIBackground()
+            background!!.animate(start?.background, end?.background, fraction)
+        }
+        ifNotNull(start?.imageColor, end?.imageColor) {
+            imageColor = imageColor ?: UIColor(-1)
+            imageColor!!.animate(start?.imageColor, end?.imageColor, fraction)
+        }
     }
 }
 

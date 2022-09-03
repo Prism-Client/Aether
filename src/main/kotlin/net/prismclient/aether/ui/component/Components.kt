@@ -3,8 +3,9 @@ package net.prismclient.aether.ui.component
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.shorthands.Block
-import net.prismclient.aether.ui.alignment.Alignment
+import net.prismclient.aether.ui.alignment.HorizontalAlignment
 import net.prismclient.aether.ui.alignment.VerticalAlignment
+import net.prismclient.aether.ui.alignment.horizontalConvert
 import net.prismclient.aether.ui.alignment.verticalConvert
 import net.prismclient.aether.ui.component.type.*
 import net.prismclient.aether.ui.composition.Composable
@@ -18,6 +19,7 @@ import net.prismclient.aether.ui.layout.AutoLayout
 import net.prismclient.aether.ui.layout.AutoLayoutStyle
 import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.layout.UIListLayout
+import net.prismclient.aether.ui.layout.hug
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.layout.util.LayoutOrder
 import net.prismclient.aether.ui.modifier.Modifier
@@ -152,7 +154,7 @@ inline fun verticalList(
     block: Block<UIListLayout> = {}
 ) = listLayout(LayoutDirection.VERTICAL, order, childSpacing, modifier, block)
 
-inline fun autoLayout(
+inline fun AutoLayout(
     layoutName: String = "AutoLayout",
     modifier: LayoutModifier<*> = LayoutModifier(),
     layoutStyle: AutoLayoutStyle = AutoLayoutStyle(),
@@ -160,19 +162,45 @@ inline fun autoLayout(
 ): AutoLayout = component(AutoLayout(layoutName, modifier, layoutStyle), block)
 
 /**
- * Creates an [AutoLayout] with a row based layout style.
+ * Creates an [AutoLayout] with a row based layout style. Each [Composable] will be placed to the
+ * right of the previous [Composable]. Any changes to the size of the [modifier], and the alignment,
+ * and direction of the [layoutStyle] will be overwritten if set within the function parameters.
+ * Furthermore, the layout is not using optimizations or clipping content by default.
  */
 inline fun Row(
     verticalAlignment: VerticalAlignment = VerticalAlignment.TOP,
     /* horizontalArrangement */
-    layoutModifier: LayoutModifier<*> = LayoutModifier(),
+    modifier: LayoutModifier<*> = LayoutModifier(),
     layoutStyle: AutoLayoutStyle = AutoLayoutStyle(),
     block: Block<AutoLayout> = {}
-): AutoLayout = component(AutoLayout(
-    layoutName = "Row",
-    modifier = layoutModifier,
-    layoutStyle = layoutStyle
-        .layoutAlignment(verticalConvert(verticalAlignment))
-        .layoutDirection(LayoutDirection.HORIZONTAL)
-))
-// horizontalAlignment = Left
+): AutoLayout = component(
+    AutoLayout(
+        layoutName = "Row",
+        modifier = modifier.hug().disableOptimizations(),
+        layoutStyle = layoutStyle
+            .layoutAlignment(verticalConvert(verticalAlignment))
+            .layoutDirection(LayoutDirection.HORIZONTAL)
+    ), block
+)
+
+/**
+ * Creates an [AutoLayout] with a column based layout style. Each [Composable] will be placed
+ * below the previous [Composable]. Any changes to the size of the [modifier], and the alignment,
+ * and direction of the [layoutStyle] will be overwritten if set within the function parameters.
+ * Furthermore, the layout is not using optimizations or clipping content by default.
+ */
+inline fun Column(
+    horizontalAlignment: HorizontalAlignment = HorizontalAlignment.LEFT,
+    /* verticalArrangement */
+    modifier: LayoutModifier<*> = LayoutModifier(),
+    layoutStyle: AutoLayoutStyle = AutoLayoutStyle(),
+    block: Block<AutoLayout> = {}
+): AutoLayout = component(
+    AutoLayout(
+        layoutName = "Column",
+        modifier = modifier.hug().disableOptimizations(),
+        layoutStyle = layoutStyle
+            .layoutAlignment(horizontalConvert(horizontalAlignment))
+            .layoutDirection(LayoutDirection.VERTICAL)
+    ), block
+)

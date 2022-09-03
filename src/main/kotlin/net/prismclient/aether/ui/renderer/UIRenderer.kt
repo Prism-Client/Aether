@@ -172,10 +172,13 @@ interface UIRenderer {
     /** Image **/
 
     /**
-     * todo
+     * Sets the image pattern based on the String handle generated. Sets the paint call to the given bounds.
      */
     fun imagePattern(imageName: String, x: Float, y: Float, width: Float, height: Float, angle: Float, alpha: Float)
 
+    /**
+     * Sets the image pattern based on the Int handle generated. Sets the paint call to the given bounds.
+     */
     fun imagePattern(imageHandle: Int, x: Float, y: Float, width: Float, height: Float, angle: Float, alpha: Float)
 
     // -- Font -- //
