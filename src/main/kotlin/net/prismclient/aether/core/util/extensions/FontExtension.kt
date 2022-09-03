@@ -27,7 +27,9 @@ fun InputStream.byteBuffer(): ByteBuffer {
 fun InputStream.safeByteBuffer(): ByteBuffer? {
     return try {
         this.byteBuffer()
-    } catch (e: Exception) { null }
+    } catch (e: Exception) {
+        null
+    }
 }
 
 /**
@@ -35,8 +37,8 @@ fun InputStream.safeByteBuffer(): ByteBuffer? {
  * thrown if the file is not found.
  */
 fun String.toByteBuffer(): ByteBuffer =
-        (Aether::class.java.getResourceAsStream(this)
-                ?: throw FileNotFoundException("[$this] was not found within the classpath.")).byteBuffer()
+    (Aether::class.java.getResourceAsStream(this)
+        ?: throw FileNotFoundException("[$this] was not found within the classpath.")).byteBuffer()
 
 /**
  * Returns a ByteBuffer from the given class path location. If it fails to read the file, it will return null.
@@ -44,6 +46,7 @@ fun String.toByteBuffer(): ByteBuffer =
 fun String.safeByteBuffer(): ByteBuffer? {
     try {
         return this.toByteBuffer()
-    } catch (ignored: Exception) {}
+    } catch (ignored: Exception) {
+    }
     return null
 }

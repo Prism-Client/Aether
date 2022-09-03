@@ -1,8 +1,7 @@
 package net.prismclient.aether.ui.unit
 
-import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.core.util.property.Copyable
-import net.prismclient.aether.core.util.shorthands.dp
+import net.prismclient.aether.ui.composition.Composable
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -65,4 +64,4 @@ internal fun UIUnit<*>?.compute(composable: Composable?, yaxis: Boolean) {
  * is a subclass or equal to [other], like an instanceof type check.
  */
 internal fun <T : UIUnit<T>> UIUnit<*>?.typeOf(other: KClass<T>): Boolean =
-        this != null && (this.identifiesAs(other))
+    this != null && (this.identifiesAs(other))

@@ -2,6 +2,10 @@ package net.prismclient.aether.ui.registry
 
 import net.prismclient.aether.core.util.shorthands.copy
 import net.prismclient.aether.ui.modifier.UIModifier
+import net.prismclient.aether.ui.registry.UIRegistry.disableApplyingModifiers
+import net.prismclient.aether.ui.registry.UIRegistry.enableApplyingModifiers
+import net.prismclient.aether.ui.registry.UIRegistry.registerModifier
+import net.prismclient.aether.ui.registry.UIRegistry.registerStyle
 import net.prismclient.aether.ui.style.Style
 
 /**

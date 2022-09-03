@@ -74,7 +74,8 @@ class MouseMove(val mouseX: Float, val mouseY: Float) : UIEvent
  * @author sen
  * @since 1.0
  */
-class MousePress(val mouseX: Float, val mouseY: Float, val button: MouseButtonType, composable: Composable) : PropagatingEvent(composable)
+class MousePress(val mouseX: Float, val mouseY: Float, val button: MouseButtonType, composable: Composable) :
+    PropagatingEvent(composable)
 
 /**
  * Invoked when the mouse is released. [mouseX] and [mouseY] represent the mouse coordinates, and [button]

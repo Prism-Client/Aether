@@ -1,13 +1,13 @@
 package net.prismclient.aether.ui.unit.other
 
-import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.unit.compute
 import net.prismclient.aether.core.util.property.UIProperty
 import net.prismclient.aether.core.util.shorthands.ifNotNull
 import net.prismclient.aether.core.util.shorthands.lerp
 import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.core.util.shorthands.px
+import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.unit.UIUnit
+import net.prismclient.aether.ui.unit.compute
 
 /**
  * [UIRadius] represents a 4 corner shape, such as rectangle which can be used to create
@@ -27,7 +27,7 @@ open class UIRadius(
         topLeft?.compute(composable, true)
         topRight?.compute(composable, false)
         bottomRight?.compute(composable, true)
-        bottomLeft?.compute(composable,false)
+        bottomLeft?.compute(composable, false)
     }
 
     override fun copy(): UIRadius = UIRadius(topLeft?.copy(), topRight?.copy(), bottomRight?.copy(), bottomLeft?.copy())

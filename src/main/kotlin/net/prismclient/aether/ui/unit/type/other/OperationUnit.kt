@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
  */
 @Suppress("MemberVisibilityCanBePrivate")
 open class OperationUnit(val unit1: UIUnit<*>?, val unit2: UIUnit<*>?, val operation: Operation) :
-        UIUnit<OperationUnit>(0f) {
+    UIUnit<OperationUnit>(0f) {
 
     override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float {
         // The units automatically make the composable dynamic if necessary.
@@ -32,7 +32,7 @@ open class OperationUnit(val unit1: UIUnit<*>?, val unit2: UIUnit<*>?, val opera
     }
 
     override fun <T : UIUnit<T>> identifiesAs(clazz: KClass<T>): Boolean =
-            super.identifiesAs(clazz) || (unit1?.identifiesAs(clazz) ?: false) || (unit2?.identifiesAs(clazz) ?: false)
+        super.identifiesAs(clazz) || (unit1?.identifiesAs(clazz) ?: false) || (unit2?.identifiesAs(clazz) ?: false)
 
     override fun copy(): OperationUnit = OperationUnit(unit1.copy, unit2.copy, operation)
 

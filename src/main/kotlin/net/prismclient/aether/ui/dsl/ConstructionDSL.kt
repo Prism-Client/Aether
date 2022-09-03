@@ -2,7 +2,6 @@ package net.prismclient.aether.ui.dsl
 
 import net.prismclient.aether.core.util.shorthands.Block
 import net.prismclient.aether.ui.component.type.DefaultConstruct
-import java.lang.RuntimeException
 
 /**
  * Introduces a Kotlin DSL for the [DefaultConstruct] component which allows creating them much easier.

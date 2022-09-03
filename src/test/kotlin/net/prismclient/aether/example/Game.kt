@@ -8,7 +8,6 @@ import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL.createCapabilities
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.system.Configuration
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import org.lwjgl.system.Platform
@@ -38,7 +37,7 @@ abstract class Game(val windowTitle: String) {
         // UIRenderer and uses NanoVG to handle the functions.
         aether = Aether(Renderer)
     }
-    
+
     open fun createWindow() {
         GLFWErrorCallback.createPrint().set()
 
@@ -53,7 +52,7 @@ abstract class Game(val windowTitle: String) {
         }
 
         glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE)
-        
+
         window = Window(glfwCreateWindow(1000, 600, windowTitle, MemoryUtil.NULL, MemoryUtil.NULL))
 
         if (window.handle == MemoryUtil.NULL) {
@@ -68,7 +67,11 @@ abstract class Game(val windowTitle: String) {
             window.height = height
 
             // Update Aether as the window is resized
-            aether.update(width / window.contentScaleX, height / window.contentScaleY, max(window.contentScaleX, window.contentScaleY))
+            aether.update(
+                width / window.contentScaleX,
+                height / window.contentScaleY,
+                max(window.contentScaleX, window.contentScaleY)
+            )
         }
 
         glfwSetWindowContentScaleCallback(window.handle) { _, x, y ->
@@ -100,7 +103,11 @@ abstract class Game(val windowTitle: String) {
 
             // Update Aether and pass the properties of the window. For
             // content scale, return the larger value of the two axes.
-            aether.update(window.width / window.contentScaleX, window.height / window.contentScaleY, max(window.contentScaleX, window.contentScaleY))
+            aether.update(
+                window.width / window.contentScaleX,
+                window.height / window.contentScaleY,
+                max(window.contentScaleX, window.contentScaleY)
+            )
         }
     }
 

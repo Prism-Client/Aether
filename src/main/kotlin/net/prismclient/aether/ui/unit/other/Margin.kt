@@ -11,6 +11,7 @@ import net.prismclient.aether.ui.unit.UIUnit
  * @author sen
  * @since 1.0
  */
-open class Margin(top: UIUnit<*>?, right: UIUnit<*>?, bottom: UIUnit<*>?, left: UIUnit<*>?) : Padding(top, right, bottom, left) {
+open class Margin(top: UIUnit<*>?, right: UIUnit<*>?, bottom: UIUnit<*>?, left: UIUnit<*>?) :
+    Padding(top, right, bottom, left) {
     override fun copy(): Margin = Margin(top?.copy(), right?.copy(), bottom?.copy(), left?.copy())
 }

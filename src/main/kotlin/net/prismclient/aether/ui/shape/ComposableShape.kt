@@ -1,8 +1,8 @@
 package net.prismclient.aether.ui.shape
 
+import net.prismclient.aether.core.util.property.Updatable
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.core.util.property.Updatable
 
 /**
  * [ComposableShape] is a shape which constrains itself based on a composable, or a specific subclass of

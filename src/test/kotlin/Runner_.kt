@@ -1,11 +1,11 @@
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.debug.UIDebug
 import net.prismclient.aether.core.input.MouseButtonType
-import net.prismclient.aether.ui.alignment.UITextAlignment
-import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.core.input.UIKey
 import net.prismclient.aether.example.Renderer
 import net.prismclient.aether.example.screens.MacrosExample
+import net.prismclient.aether.ui.alignment.UITextAlignment
+import net.prismclient.aether.ui.dsl.renderer
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback

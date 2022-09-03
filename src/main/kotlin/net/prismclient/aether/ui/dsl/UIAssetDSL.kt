@@ -5,7 +5,10 @@ import net.prismclient.aether.core.debug.inform
 import net.prismclient.aether.core.debug.warn
 import net.prismclient.aether.core.util.extensions.safeByteBuffer
 import net.prismclient.aether.core.util.extensions.toByteBuffer
-import net.prismclient.aether.ui.image.*
+import net.prismclient.aether.ui.image.GENERATE_MIPMAPS
+import net.prismclient.aether.ui.image.PREMULTIPLIED
+import net.prismclient.aether.ui.image.REPEATX
+import net.prismclient.aether.ui.image.REPEATY
 import net.prismclient.aether.ui.resource.ResourceProvider
 import org.apache.commons.io.FilenameUtils
 import java.io.File

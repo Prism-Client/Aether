@@ -1,10 +1,10 @@
 package net.prismclient.aether.ui.dsl
 
 import net.prismclient.aether.core.Aether
-import net.prismclient.aether.ui.renderer.UIRenderer
-import net.prismclient.aether.ui.unit.other.UIRadius
 import net.prismclient.aether.core.util.shorthands.Block
 import net.prismclient.aether.core.util.shorthands.dp
+import net.prismclient.aether.ui.renderer.UIRenderer
+import net.prismclient.aether.ui.unit.other.UIRadius
 
 /**
  * [UIPathDSL] is a DSL for paths. [UIRendererDSL] utilizes this to apply the paths.
@@ -125,7 +125,7 @@ object UIPathDSL {
      */
     @JvmStatic
     fun bezierTo(x: Float, y: Float, x1: Float, y1: Float, x2: Float, y2: Float) =
-            renderer.bezierTo(x, y, x1, y1, x2, y2)
+        renderer.bezierTo(x, y, x1, y1, x2, y2)
 
     /**
      * Adds a quadratic bezier line segment to the active path.
@@ -149,7 +149,7 @@ object UIPathDSL {
      */
     @JvmStatic
     fun arc(
-            x: Float, y: Float, radius: Float, startAngle: Float, endAngle: Float, windingOrder: UIRenderer.WindingOrder
+        x: Float, y: Float, radius: Float, startAngle: Float, endAngle: Float, windingOrder: UIRenderer.WindingOrder
     ) = renderer.arc(x, y, radius, startAngle, endAngle, windingOrder)
 
     /**
@@ -157,14 +157,14 @@ object UIPathDSL {
      */
     @JvmStatic
     fun rect(x: Float, y: Float, width: Float, height: Float, radius: UIRadius?) = rect(
-            x,
-            y,
-            width,
-            height,
-            radius?.topLeft.dp,
-            radius?.topRight.dp,
-            radius?.bottomRight.dp,
-            radius?.bottomLeft.dp
+        x,
+        y,
+        width,
+        height,
+        radius?.topLeft.dp,
+        radius?.topRight.dp,
+        radius?.bottomRight.dp,
+        radius?.bottomLeft.dp
     )
 
     /**
@@ -173,21 +173,21 @@ object UIPathDSL {
     @JvmStatic
     @JvmOverloads
     fun rect(x: Float, y: Float, width: Float, height: Float, radius: Float = 0f) =
-            rect(x, y, width, height, radius, radius, radius, radius)
+        rect(x, y, width, height, radius, radius, radius, radius)
 
     /**
      * Creates a varying rounded rectangle shaped sub-path.
      */
     @JvmStatic
     fun rect(
-            x: Float,
-            y: Float,
-            width: Float,
-            height: Float,
-            topLeft: Float,
-            topRight: Float,
-            bottomRight: Float,
-            bottomLeft: Float
+        x: Float,
+        y: Float,
+        width: Float,
+        height: Float,
+        topLeft: Float,
+        topRight: Float,
+        bottomRight: Float,
+        bottomLeft: Float
     ) = renderer.rect(x, y, width, height, topLeft, topRight, bottomRight, bottomLeft)
 
     /**
@@ -198,7 +198,7 @@ object UIPathDSL {
 
     @JvmStatic
     fun imagePattern(imageName: String, x: Float, y: Float, width: Float, height: Float, angle: Float, alpha: Float) =
-            renderer.imagePattern(imageName, x, y, width, height, angle, alpha)
+        renderer.imagePattern(imageName, x, y, width, height, angle, alpha)
 
     /**
      * Creates a linear gradient for the active path with the [x] and [y] as the
@@ -206,7 +206,7 @@ object UIPathDSL {
      */
     @JvmStatic
     fun linearGradient(x: Float, y: Float, x2: Float, y2: Float, startColor: Int, endColor: Int) =
-            renderer.linearGradient(x, y, x2, y2, startColor, endColor)
+        renderer.linearGradient(x, y, x2, y2, startColor, endColor)
 
     /**
      * Creates a radial gradient for the active path.
@@ -216,7 +216,7 @@ object UIPathDSL {
      */
     @JvmStatic
     fun radialGradient(x: Float, y: Float, innerRadius: Float, outerRadius: Float, startColor: Int, endColor: Int) =
-            renderer.radialGradient(x, y, innerRadius, outerRadius, startColor, endColor)
+        renderer.radialGradient(x, y, innerRadius, outerRadius, startColor, endColor)
 
     /**
      * Sets the current path to a hole path where every odd path fills as a hole. For example

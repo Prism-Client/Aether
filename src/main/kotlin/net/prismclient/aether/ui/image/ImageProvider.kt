@@ -40,7 +40,8 @@ object ImageProvider {
     @JvmStatic
     fun createImage(imageName: String, flags: Int, buffer: ByteBuffer): Image {
         val image = Aether.renderer.createImage(buffer)
-        return Image(imageName, image.width, image.height, flags, image.buffer).also(UIImage::create).also { images[imageName] = it }
+        return Image(imageName, image.width, image.height, flags, image.buffer).also(UIImage::create)
+            .also { images[imageName] = it }
     }
 
     /**
@@ -54,6 +55,7 @@ object ImageProvider {
     @JvmOverloads
     fun createSVG(svgName: String, buffer: ByteBuffer, scale: Float = 1f): SVG {
         val svg = Aether.renderer.rasterizeSVG(buffer, scale)
-        return SVG(svgName, svg.width, svg.height, scale, buffer, svg.buffer).also(UIImage::create).also { images[svgName] = it }
+        return SVG(svgName, svg.width, svg.height, scale, buffer, svg.buffer).also(UIImage::create)
+            .also { images[svgName] = it }
     }
 }

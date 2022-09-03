@@ -1,9 +1,8 @@
 package net.prismclient.aether.ui.style
 
-import net.prismclient.aether.ui.registry.UIRegistry
-import net.prismclient.aether.core.util.property.UIProperty
 import net.prismclient.aether.core.util.property.UIUniqueProperty
 import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.registry.UIRegistry
 
 /**
  * Some components require more information than the default properties provided by Modifier. Modifier

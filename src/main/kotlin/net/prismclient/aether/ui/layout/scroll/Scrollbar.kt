@@ -61,7 +61,7 @@ abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollb
     open var value: Float = 0f
         set(value) {
             field = value.coerceAtLeast(0f)
-                    .coerceAtMost(1f)
+                .coerceAtMost(1f)
         }
 
     /**
@@ -89,14 +89,16 @@ abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollb
                 Overflow.AUTO -> composable.widthOverflow() > 0f
                 else -> false
             }
-            actualThumbSize = (composable.width / composable.layoutSize.width.coerceAtLeast(composable.width)) * width.dp
+            actualThumbSize =
+                (composable.width / composable.layoutSize.width.coerceAtLeast(composable.width)) * width.dp
         } else {
             shouldRender = when (overflow) {
                 Overflow.SCROLLBAR -> true
                 Overflow.AUTO -> composable.heightOverflow() > 0f
                 else -> false
             }
-            actualThumbSize = (composable.height / (composable.layoutSize.height.coerceAtLeast(composable.height))) * height.dp
+            actualThumbSize =
+                (composable.height / (composable.layoutSize.height.coerceAtLeast(composable.height))) * height.dp
         }
         composable.addListener("$this:$direction", listener = ::onScroll)
         composable.addListener("$this:$direction", listener = ::onMousePress)
@@ -192,7 +194,7 @@ class DefaultScrollbar : Scrollbar() {
             thumbSelected = true
             mouseOffset = if (direction == LayoutDirection.HORIZONTAL)
                 event.mouseX - thumbBounds[0]
-                else event.mouseY - thumbBounds[1]
+            else event.mouseY - thumbBounds[1]
         }
     }
 
@@ -200,7 +202,7 @@ class DefaultScrollbar : Scrollbar() {
         if (thumbSelected) {
             value = if (direction == LayoutDirection.HORIZONTAL)
                 (event.mouseX - initialX - x.dp - mouseOffset) / (width.dp - actualThumbSize)
-                else (event.mouseY - initialY - y.dp - mouseOffset) / (height.dp - actualThumbSize)
+            else (event.mouseY - initialY - y.dp - mouseOffset) / (height.dp - actualThumbSize)
         }
     }
 

@@ -17,7 +17,7 @@ class Label internal constructor(
 ) : UIComponent<Label>(modifier), Font {
     constructor(text: String, modifier: UIModifier<*>, fontStyle: FontStyle) : this(text, modifier, UIFont(fontStyle))
 
-     var text: String = text
+    var text: String = text
         set(value) {
             field = value
             font.actualText = value

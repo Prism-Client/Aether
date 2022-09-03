@@ -1,7 +1,6 @@
 package net.prismclient.aether.core.event
 
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CopyOnWriteArrayList
 import java.util.function.Consumer
 import kotlin.reflect.KClass
 

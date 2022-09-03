@@ -117,10 +117,12 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
                 text.add(actualText)
                 actualText.bounds
             }
+
             AutoHeight -> {
                 text.addAll(actualText.split(NEWLINE))
                 Aether.renderer.calculateText(text, style.lineHeight.dp)
             }
+
             FixedSize -> Aether.renderer.calculateText(actualText, width.dp, style.lineHeight.dp, text)
             // TODO: Truncate text
             else -> {}
@@ -143,12 +145,14 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
                 composable.height = y.dp + fontHeight()
                 true
             }
+
             AutoWidth, AutoHeight -> {
 //                activeComposable.
 //                width?.cachedValue = fontWidth()
 //                height?.cachedValue = fontHeight()
                 true
             }
+
             else -> false
         }
         if (isDynamic) composable.dynamic = true

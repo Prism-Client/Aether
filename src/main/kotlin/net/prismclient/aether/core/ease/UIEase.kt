@@ -1,9 +1,9 @@
 package net.prismclient.aether.core.ease
 
-import net.prismclient.aether.core.util.property.Copyable
-import net.prismclient.aether.core.ease.UIEaseType.*
 import net.prismclient.aether.core.ease.UIEaseDirection.*
+import net.prismclient.aether.core.ease.UIEaseType.*
 import net.prismclient.aether.core.ease.impl.*
+import net.prismclient.aether.core.util.property.Copyable
 
 abstract class UIEase(var duration: Long = 1000L, var animationDirection: UIEaseDirection = INOUT) : Copyable<UIEase> {
     var animating: Boolean = false

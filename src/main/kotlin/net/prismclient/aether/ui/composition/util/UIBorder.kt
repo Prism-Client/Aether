@@ -4,7 +4,6 @@ import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.property.Mergable
-import net.prismclient.aether.core.util.property.UIUniqueProperty
 import net.prismclient.aether.core.util.shorthands.copy
 import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.ui.composition.Composable

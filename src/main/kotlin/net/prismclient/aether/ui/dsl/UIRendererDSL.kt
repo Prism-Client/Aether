@@ -1,16 +1,15 @@
 package net.prismclient.aether.ui.dsl
 
 import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.color.UIColor
+import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.Alignment.*
 import net.prismclient.aether.ui.alignment.UITextAlignment
-import net.prismclient.aether.core.color.UIColor
-import net.prismclient.aether.core.util.shorthands.*
-import net.prismclient.aether.core.util.shorthands.Block
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.ui.renderer.UIRenderer
-import net.prismclient.aether.ui.unit.other.UIRadius
 import net.prismclient.aether.ui.renderer.UIStrokeDirection
+import net.prismclient.aether.ui.unit.other.UIRadius
 
 /**
  * [UIRendererDSL] wraps the [UIRenderer] class to minimize the amount of calls
@@ -93,7 +92,13 @@ object UIRendererDSL {
      * Applies the given font values to the active context.
      */
     @JvmStatic
-    fun font(fontFace: String, fontSize: Float, horizontalAlignment: UITextAlignment, verticalAlignment: UITextAlignment, fontSpacing: Float) {
+    fun font(
+        fontFace: String,
+        fontSize: Float,
+        horizontalAlignment: UITextAlignment,
+        verticalAlignment: UITextAlignment,
+        fontSpacing: Float
+    ) {
         renderer.fontFace(fontFace)
         renderer.fontSize(fontSize)
         renderer.fontAlignment(horizontalAlignment, verticalAlignment)
@@ -194,6 +199,7 @@ object UIRendererDSL {
                                 bottomLeft
                             )
                         }
+
                         UIStrokeDirection.INSIDE -> {
                             rect(x, y, width, height, topLeft, topRight, bottomRight, bottomLeft)
                             rect(
@@ -207,6 +213,7 @@ object UIRendererDSL {
                                 bottomLeft
                             )
                         }
+
                         UIStrokeDirection.OUTSIDE -> {
                             rect(
                                 x - stroke,
@@ -241,7 +248,7 @@ object UIRendererDSL {
      */
     @JvmStatic
     fun renderImage(imageName: String, x: Float, y: Float, width: Float, height: Float) =
-            renderImage(imageName, x, y, width, height, 0f, 0f, 0f, 0f)
+        renderImage(imageName, x, y, width, height, 0f, 0f, 0f, 0f)
 
     /**
      * Renders an image of [imageName] at the given positions with varying rounded corners. If the [imageName] is
