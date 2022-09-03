@@ -11,6 +11,7 @@ import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.dsl.UIRendererDSL
+import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.layout.scroll.DefaultScrollbar
 import net.prismclient.aether.ui.layout.scroll.Scrollbar
 import net.prismclient.aether.ui.layout.util.LayoutDirection
@@ -117,6 +118,36 @@ abstract class UILayout(
      */
     abstract fun updateLayout(): Size
 
+    override fun render() {
+        renderer {
+            if (modifier.optimizeComposition) {
+                color(-1)
+                path {
+                    renderer.imagePattern(framebuffer!!.imagePattern, x, y, width, height, 0f, 1f)
+                    rect(x, y, width, height, modifier.background?.backgroundRadius)
+                }.fillPaint()
+            } else {
+                renderer.save()
+                modifier.preRender()
+                // Calculate the offset of the scrollbars
+                val xOffset = (modifier.horizontalScrollbar?.value ?: 0f) * (layoutSize.width - width)
+                val yOffset = (modifier.verticalScrollbar?.value ?: 0f) * (layoutSize.height - height)
+
+                // Translate by the offset prior to rendering
+                renderer.translate(-xOffset, -yOffset)
+                children.forEach {
+                    // A Composable might make their own scissor calls, which
+                    // can mess up the rendering for the next Composable.
+                    if (modifier.clipContent)
+                        renderer.scissor(relX + xOffset, relY + yOffset, relWidth, relHeight)
+                    it.render()
+                }
+                renderer.restore()
+                modifier.render()
+            }
+        }
+    }
+
     override fun rasterize() {
         if (!modifier.optimizeComposition) return
 
@@ -146,6 +177,11 @@ abstract class UILayout(
             renderer.restore()
         }
     }
+
+    /**
+     * Return true if at least one scrollbar is not null.
+     */
+    override fun wantsFocus(): Boolean = modifier.horizontalScrollbar != null || modifier.verticalScrollbar != null
 }
 
 /**
@@ -183,14 +219,6 @@ abstract class LayoutModifier<T : LayoutModifier<T>> : CompositionModifier<T>() 
     }
 
     // -- Extension Functions -- //
-
-    /**
-     * Disables rendering to a framebuffer for this layout. Some layouts might not need optimizations
-     * as they are not complex, or nested within another.
-     */
-    fun disableOptimizations() = apply {
-        optimizeComposition = false
-    }
 }
 
 /**

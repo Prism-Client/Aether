@@ -146,6 +146,14 @@ abstract class CompositionModifier<T : CompositionModifier<T>> : UIModifier<T>()
     open var clipContent: Boolean = true
 }
 
+/**
+ * Disables rendering to a framebuffer for this layout. Some layouts might not need optimizations
+ * as they are not complex, or nested within another.
+ */
+fun <T : CompositionModifier<*>> T.disableOptimizations() = apply {
+    optimizeComposition = false
+}
+
 fun CompositionModifier(): DefaultCompositionModifier = DefaultCompositionModifier()
 
 /**

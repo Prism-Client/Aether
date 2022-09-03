@@ -2,36 +2,38 @@ package net.prismclient.aether.example.screens
 
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.util.extensions.toByteBuffer
-import net.prismclient.aether.core.util.shorthands.RGBA
-import net.prismclient.aether.core.util.shorthands.px
-import net.prismclient.aether.core.util.shorthands.rel
-import net.prismclient.aether.core.util.shorthands.rgb
+import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.example.Renderer.fontBounds
 import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.component.*
+import net.prismclient.aether.ui.component.type.DefaultConstruct
 import net.prismclient.aether.ui.component.type.IconModifier
 import net.prismclient.aether.ui.component.type.imageColor
 import net.prismclient.aether.ui.composition.CompositionModifier
+import net.prismclient.aether.ui.composition.disableOptimizations
+import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.image.ImageProvider
 import net.prismclient.aether.ui.layout.AutoLayoutStyle
 import net.prismclient.aether.ui.layout.HugLayout
 import net.prismclient.aether.ui.layout.LayoutModifier
+import net.prismclient.aether.ui.layout.scroll.DefaultScrollbar
+import net.prismclient.aether.ui.layout.scroll.Scrollbar
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.resource.ResourceProvider
 import net.prismclient.aether.ui.screen.UIScreen
 import net.prismclient.aether.ui.unit.other.Padding
 
-class PrismDesign : UIScreen {
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            Runner(PrismDesign())
-        }
+object PrismDesign : UIScreen {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        Runner(PrismDesign)
     }
+
+    var activeSidebarButton: DefaultConstruct? = null
 
     override fun createScreen() {
         val regular = "/fonts/Montserrat/Montserrat-Regular.ttf".toByteBuffer()
@@ -43,17 +45,25 @@ class PrismDesign : UIScreen {
 
         ImageProvider.createSVG("frame", "/icons/vuesax/solid/frame.svg".toByteBuffer())
         ImageProvider.createSVG("home", "/icons/vuesax/custom/home.svg".toByteBuffer())
+        ImageProvider.createSVG("setting", "/icons/vuesax/custom/setting.svg".toByteBuffer())
         ImageProvider.createSVG("folder", "/icons/vuesax/custom/folder.svg".toByteBuffer())
         ImageProvider.createSVG("profile", "/icons/vuesax/custom/profile.svg".toByteBuffer())
         ImageProvider.createSVG("shop", "/icons/vuesax/custom/shop.svg".toByteBuffer())
+
+
+        ImageProvider.createSVG("messages", "/icons/vuesax/custom/messages.svg".toByteBuffer())
+        ImageProvider.createSVG("friends", "/icons/vuesax/custom/friends.svg".toByteBuffer())
+        ImageProvider.createSVG("achievements", "/icons/vuesax/custom/achievements.svg".toByteBuffer())
+        ImageProvider.createSVG("recordings", "/icons/vuesax/custom/recordings.svg".toByteBuffer())
 
         compose(
             name = "Test",
             modifier = CompositionModifier()
                 .size(1.rel, 1.rel)
+                .disableOptimizations()
         ) {
-            constructBackground()
-            prismLogo()
+            Background()
+            PrismLogo()
 
             Column(
                 modifier = LayoutModifier()
@@ -62,13 +72,30 @@ class PrismDesign : UIScreen {
                     .padding(Padding(14.px, 0.px, 0.px, 0.px))
                     .spacing(9.px)
             ) {
+                modifier.height = modifier.height!!.atMost(0.6.rel - 48.px)
+                modifier.optimizeComposition = true
+                modifier.verticalScrollbar = Scrollbar {
+                    x = 1.crel - 10.px
+                    y = 0.025.crel
+                    width = 5.px
+                    height = 0.95.crel
+                    thumbColor = 0x434343.rgb
+                    thumbRadius = 2.5.radius
+
+                    val scrollbarBackground = UIBackground()
+
+                    scrollbarBackground.backgroundColor = RGBA(0f, 0f, 0f, 0.15f).rgba
+                    scrollbarBackground.backgroundRadius = 2.5.radius
+
+                    background = scrollbarBackground
+                }
+
                 SideTitle("MENU")
 
                 Column {
-                    modifier.clipContent = true
                     SideButton("home", "Dashboard")
                     SideButton("folder", "Mods")
-                    SideButton("home", "Settings")
+                    SideButton("setting", "Settings")
                     SideButton("shop", "Store")
                     SideButton("profile", "Profiles")
                 }
@@ -76,11 +103,10 @@ class PrismDesign : UIScreen {
                 SideTitle("SOCIAL")
 
                 Column {
-                    SideButton("home", "Dashboard")
-                    SideButton("folder", "Mods")
-                    SideButton("home", "Settings")
-                    SideButton("shop", "Store")
-                    SideButton("profile", "Profiles")
+                    SideButton("home", "Messages")
+                    SideButton("friends", "Friends")
+                    SideButton("achievements", "Achievements")
+                    SideButton("recordings", "Recordings")
                 }
             }
         }
@@ -95,6 +121,7 @@ class PrismDesign : UIScreen {
             .layoutSpacing(24.px)
     ) {
         modifier.clipContent = false
+        modifier.optimizeComposition = false
 
         icon(
             imageName = iconName, modifier = IconModifier().size(24, 24).imageColor((-1).rgb)
@@ -114,7 +141,7 @@ class PrismDesign : UIScreen {
             .fontType(FontType.AutoWidth)
     )
 
-    fun constructBackground() = construct {
+    fun Background() = construct {
         it.modifier.size(1.rel, 1.rel)
         render {
             path {
@@ -126,7 +153,7 @@ class PrismDesign : UIScreen {
         }
     }
 
-    fun prismLogo() = construct {
+    fun PrismLogo() = construct {
         val logo = ImageProvider.createImage("PrismLogo", 0, "/icons/prismclient/PrismLogo_x128.png".toByteBuffer())
         val handle = logo.retrieveImage(34f, 37f)
         it.modifier.position(49, 52)

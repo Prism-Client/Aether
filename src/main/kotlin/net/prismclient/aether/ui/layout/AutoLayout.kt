@@ -205,12 +205,7 @@ class AutoLayoutStyle : Style<AutoLayoutStyle, AutoLayout>() {
         TODO("Not yet implemented")
     }
 
-    override fun copy(): AutoLayoutStyle = AutoLayoutStyle().also {
-        it.layoutAlignment = layoutAlignment
-        it.layoutDirection = layoutDirection
-        it.layoutPadding = layoutPadding.copy
-        it.itemSpacing = itemSpacing.copy
-    }
+    override fun copy(): AutoLayoutStyle = TODO("Not yet implemented")
 
     override fun merge(other: AutoLayoutStyle?) {
         TODO("Not yet implemented")

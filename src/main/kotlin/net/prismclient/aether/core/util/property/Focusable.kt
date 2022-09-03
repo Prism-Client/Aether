@@ -14,4 +14,10 @@ import net.prismclient.aether.ui.composition.Composable
  * @author sen
  * @since 1.0
  */
-interface Focusable
+interface Focusable {
+    /**
+     * If Aether determines that this is a valid [Composable] for focus, it will first ask
+     * this function if it wants to be focused.
+     */
+    fun wantsFocus(): Boolean
+}

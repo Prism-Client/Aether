@@ -8,10 +8,7 @@ import net.prismclient.aether.ui.alignment.VerticalAlignment
 import net.prismclient.aether.ui.alignment.horizontalConvert
 import net.prismclient.aether.ui.alignment.verticalConvert
 import net.prismclient.aether.ui.component.type.*
-import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.composition.Composition
-import net.prismclient.aether.ui.composition.CompositionModifier
-import net.prismclient.aether.ui.composition.DefaultCompositionModifier
+import net.prismclient.aether.ui.composition.*
 import net.prismclient.aether.ui.dsl.ConstructionDSL
 import net.prismclient.aether.ui.font.FontStyle
 import net.prismclient.aether.ui.image.UIImage
@@ -165,7 +162,7 @@ inline fun AutoLayout(
  * Creates an [AutoLayout] with a row based layout style. Each [Composable] will be placed to the
  * right of the previous [Composable]. Any changes to the size of the [modifier], and the alignment,
  * and direction of the [layoutStyle] will be overwritten if set within the function parameters.
- * Furthermore, the layout is not using optimizations or clipping content by default.
+ * Furthermore, the layout is not using optimizations by default.
  */
 inline fun Row(
     verticalAlignment: VerticalAlignment = VerticalAlignment.TOP,
@@ -187,7 +184,7 @@ inline fun Row(
  * Creates an [AutoLayout] with a column based layout style. Each [Composable] will be placed
  * below the previous [Composable]. Any changes to the size of the [modifier], and the alignment,
  * and direction of the [layoutStyle] will be overwritten if set within the function parameters.
- * Furthermore, the layout is not using optimizations or clipping content by default.
+ * Furthermore, the layout is not using optimizations by default.
  */
 inline fun Column(
     horizontalAlignment: HorizontalAlignment = HorizontalAlignment.LEFT,

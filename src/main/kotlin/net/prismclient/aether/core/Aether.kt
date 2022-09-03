@@ -112,7 +112,6 @@ open class Aether(renderer: UIRenderer) {
      * Invoked when the mouse scroll or trackpad is interacted with.
      */
     open fun mouseScrolled(dstX: Float, dstY: Float) {
-        // TODO: Optimze
         for (i in compositions!!.size - 1 downTo 0) {
             val composition = compositions!![i]
             if (composition.mouseWithinBounds()) {
@@ -144,7 +143,7 @@ open class Aether(renderer: UIRenderer) {
                     if (output != null) return output
                 }
 
-                if (item is Focusable) {
+                if (item is Focusable && item.wantsFocus()) {
                     return item
                 }
             }

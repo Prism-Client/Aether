@@ -6,6 +6,7 @@ import net.prismclient.aether.core.event.MousePress
 import net.prismclient.aether.core.event.MouseRelease
 import net.prismclient.aether.core.event.MouseScrolled
 import net.prismclient.aether.core.util.property.UIUniqueProperty
+import net.prismclient.aether.core.util.shorthands.Block
 import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.core.util.shorthands.within
 import net.prismclient.aether.ui.composition.Composable
@@ -137,6 +138,11 @@ abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollb
 }
 
 /**
+ * Creates a new [DefaultScrollbar] amd applies the [block] tp it.
+ */
+inline fun Scrollbar(block: Block<DefaultScrollbar>): DefaultScrollbar = DefaultScrollbar().apply(block)
+
+/**
  * @author sen
  * @since 1.0
  */
@@ -176,6 +182,11 @@ class DefaultScrollbar : Scrollbar() {
 
     override fun compose(composable: UILayout?) {
         super.compose(composable)
+        background?.x = x
+        background?.y = y
+        background?.width = width
+        background?.height = height
+        background?.compose(composable)
         thumbRadius?.compose(composable)
         value = value // Update the thumbBounds
     }
