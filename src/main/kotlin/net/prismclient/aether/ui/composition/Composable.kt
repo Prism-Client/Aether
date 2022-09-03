@@ -208,19 +208,27 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      */
     open fun parentHeight(): Float = parent?.height ?: composition.height
 
-    open fun layoutXOffset(): Float = parent?.layoutXOffset() ?: 0f
+    /**
+     * Returns the value required to make the [Composable]'s position values relative to the
+     * actual window instead of the Composable. It is also used to offset the mouse for scrollbars.
+     */
+    open fun xOffset(): Float = parent?.xOffset() ?: 0f
 
-    open fun layoutYOffset(): Float = parent?.layoutYOffset() ?: 0f
+    /**
+     * Returns the value required to make the [Composable]'s position values relative to the
+     * actual window instead of the Composable. It is also used to offset the mouse for scrollbars.
+     */
+    open fun yOffset(): Float = parent?.yOffset() ?: 0f
 
     /**
      * Returns the mouseX position offset by the layout scrollbar (if applicable).
      */
-    open fun mouseX(): Float = Aether.instance.mouseX + layoutXOffset()
+    open fun mouseX(): Float = Aether.instance.mouseX + (parent?.xOffset() ?: 0f)
 
     /**
      * Returns the mouseY position offset by the layout scrollbar (if applicable).
      */
-    open fun mouseY(): Float = Aether.instance.mouseY + layoutYOffset()
+    open fun mouseY(): Float = Aether.instance.mouseY + (parent?.yOffset() ?: 0f)
 
     /**
      * Returns true if the mouse is within the normal bounds (non-relative values) of this.

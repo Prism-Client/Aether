@@ -13,6 +13,7 @@ import net.prismclient.aether.ui.component.type.IconModifier
 import net.prismclient.aether.ui.component.type.imageColor
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.composition.disableOptimizations
+import net.prismclient.aether.ui.composition.onClick
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.image.ImageProvider
@@ -65,6 +66,7 @@ object PrismDesign : UIScreen {
             PrismLogo()
 
             Column(
+                name = "Main Column",
                 modifier = LayoutModifier()
                     .position(48, 138),
                 layoutStyle = AutoLayoutStyle()
@@ -77,7 +79,7 @@ object PrismDesign : UIScreen {
 
                 SideTitle("MENU")
 
-                Column {
+                Column(name = "layout1") {
                     SideButton("home", "Dashboard")
                     SideButton("folder", "Mods")
                     SideButton("setting", "Settings")
@@ -87,10 +89,10 @@ object PrismDesign : UIScreen {
 
                 SideTitle("SOCIAL")
 
-                Column {
-                    SideButton("home", "Messages")
+                Column(name = "layout2") {
+                    modifier.backgroundColor(RGBA(1f, 0f, 0f, 0.3f).rgba)
+                    SideButton("messages", "Messages")
                     SideButton("friends", "Friends")
-                    SideButton("achievements", "Achievements")
                     SideButton("recordings", "Recordings")
                 }
             }
@@ -98,6 +100,7 @@ object PrismDesign : UIScreen {
     }
 
     fun SideButton(iconName: String, buttonText: String) = AutoLayout(
+        name = buttonText,
         modifier = LayoutModifier().size(206.px, HugLayout()),
         layoutStyle = AutoLayoutStyle()
             .layoutDirection(LayoutDirection.HORIZONTAL)
@@ -108,7 +111,11 @@ object PrismDesign : UIScreen {
         modifier.clipContent = false
         modifier.optimizeComposition = false
 
-        Icon(
+        onClick {
+            println("I was clicked! $buttonText")
+        }
+
+        Image(
             imageName = iconName, modifier = IconModifier().size(24, 24).imageColor((-1).rgb)
         )
 

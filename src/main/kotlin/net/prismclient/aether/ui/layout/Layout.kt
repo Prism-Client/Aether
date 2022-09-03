@@ -56,15 +56,11 @@ abstract class UILayout(
      */
     open fun heightOverflow(): Float = (layoutSize.height - height).coerceAtLeast(0f)
 
-    override fun layoutXOffset(): Float =
-        (modifier.horizontalScrollbar?.value ?: 0f) * (layoutSize.width - this.width) + super.layoutXOffset()
+    override fun xOffset(): Float =
+        (modifier.horizontalScrollbar?.value ?: 0f) * (layoutSize.width - this.width) + super.xOffset()
 
-    override fun layoutYOffset(): Float =
-        (modifier.verticalScrollbar?.value ?: 0f) * (layoutSize.height - this.height) + super.layoutYOffset()
-
-    override fun mouseX(): Float = Aether.instance.mouseX + super.layoutXOffset()
-
-    override fun mouseY(): Float = Aether.instance.mouseY + super.layoutYOffset()
+    override fun yOffset(): Float =
+        (modifier.verticalScrollbar?.value ?: 0f) * (layoutSize.height - this.height) + super.yOffset()
 
     override fun compose() {
         modifier.preCompose(this)

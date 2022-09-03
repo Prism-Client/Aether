@@ -81,7 +81,7 @@ inline fun label(
     block: Block<Label> = {}
 ): Label = component(Label(text, modifier, fontStyle), block)
 
-inline fun Icon(
+inline fun Image(
     imageName: String,
     modifier: IconModifier = IconModifier(),
     block: Block<Icon> = {}
@@ -152,11 +152,11 @@ inline fun verticalList(
 ) = listLayout(LayoutDirection.VERTICAL, order, childSpacing, modifier, block)
 
 inline fun AutoLayout(
-    layoutName: String = "AutoLayout",
+    name: String = "AutoLayout",
     modifier: LayoutModifier<*> = LayoutModifier(),
     layoutStyle: AutoLayoutStyle = AutoLayoutStyle(),
     block: Block<AutoLayout> = {}
-): AutoLayout = component(AutoLayout(layoutName, modifier, layoutStyle), block)
+): AutoLayout = component(AutoLayout(name, modifier, layoutStyle), block)
 
 /**
  * Creates an [AutoLayout] with a row based layout style. Each [Composable] will be placed to the
@@ -165,6 +165,7 @@ inline fun AutoLayout(
  * Furthermore, the layout is not using optimizations by default.
  */
 inline fun Row(
+    name: String = "Row",
     verticalAlignment: VerticalAlignment = VerticalAlignment.TOP,
     /* horizontalArrangement */
     modifier: LayoutModifier<*> = LayoutModifier(),
@@ -172,7 +173,7 @@ inline fun Row(
     block: Block<AutoLayout> = {}
 ): AutoLayout = component(
     AutoLayout(
-        layoutName = "Row",
+        name = name,
         modifier = modifier.hug().disableOptimizations(),
         layoutStyle = layoutStyle
             .layoutAlignment(verticalConvert(verticalAlignment))
@@ -187,6 +188,7 @@ inline fun Row(
  * Furthermore, the layout is not using optimizations by default.
  */
 inline fun Column(
+    name: String = "Column",
     horizontalAlignment: HorizontalAlignment = HorizontalAlignment.LEFT,
     /* verticalArrangement */
     modifier: LayoutModifier<*> = LayoutModifier(),
@@ -194,7 +196,7 @@ inline fun Column(
     block: Block<AutoLayout> = {}
 ): AutoLayout = component(
     AutoLayout(
-        layoutName = "Column",
+        name = name,
         modifier = modifier.hug().disableOptimizations(),
         layoutStyle = layoutStyle
             .layoutAlignment(horizontalConvert(horizontalAlignment))

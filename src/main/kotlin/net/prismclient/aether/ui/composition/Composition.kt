@@ -32,9 +32,6 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
     override fun parentWidth(): Float = Aether.instance.displayWidth
     override fun parentHeight(): Float = Aether.instance.displayHeight
 
-    override fun layoutXOffset(): Float = 0f
-    override fun layoutYOffset(): Float = 0f
-
     /**
      * Returns the parent composition or this.
      */
@@ -113,6 +110,7 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
             }
         }
     }
+
 
     // -- Util -- //
 

@@ -1,7 +1,6 @@
 package net.prismclient.aether.ui.layout
 
 import net.prismclient.aether.core.metrics.Size
-import net.prismclient.aether.core.util.shorthands.copy
 import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.Alignment.*
@@ -23,10 +22,10 @@ import kotlin.math.roundToInt
  * @since 1.0
  */
 class AutoLayout(
-    layoutName: String,
+    name: String,
     modifier: LayoutModifier<*>,
     val layoutStyle: AutoLayoutStyle
-) : UILayout(layoutName, modifier, true) {
+) : UILayout(name, modifier, true) {
     var potentialSize: Size? = null
         private set
 
