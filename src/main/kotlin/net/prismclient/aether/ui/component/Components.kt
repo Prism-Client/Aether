@@ -67,7 +67,7 @@ inline fun compose(
     return composition
 }
 
-inline fun button(
+inline fun Button(
     text: String,
     modifier: UIModifier<*> = Modifier(),
     fontStyle: FontStyle = FontStyle(),
@@ -81,7 +81,7 @@ inline fun label(
     block: Block<Label> = {}
 ): Label = component(Label(text, modifier, fontStyle), block)
 
-inline fun icon(
+inline fun Icon(
     imageName: String,
     modifier: IconModifier = IconModifier(),
     block: Block<Icon> = {}

@@ -19,7 +19,6 @@ import net.prismclient.aether.ui.image.ImageProvider
 import net.prismclient.aether.ui.layout.AutoLayoutStyle
 import net.prismclient.aether.ui.layout.HugLayout
 import net.prismclient.aether.ui.layout.LayoutModifier
-import net.prismclient.aether.ui.layout.scroll.DefaultScrollbar
 import net.prismclient.aether.ui.layout.scroll.Scrollbar
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.modifier.Modifier
@@ -73,22 +72,8 @@ object PrismDesign : UIScreen {
                     .spacing(9.px)
             ) {
                 modifier.height = modifier.height!!.atMost(0.6.rel - 48.px)
+                modifier.verticalScrollbar = Scrollbar()
                 modifier.optimizeComposition = true
-                modifier.verticalScrollbar = Scrollbar {
-                    x = 1.crel - 10.px
-                    y = 0.025.crel
-                    width = 5.px
-                    height = 0.95.crel
-                    thumbColor = 0x434343.rgb
-                    thumbRadius = 2.5.radius
-
-                    val scrollbarBackground = UIBackground()
-
-                    scrollbarBackground.backgroundColor = RGBA(0f, 0f, 0f, 0.15f).rgba
-                    scrollbarBackground.backgroundRadius = 2.5.radius
-
-                    background = scrollbarBackground
-                }
 
                 SideTitle("MENU")
 
@@ -123,18 +108,18 @@ object PrismDesign : UIScreen {
         modifier.clipContent = false
         modifier.optimizeComposition = false
 
-        icon(
+        Icon(
             imageName = iconName, modifier = IconModifier().size(24, 24).imageColor((-1).rgb)
         )
 
-        button(
+        Button(
             text = buttonText,
             fontStyle = FontStyle().fontName("Montserrat-Regular").fontSize(14.px).fontColor(0x697483.rgb)
                 .fontType(FontType.AutoWidth)
         )
     }
 
-    fun SideTitle(text: String) = button(
+    fun SideTitle(text: String) = Button(
         text = text,
         modifier = Modifier(),
         fontStyle = FontStyle().fontName("Montserrat-Medium").fontSize(11.px).fontColor(0x697483.rgb)
@@ -169,5 +154,21 @@ object PrismDesign : UIScreen {
             font("Montserrat-Regular", 8f, UITextAlignment.RIGHT, UITextAlignment.TOP, 0f)
             "Aether-v1.0.0".render(fontBounds()[2], it.y + 27f + 5f)
         }
+    }
+
+    fun Scrollbar() = Scrollbar {
+        x = 1.crel - 10.px
+        y = 0.025.crel
+        width = 5.px
+        height = 0.95.crel
+        thumbColor = 0x434343.rgb
+        thumbRadius = 2.5.radius
+
+        val scrollbarBackground = UIBackground()
+
+        scrollbarBackground.backgroundColor = RGBA(0f, 0f, 0f, 0.15f).rgba
+        scrollbarBackground.backgroundRadius = 2.5.radius
+
+        background = scrollbarBackground
     }
 }
