@@ -6,7 +6,6 @@ enum class LogLevel {
 }
 
 internal inline fun timed(message: String, level: LogLevel = LogLevel.DEBUG, block: () -> Unit) {
-    if (UIDebug.disableLog) return
     if (level != LogLevel.DEBUG) {
         println("[UIDebug]: TIMED -> $message")
         val start = System.currentTimeMillis()
@@ -16,23 +15,19 @@ internal inline fun timed(message: String, level: LogLevel = LogLevel.DEBUG, blo
 }
 
 internal fun inform(message: String, level: LogLevel = LogLevel.DEBUG) {
-    if (UIDebug.disableLog) return
     if (level != LogLevel.DEBUG)
         println("[UIDebug]: INFO -> $message")
 }
 
 internal fun debug(message: String) {
-    if (UIDebug.disableLog) return
     println("[UIDebug]: DEBUG -> $message")
 }
 
 internal fun warn(message: String, level: LogLevel = LogLevel.DEBUG) {
-    if (UIDebug.disableLog) return
     if (level != LogLevel.DEBUG)
         println("[UIDebug]: WARNING -> $message")
 }
 
 internal fun error(message: String) {
-    if (UIDebug.disableLog) return
     println("[UIDebug]: ERR -> $message")
 }
