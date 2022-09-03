@@ -1,15 +1,14 @@
 package net.prismclient.aether.ui.dsl
 
 import net.prismclient.aether.core.Aether
-import net.prismclient.aether.ui.alignment.UIAlignment
-import net.prismclient.aether.ui.alignment.UIAlignment.*
+import net.prismclient.aether.ui.alignment.Alignment
+import net.prismclient.aether.ui.alignment.Alignment.*
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.core.util.shorthands.Block
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.ui.renderer.UIRenderer
-import net.prismclient.aether.ui.resource.ResourceProvider
 import net.prismclient.aether.ui.unit.other.UIRadius
 import net.prismclient.aether.ui.renderer.UIStrokeDirection
 
@@ -111,7 +110,7 @@ object UIRendererDSL {
      * Aligns the given string based on the [alignment] within the [width] and [height] boundaries.
      */
     @JvmStatic
-    fun String.render(alignment: UIAlignment, x: Float, y: Float, width: Float, height: Float) {
+    fun String.render(alignment: Alignment, x: Float, y: Float, width: Float, height: Float) {
         val alignedX: Float = when (alignment) {
             TOPCENTER, CENTER, BOTTOMCENTER -> width / 2f
             TOPRIGHT, MIDDLERIGHT, BOTTOMRIGHT -> width

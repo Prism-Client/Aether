@@ -16,7 +16,7 @@ import net.prismclient.aether.ui.style.Style
  */
 object UIRegistry {
     private val modifiers: HashMap<String, UIModifier<*>> = hashMapOf()
-    private val styles: HashMap<String, Style<*>> = hashMapOf()
+    private val styles: HashMap<String, Style<*, *>> = hashMapOf()
     var applyModifiers: Boolean = true
         private set
     var applyStyles: Boolean = true
@@ -36,7 +36,7 @@ object UIRegistry {
      *
      * @see register
      */
-    fun registerStyle(name: String, modifier: Style<*>) {
+    fun registerStyle(name: String, modifier: Style<*, *>) {
         styles[name] = modifier
     }
 
@@ -56,7 +56,7 @@ object UIRegistry {
      * @see enableApplyingStyles
      * @see disableApplyingStyles
      */
-    fun obtainStyle(name: String): Style<*>? = if (applyStyles) styles[name] else null
+    fun obtainStyle(name: String): Style<*, *>? = if (applyStyles) styles[name] else null
 
     fun enableApplyingModifiers() {
         applyModifiers = true
@@ -87,6 +87,6 @@ fun register(modifier: UIModifier<*>, name: String = modifier::class.simpleName!
  * Creates a copy of the [style] and registers it with the given [name] to [UIRegistry]. When set
  * to the active modifier, all properties of it are applied to the active modifier.
  */
-fun register(style: Style<*>, name: String = style::class.simpleName!!) {
+fun register(style: Style<*, *>, name: String = style::class.simpleName!!) {
     UIRegistry.registerStyle(name, style.copy)
 }

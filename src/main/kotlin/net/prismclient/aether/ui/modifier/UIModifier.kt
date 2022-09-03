@@ -1,7 +1,7 @@
 package net.prismclient.aether.ui.modifier
 
 import net.prismclient.aether.core.color.UIAlpha
-import net.prismclient.aether.ui.alignment.UIAlignment
+import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.composition.util.color
@@ -21,7 +21,7 @@ import net.prismclient.aether.ui.unit.type.dynamic.SizeUnit
 import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.property.Mergable
-import net.prismclient.aether.ui.alignment.UIAlignment.*
+import net.prismclient.aether.ui.alignment.Alignment.*
 
 /**
  * [UIModifier] contains information such as the position, background, padding and other properties that
@@ -167,7 +167,7 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
      *
      * @see SizeUnit
      */
-    fun anchor(alignment: UIAlignment): M {
+    fun anchor(alignment: Alignment): M {
         anchorPoint = anchorPoint ?: AnchorPoint()
         anchorPoint!!.align(alignment)
         return this as M
@@ -188,7 +188,7 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     /**
      * Aligns and positions this Modifier<*> to the given [alignment] relative to its parent.
      */
-    fun control(alignment: UIAlignment): M {
+    fun control(alignment: Alignment): M {
         anchor(alignment)
         x = when (alignment) {
             TOPCENTER, CENTER, BOTTOMCENTER -> 0.5

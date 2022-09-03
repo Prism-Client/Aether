@@ -5,15 +5,15 @@ import net.prismclient.aether.core.util.extensions.toByteBuffer
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.example.Renderer.fontBounds
 import net.prismclient.aether.example.Runner
-import net.prismclient.aether.ui.alignment.UIAlignment
+import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.component.*
 import net.prismclient.aether.ui.component.type.IconModifier
 import net.prismclient.aether.ui.component.type.imageColor
 import net.prismclient.aether.ui.composition.CompositionModifier
-import net.prismclient.aether.ui.composition.DefaultCompositionModifier
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.image.ImageProvider
+import net.prismclient.aether.ui.layout.AutoLayoutStyle
 import net.prismclient.aether.ui.layout.HugLayout
 import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.layout.hug
@@ -47,7 +47,7 @@ class PrismDesign : UIScreen {
 
         compose(
             name = "Test", modifier = CompositionModifier()
-                .size(1.rel, 1.rel)
+            .size(1.rel, 1.rel)
         ) {
 //            this.modifier.optimizeComposition = false
             constructBackground()
@@ -59,14 +59,14 @@ class PrismDesign : UIScreen {
             autoLayout(
                 modifier = LayoutModifier()
                     .backgroundColor(RGBA(1f, 0f, 0f, 0.3f).rgba)
-                    .position(48, 138)//.hugWidth().height(HugLayout().atLeast(200.px))
-                    .hug()
-                    //.height(HugLayout().atMost(200.px))
+                    .position(48, 138)
+                    .hug(),
+                layoutStyle = AutoLayoutStyle()
+                    .layoutDirection(LayoutDirection.VERTICAL)
+                    .layoutAlignment(Alignment.TOPLEFT)
+                    .layoutPadding(Padding(14.px, 0.px, 0.px, 0.px))// TODO: paddingOf, marginOf
+                    .layoutSpacing(9.px)
             ) {
-                layoutDirection = LayoutDirection.VERTICAL
-                layoutAlignment = UIAlignment.TOPLEFT
-                layoutPadding = Padding(14.px, 0.px, 0.px, 0.px)
-                itemSpacing = 9.px
                 modifier.optimizeComposition = false
                 modifier.clipContent = true
 
@@ -75,12 +75,13 @@ class PrismDesign : UIScreen {
                 // TODO: Unit.max(value).min(value)
 
                 autoLayout(
-                    modifier = LayoutModifier().hug()
+                    modifier = LayoutModifier().hug(),
+                    layoutStyle = AutoLayoutStyle()
+                        .layoutDirection(LayoutDirection.VERTICAL)
+                        .layoutAlignment(Alignment.TOPLEFT)
+                        .layoutSpacing(8.px)
                 ) {
-//                    modifier.optimizeComposition = false
-                    layoutDirection = LayoutDirection.VERTICAL
-                    layoutAlignment = UIAlignment.TOPLEFT
-                    itemSpacing = 8.px
+//                    modifier.optimizeComposition = falsepx
                     elementButton("home", "Dashboard")
                     elementButton("folder", "Mods")
                     elementButton("home", "Settings")
@@ -91,12 +92,21 @@ class PrismDesign : UIScreen {
                 elementLabel("SOCIAL")
 
                 autoLayout(
-                    modifier = LayoutModifier().hug()
+                    modifier = LayoutModifier().hug(),
+                    layoutStyle = AutoLayoutStyle()
+                        .layoutDirection(LayoutDirection.VERTICAL)
+                        .layoutAlignment(Alignment.TOPLEFT)
+                        .layoutSpacing(8.px)
                 ) {
                     modifier.clipContent = false
-                    layoutDirection = LayoutDirection.VERTICAL
-                    layoutAlignment = UIAlignment.TOPLEFT
-                    itemSpacing = 8.px
+                    elementButton("home", "Dashboard")
+                    elementButton("folder", "Mods")
+                    elementButton("home", "Settings")
+                    elementButton("shop", "Store")
+                    elementButton("profile", "Profiles")
+                }
+
+                Row {
                     elementButton("home", "Dashboard")
                     elementButton("folder", "Mods")
                     elementButton("home", "Settings")
@@ -108,13 +118,14 @@ class PrismDesign : UIScreen {
     }
 
     fun elementButton(icon: String, buttonText: String) = autoLayout(
-        modifier = LayoutModifier().size(206.px, HugLayout())
+        modifier = LayoutModifier().size(206.px, HugLayout()),
+        layoutStyle = AutoLayoutStyle()
+            .layoutDirection(LayoutDirection.HORIZONTAL)
+            .layoutAlignment(Alignment.MIDDLELEFT)
+            .layoutPadding(Padding(8.px, 9.px, 8.px, 9.px))
+            .layoutSpacing(24.px)
     ) {
         modifier.clipContent = false
-        layoutDirection = LayoutDirection.HORIZONTAL
-        layoutAlignment = UIAlignment.MIDDLELEFT
-        layoutPadding = Padding(8.px, 9.px, 8.px, 9.px)
-        itemSpacing = 24.px
 
         icon(
             imageName = icon, modifier = IconModifier().size(24, 24).imageColor((-1).rgb)

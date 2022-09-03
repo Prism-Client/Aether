@@ -17,7 +17,7 @@ import net.prismclient.aether.ui.composition.Composable
  * @author sen
  * @since 1.0
  */
-abstract class Style<S, T : Composable> : UIUniqueProperty<S, T> {
+abstract class Style<S : Style<S, T>, T : Composable> : UIUniqueProperty<S, T> {
     init {
         applyStyle(this::class.simpleName!!)
     }
@@ -27,10 +27,10 @@ abstract class Style<S, T : Composable> : UIUniqueProperty<S, T> {
     /**
      * Merges the given style from [UIRegistry] into this, if not null.
      */
-    @Suppress("unchecked_cast", "LeakingThis")
-    open fun applyStyle(name: String): T {
+    @Suppress("unchecked_cast")
+    open fun applyStyle(name: String): S {
         val activeStyle = UIRegistry.obtainStyle(name)
         if (activeStyle != null) merge(activeStyle as S)
-        return this as T
+        return this as S
     }
 }

@@ -5,13 +5,13 @@ import net.prismclient.aether.core.util.shorthands.disableDynamicCheck
 import net.prismclient.aether.core.util.shorthands.ifNotNull
 import net.prismclient.aether.core.util.shorthands.lerp
 import net.prismclient.aether.core.util.shorthands.or
-import net.prismclient.aether.ui.alignment.UIAlignment
+import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.property.Mergable
-import net.prismclient.aether.ui.alignment.UIAlignment.*
+import net.prismclient.aether.ui.alignment.Alignment.*
 
 /**
  * Expects a width and height which is used to scale the given properties
@@ -33,7 +33,7 @@ open class AnchorPoint : Copyable<AnchorPoint>, Mergable<AnchorPoint>, Animatabl
     /**
      * Sets the x and y values to relative values based on the [alignment]
      */
-    fun align(alignment: UIAlignment) {
+    fun align(alignment: Alignment) {
         x = when (alignment) {
             TOPCENTER, CENTER, BOTTOMCENTER -> 0.5f
             TOPRIGHT, MIDDLERIGHT, BOTTOMRIGHT -> 1f

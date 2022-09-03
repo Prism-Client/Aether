@@ -4,7 +4,7 @@ import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.shorthands.*
-import net.prismclient.aether.ui.alignment.UIAlignment
+import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment.*
 import net.prismclient.aether.ui.composition.Composable
@@ -220,7 +220,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
  * @author sen
  * @since 1.0
  */
-open class FontStyle : Style<FontStyle>() {
+open class FontStyle : Style<FontStyle, Composable>() {
     /**
      * The reference to the font class. Font automatically sets it.
      */
@@ -462,7 +462,7 @@ fun FontStyle.verticalAlignment(alignment: UITextAlignment) = apply {
 /**
  * Anchors the font to the given [alignment] relative to the Font's size.
  */
-fun FontStyle.fontAnchor(alignment: UIAlignment) = apply {
+fun FontStyle.fontAnchor(alignment: Alignment) = apply {
     anchor = anchor ?: AnchorPoint()
     anchor!!.align(alignment)
 }

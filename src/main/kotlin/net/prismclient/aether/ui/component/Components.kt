@@ -3,6 +3,9 @@ package net.prismclient.aether.ui.component
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.shorthands.Block
+import net.prismclient.aether.ui.alignment.Alignment
+import net.prismclient.aether.ui.alignment.VerticalAlignment
+import net.prismclient.aether.ui.alignment.verticalConvert
 import net.prismclient.aether.ui.component.type.*
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
@@ -12,6 +15,7 @@ import net.prismclient.aether.ui.dsl.ConstructionDSL
 import net.prismclient.aether.ui.font.FontStyle
 import net.prismclient.aether.ui.image.UIImage
 import net.prismclient.aether.ui.layout.AutoLayout
+import net.prismclient.aether.ui.layout.AutoLayoutStyle
 import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.layout.UIListLayout
 import net.prismclient.aether.ui.layout.util.LayoutDirection
@@ -151,5 +155,24 @@ inline fun verticalList(
 inline fun autoLayout(
     layoutName: String = "AutoLayout",
     modifier: LayoutModifier<*> = LayoutModifier(),
+    layoutStyle: AutoLayoutStyle = AutoLayoutStyle(),
     block: Block<AutoLayout> = {}
-): AutoLayout = component(AutoLayout(layoutName, modifier), block)
+): AutoLayout = component(AutoLayout(layoutName, modifier, layoutStyle), block)
+
+/**
+ * Creates an [AutoLayout] with a row based layout style.
+ */
+inline fun Row(
+    verticalAlignment: VerticalAlignment = VerticalAlignment.TOP,
+    /* horizontalArrangement */
+    layoutModifier: LayoutModifier<*> = LayoutModifier(),
+    layoutStyle: AutoLayoutStyle = AutoLayoutStyle(),
+    block: Block<AutoLayout> = {}
+): AutoLayout = component(AutoLayout(
+    layoutName = "Row",
+    modifier = layoutModifier,
+    layoutStyle = layoutStyle
+        .layoutAlignment(verticalConvert(verticalAlignment))
+        .layoutDirection(LayoutDirection.HORIZONTAL)
+))
+// horizontalAlignment = Left

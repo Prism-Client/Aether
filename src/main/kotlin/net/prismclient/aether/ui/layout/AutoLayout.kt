@@ -1,9 +1,10 @@
 package net.prismclient.aether.ui.layout
 
 import net.prismclient.aether.core.metrics.Size
+import net.prismclient.aether.core.util.shorthands.copy
 import net.prismclient.aether.core.util.shorthands.dp
-import net.prismclient.aether.ui.alignment.UIAlignment
-import net.prismclient.aether.ui.alignment.UIAlignment.*
+import net.prismclient.aether.ui.alignment.Alignment
+import net.prismclient.aether.ui.alignment.Alignment.*
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.style.Style
@@ -21,43 +22,44 @@ import kotlin.math.roundToInt
  * @author sen
  * @since 1.0
  */
-open class AutoLayout(
-    layoutName: String,
-    modifier: LayoutModifier<*>,
-    open protected val layoutStyle: AutoLayoutStyle
+class AutoLayout(
+        layoutName: String,
+        modifier: LayoutModifier<*>,
+        val layoutStyle: AutoLayoutStyle
 ) : UILayout(layoutName, modifier, true) {
-    protected open var potentialSize: Size? = null
+    var potentialSize: Size? = null
+        private set
 
     /**
      * Calculates the potential layout size. The width or height are summed depending
-     * on the [layoutDirection], and the other axis is the largest element within
-     * layout. It also incorporates for the [layoutPadding].
+     * on the [AutoLayoutStyle.layoutDirection], and the other axis is the largest element within
+     * layout. It also incorporates for the [AutoLayoutStyle.layoutPadding].
      */
-    open fun calculatePotentialSize(): Size {
+    fun calculatePotentialSize(): Size {
         var width = 0f
         var height = 0f
 
         for (child in children) {
             child.compose()
-            if (layoutDirection == LayoutDirection.HORIZONTAL) {
-                width += child.relWidth + itemSpacing.dp
+            if (layoutStyle.layoutDirection == LayoutDirection.HORIZONTAL) {
+                width += child.relWidth + layoutStyle.itemSpacing.dp
                 height = max(height, child.height)
             } else {
                 width = max(width, child.relWidth)
-                height += child.relHeight + itemSpacing.dp
+                height += child.relHeight + layoutStyle.itemSpacing.dp
             }
         }
 
         // Remove the item spacing from the last element.
-        if (layoutDirection == LayoutDirection.HORIZONTAL) {
-            width -= itemSpacing.dp
+        if (layoutStyle.layoutDirection == LayoutDirection.HORIZONTAL) {
+            width -= layoutStyle.itemSpacing.dp
         } else {
-            height -= itemSpacing.dp
+            height -= layoutStyle.itemSpacing.dp
         }
 
         return Size(
-            width + layoutPadding?.left.dp + layoutPadding?.right.dp,
-            height + layoutPadding?.top.dp + layoutPadding?.bottom.dp
+                width + layoutStyle.layoutPadding?.left.dp + layoutStyle.layoutPadding?.right.dp,
+                height + layoutStyle.layoutPadding?.top.dp + layoutStyle.layoutPadding?.bottom.dp
         )
     }
 
@@ -94,12 +96,6 @@ open class AutoLayout(
 
     override fun updateUnits() {
         layoutStyle.compose(this)
-        itemSpacing?.compute(true)
-        layoutPadding?.compose(this)
-        if (itemSpacing is SpaceBetween) {
-            itemSpacing!!.value =
-                (if (layoutDirection == LayoutDirection.HORIZONTAL) potentialSize!!.width else potentialSize!!.height) / children.size
-        }
     }
 
     override fun updateLayout(): Size {
@@ -117,13 +113,13 @@ open class AutoLayout(
         // Offset the axis of which the layout is directed
         // based on the alignment and the leftover space.
         if (layoutStyle.layoutDirection == LayoutDirection.HORIZONTAL) {
-            x += when (layoutAlignment) {
+            x += when (layoutStyle.layoutAlignment) {
                 TOPCENTER, CENTER, BOTTOMCENTER -> (width - potential.width - right + left) / 2f
                 TOPRIGHT, MIDDLERIGHT, BOTTOMRIGHT -> width - potential.width - right + left
                 else -> -right
             }.coerceAtLeast(0f)
         } else {
-            y += when (layoutAlignment) {
+            y += when (layoutStyle.layoutAlignment) {
                 MIDDLELEFT, CENTER, MIDDLERIGHT -> (height - potential.height - bottom + top) / 2f
                 BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT -> height - potential.height - bottom + top
                 else -> -bottom
@@ -138,7 +134,7 @@ open class AutoLayout(
                     BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT -> (height - child.relHeight - top - bottom)
                     else -> 0f
                 }
-                x += child.relWidth + itemSpacing.dp
+                x += child.relWidth + layoutStyle.itemSpacing.dp
             } else {
                 child.x = x + when (layoutStyle.layoutAlignment) {
                     TOPCENTER, CENTER, BOTTOMCENTER -> (width - child.relWidth - left - right) / 2f
@@ -146,7 +142,7 @@ open class AutoLayout(
                     else -> 0f
                 }
                 child.y = y
-                y += child.relHeight + itemSpacing.dp
+                y += child.relHeight + layoutStyle.itemSpacing.dp
             }
             child.compose()
             w = max(child.x + child.relWidth - this.x, w)
@@ -168,7 +164,7 @@ class AutoLayoutStyle : Style<AutoLayoutStyle, AutoLayout>() {
     /**
      * The direction which the content should be laid.
      */
-    var layoutAlignment: UIAlignment = TOPLEFT
+    var layoutAlignment: Alignment = TOPLEFT
 
     /**
      * The axis, or direction of which the layout should be laid.
@@ -192,25 +188,87 @@ class AutoLayoutStyle : Style<AutoLayoutStyle, AutoLayout>() {
      */
     var itemSpacing: UIUnit<*>? = null
 
+    override fun compose(composable: AutoLayout?) {
+        itemSpacing?.compute(composable!!, composable.width, composable.height, layoutDirection == LayoutDirection.VERTICAL)
+        layoutPadding?.compose(composable!!)
+        if (itemSpacing is SpaceBetween)
+            itemSpacing!!.value = (if (layoutDirection == LayoutDirection.HORIZONTAL)
+                composable!!.potentialSize!!.width else composable!!.potentialSize!!.height) / composable.children.size
+    }
+
     override fun animate(start: AutoLayoutStyle?, end: AutoLayoutStyle?, fraction: Float) {
         TODO("Not yet implemented")
     }
 
-    override fun compose(composable: AutoLayout?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun copy(): AutoLayoutStyle {
-        TODO("Not yet implemented")
+    override fun copy(): AutoLayoutStyle = AutoLayoutStyle().also {
+        it.layoutAlignment = layoutAlignment
+        it.layoutDirection = layoutDirection
+        it.layoutPadding = layoutPadding.copy
+        it.itemSpacing = itemSpacing.copy
     }
 
     override fun merge(other: AutoLayoutStyle?) {
         TODO("Not yet implemented")
     }
+
+    // -- Extension Functions -- //
+
+    /**
+     * Sets the [layoutAlignment] of the layout. It defines how the content should be laid.
+     */
+    fun layoutAlignment(alignment: Alignment) = apply {
+        layoutAlignment = alignment
+    }
+
+    /**
+     * Sets the [layoutAlignment] of the layout. It defines how the content shou
+     */
+    fun alignment(alignment: Alignment) = layoutAlignment(alignment)
+
+    /**
+     * Sets the [layoutDirection] of the layout. This determines the axis of which layout should be laid.
+     */
+    fun layoutDirection(direction: LayoutDirection) = apply { layoutDirection = direction }
+
+    /**
+     * Sets the [layoutDirection] of the layout. This determines the axis of which layout should be laid.
+     */
+    fun direction(direction: LayoutDirection) = layoutDirection(direction)
+
+    /**
+     * Sets the [layoutPadding] to the given [padding].
+     */
+    fun layoutPadding(padding: Padding) = apply { layoutPadding = padding }
+
+    /**
+     * Sets the [layoutPadding] to the given [padding].
+     */
+    fun padding(padding: Padding) = apply { layoutPadding = padding }
+
+    /**
+     * Sets the item spacing to the given [spacing]
+     *
+     * @see itemSpacing
+     */
+    fun layoutSpacing(spacing: UIUnit<*>?) = apply { itemSpacing = spacing }
+
+    /**
+     * Sets the item spacing to the given [spacing].
+     *
+     * @see spacing
+     */
+    fun itemSpacing(spacing: UIUnit<*>?) = layoutSpacing(spacing)
+
+    /**
+     * Sets the item spacing to the given [spacing]
+     *
+     * @see itemSpacing
+     */
+    fun spacing(spacing: UIUnit<*>?) = apply { itemSpacing = spacing }
 }
 
 /**
- * [paceBetween] is an [AutoLayout] specific unit used exclusively for the [AutoLayout.itemSpacing] property. When
+ * [SpaceBetween] is an [AutoLayout] specific unit used exclusively for the [AutoLayoutStyle.itemSpacing] property. When
  * set, it informs the layout to evenly space the items within it based on the leftover space.
  *
  * @author sen

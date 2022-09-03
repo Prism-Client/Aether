@@ -2,10 +2,9 @@ package net.prismclient.aether.example.screens
 
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.example.Runner
-import net.prismclient.aether.ui.alignment.UIAlignment
+import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.component.*
-import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.composition.DefaultCompositionModifier
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.composition.util.UIBorder
@@ -70,7 +69,7 @@ class MacrosExample : UIScreen {
             // Description below title
             label(text = "Speed up your gameplay by utilizing macros!", modifier = Modifier().position(32, 64), fontStyle = FontStyle().of("Regular").fontColor(0x9FA2B4.rgb).fontSize(12.px))
             // View all hyperlink label
-            label(text = "View All", modifier = Modifier().anchor(UIAlignment.TOPRIGHT)/* TODO: Full Font and Background shorthands */
+            label(text = "View All", modifier = Modifier().anchor(Alignment.TOPRIGHT)/* TODO: Full Font and Background shorthands */
                     //.backgroundColor(RGBA(1f, 0f, 0f, 0.3f).rgba)
                     /* TODO: Align function for Modifiers*/.position(1.rel - 32.px, 32.px), fontStyle = FontStyle().of("SemiBold").fontColor(0x3751FF.rgb).fontSize(14.px))
 
