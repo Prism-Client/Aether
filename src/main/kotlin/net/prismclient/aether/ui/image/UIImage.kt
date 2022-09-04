@@ -2,6 +2,7 @@ package net.prismclient.aether.ui.image
 
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.renderer.UIRenderer
+import net.prismclient.aether.ui.resource.Resource
 import net.prismclient.aether.ui.resource.ResourceProvider
 import java.nio.ByteBuffer
 import kotlin.math.max
@@ -36,7 +37,7 @@ abstract class UIImage(
      * image might need to be saved to avoid garbage collection.
      */
     var imageBuffer: ByteBuffer
-) {
+) : Resource {
     /**
      * When false, the dimensions when [retrieveImage] is called are multiplied by the
      * [Aether.devicePixelRatio] to support retina displays. To disable this, set this to true.

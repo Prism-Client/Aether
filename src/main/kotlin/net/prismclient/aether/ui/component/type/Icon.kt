@@ -13,8 +13,15 @@ import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
 
-class Icon(val image: UIImage, modifier: IconModifier) : UIComponent<Icon>(modifier) {
+class Icon(image: UIImage, modifier: IconModifier) : UIComponent<Icon>(modifier) {
     override val modifier: IconModifier = super.modifier as IconModifier
+
+    var image: UIImage = image
+        set(value) {
+            field = value
+            if (width > 0f && height > 0f)
+                imageHandle = image.retrieveImage(width, height)
+        }
 
     private var imageHandle: String = ""
 

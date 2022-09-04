@@ -8,7 +8,6 @@ import net.prismclient.aether.ui.component.*
 import net.prismclient.aether.ui.composition.DefaultCompositionModifier
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.composition.util.UIBorder
-import net.prismclient.aether.ui.dsl.UIAssetDSL
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.layout.LayoutModifier
@@ -41,8 +40,8 @@ class MacrosExample : UIScreen {
         // Load the Montserrat Font & the vuesax icons.
         // Bulk load loads them as Montserrat/fileName or Montserrat/subDirectory/fileName
         // e.g: Montserrat/Montserrat-Regular
-        UIAssetDSL.bulkLoad("/fonts/Montserrat/")
-        UIAssetDSL.bulkLoad("/icons/vuesax/")
+//        UIAssetDSL.bulkLoad("/fonts/Montserrat/")
+//        UIAssetDSL.bulkLoad("/icons/vuesax/")
 
         // TODO: Warning when failed to reference font
 
@@ -54,7 +53,7 @@ class MacrosExample : UIScreen {
 
         register(name = "Regular", style = FONT.fontName("Montserrat/Montserrat-Regular"))
 
-        compose(
+        Compose(
             name = "Test", modifier = DefaultCompositionModifier()
                 .size(546.px, 336.px)
                 .backgroundRadius(8.radius)
@@ -67,19 +66,19 @@ class MacrosExample : UIScreen {
             modifier.background!!.backgroundBorder = border
 
             // Title
-            label(
+            Label(
                 text = "Macros",
                 modifier = Modifier().position(32.px, 32.px),
                 fontStyle = FontStyle().of("Bold").fontColor(0x252733.rgb).fontSize(19.px)
             )
             // Description below title
-            label(
+            Label(
                 text = "Speed up your gameplay by utilizing macros!",
                 modifier = Modifier().position(32, 64),
                 fontStyle = FontStyle().of("Regular").fontColor(0x9FA2B4.rgb).fontSize(12.px)
             )
             // View all hyperlink label
-            label(
+            Label(
                 text = "View All",
                 modifier = Modifier().anchor(Alignment.TOPRIGHT)/* TODO: Full Font and Background shorthands */
                     //.backgroundColor(RGBA(1f, 0f, 0f, 0.3f).rgba)
@@ -87,7 +86,7 @@ class MacrosExample : UIScreen {
                 fontStyle = FontStyle().of("SemiBold").fontColor(0x3751FF.rgb).fontSize(14.px)
             )
 
-            verticalList(
+            VerticalList(
                 modifier = LayoutModifier()
                     //.backgroundColor(RGBA(1f, 0f, 0f, 0.3f).rgb)
                     .constrain(0.px, 96.px, 1.rel, 232.px), // 328 - 96
@@ -100,7 +99,7 @@ class MacrosExample : UIScreen {
     }
 
     fun lineBreak() {
-        construct(modifier = Modifier().size(1.rel, 1.px)) {
+        Construct(modifier = Modifier().size(1.rel, 1.px)) {
             render {
                 color(RGBA(223, 224, 235))
                 rect(it.x, it.y, it.width, it.height)

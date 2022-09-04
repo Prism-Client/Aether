@@ -10,12 +10,12 @@ package net.prismclient.aether.ui.font
  */
 enum class FontType {
     /**
-     * Dynamic. The given text is rendered as one line where the width grows based on the size of the text bounds.
+     * The given text is rendered as one line where the width grows based on the size of the text bounds.
      */
     AutoWidth,
 
     /**
-     * Like [AutoWidth], as it's dynamic, however it supports multi-line text and will wrap anything that
+     * Like [AutoWidth], however it supports multi-line text and will wrap anything that
      * exceeds [UIFont.width]. The height will grow to fit the bounds of the multi-line text.
      */
     AutoHeight,

@@ -33,10 +33,10 @@ import net.prismclient.aether.ui.unit.other.Padding
  * @param overrideChildren When true, the children's property overridden is enabled during the compose stage.
  */
 abstract class UILayout(
-    compositionName: String,
+    name: String,
     modifier: LayoutModifier<*>,
-    @Suppress("MemberVisibilityCanBePrivate") protected val overrideChildren: Boolean
-) : Composition(compositionName, modifier), ComposableGroup, Focusable {
+    @Suppress("MemberVisibilityCanBePrivate") protected var overrideChildren: Boolean
+) : Composition(name, modifier), ComposableGroup, Focusable {
     override val modifier: LayoutModifier<*> = super.modifier as LayoutModifier<*>
 
     override val children: ArrayList<Composable> = arrayListOf()

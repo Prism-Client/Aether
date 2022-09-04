@@ -8,7 +8,6 @@ import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment.*
 import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.font.FontType.*
 import net.prismclient.aether.ui.registry.UIRegistry
@@ -41,8 +40,6 @@ interface Font {
  */
 @Suppress("LeakingThis")
 open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Copyable<UIFont> {
-    lateinit var composable: Composable
-
     override var x: UIUnit<*>? = null
     override var y: UIUnit<*>? = null
     override var width: UIUnit<*>? = null
@@ -93,42 +90,77 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
         style.font = this
     }
 
+    /**
+     * Expects [composeSize] to be invoked prior to this. This should be invoked after the size
+     * and position of the composable have been calculated.
+     */
     override fun compose(composable: Composable?) {
-        this.composable = composable!!
         style.preCompose()
         super.compose(composable)
-        style.compose(composable)
-        updateFont()
-        anchor?.update(composable, width.dp, height.dp)
+        anchor?.compose(composable, width.dp, height.dp)
     }
 
     /**
-     * Updates [fontMetrics] and [text] to fit the current [FontStyle.fontType] values. Updates
-     * the position and size if necessary based on the [FontStyle.fontType].
+     * Attempts to resize the [Composable] based on the metrics of the font.
      */
-    open fun updateFont() {
-        style.textResizing = style.textResizing ?: FixedSize
-
-        // Calculate the bounds of the text and update text
-        text.clear()
-        UIRendererDSL.font(style.actualFontName ?: "", style.fontSize.dp, LEFT, TOP, style.fontSpacing.dp)
+    open fun composeSize(composable: Composable?) {
+        // Update the style properties
+        style.compose(composable)
+        calculateMetrics()
         when (style.textResizing) {
             AutoWidth -> {
-                text.add(actualText)
-                actualText.bounds
-            }
+                width = AutoResize()
+                height = AutoResize()
+                width!!.cachedValue = fontWidth()
+                height!!.cachedValue = fontHeight()
 
+                // Update the size of the composable
+                composable?.width = x.dp + width.dp
+                composable?.height = y.dp + height.dp
+            }
             AutoHeight -> {
-                text.addAll(actualText.split(NEWLINE))
-                Aether.renderer.calculateText(text, style.lineHeight.dp)
-            }
+                height = AutoResize()
+                height!!.cachedValue = fontHeight()
 
-            FixedSize -> Aether.renderer.calculateText(actualText, width.dp, style.lineHeight.dp, text)
-            // TODO: Truncate text
+                // Update the height of the composable
+                composable?.height = y.dp + height.dp
+            }
             else -> {}
         }
-        // The font metrics are calculated above, and can be referenced from fontBounds().
-        // After setting the font bounds, update the ascender and descender values
+    }
+
+    /**
+     * Determines the [fontMetrics] of this based on the style, type, and [actualText].
+     */
+    open fun calculateMetrics() {
+        // Change the text resizing based if null or a width or height is present
+        style.textResizing = style.textResizing ?: FixedSize
+        if (style.textResizing == AutoWidth && width != null && width !is AutoResize) {
+            style.textResizing = AutoHeight
+        }
+        if (style.textResizing == AutoHeight && height != null && height !is AutoResize) {
+            style.textResizing = FixedSize
+        }
+
+        // Calculate the bounds of the text based on the type and update the actual text.
+        renderer {
+            font(style.actualFontName ?: "", style.fontSize.dp, LEFT, TOP, style.fontSpacing.dp)
+            when (style.textResizing) {
+                AutoWidth -> {
+                    text.add(actualText)
+                    actualText.bounds
+                }
+                AutoHeight -> {
+                    text.addAll(actualText.split(NEWLINE))
+                    Aether.renderer.calculateText(text, style.lineHeight.dp)
+                }
+                FixedSize -> Aether.renderer.calculateText(actualText, width.dp, style.lineHeight.dp, text)
+                // TODO: Truncate text
+                else -> {}
+            }
+        }
+
+        // Update the fontMetrics after calculating them based on the type
         fontMetrics[0] = fontBounds().minX
         fontMetrics[1] = fontBounds().minY
         fontMetrics[2] = fontBounds().maxX
@@ -136,26 +168,6 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
         fontMetrics[4] = fontBounds().advance
         fontMetrics[5] = fontAscender()
         fontMetrics[6] = fontDescender()
-
-        val isDynamic = when (style.textResizing) {
-            AutoWidth -> {
-                width = fontWidth().px
-                height = fontHeight().px
-                composable.width = x.dp + fontWidth()
-                composable.height = y.dp + fontHeight()
-                true
-            }
-
-            AutoWidth, AutoHeight -> {
-//                activeComposable.
-//                width?.cachedValue = fontWidth()
-//                height?.cachedValue = fontHeight()
-                true
-            }
-
-            else -> false
-        }
-        if (isDynamic) composable.dynamic = true
     }
 
     override fun render() {
@@ -176,10 +188,9 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
             CENTER -> fontSize / 2f + (height - (fontSize * text.size) - (lineHeight * (text.size - 1))) / 2f
             BOTTOM -> fontSize + (height - (fontSize * text.size) - (lineHeight * (text.size - 1)))
             else -> 0f
-        } - anchor?.y.dp + fontMetrics[6] / 2f
+        } - anchor?.y.dp + if (style.offsetBaseline) fontMetrics[6] / 2f else 0f
 
         renderer {
-            renderer.save()
             color(style.fontColor)
             font(
                 style.actualFontName ?: "",
@@ -194,7 +205,6 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
                 FixedSize -> renderer.renderText(actualText, x, y, width, lineHeight, null)
                 else -> throw NullPointerException("Text Resizing (Font Type) of $style cannot be null.")
             }
-            renderer.restore()
         }
     }
 
@@ -211,6 +221,15 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
         @JvmStatic
         protected val NEWLINE: Regex = Pattern.compile("\\r?\\n|\\r").toRegex()
     }
+}
+
+/**
+ * An internal unit used to indicate if the [UIFont] is set to [FontType.AutoWidth] or [FontType.AutoHeight].
+ */
+internal class AutoResize : UIUnit<AutoResize>(0f){
+    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float = 0f
+
+    override fun copy(): AutoResize = AutoResize()
 }
 
 /**

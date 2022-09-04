@@ -12,11 +12,8 @@ import net.prismclient.aether.ui.composition.*
 import net.prismclient.aether.ui.dsl.ConstructionDSL
 import net.prismclient.aether.ui.font.FontStyle
 import net.prismclient.aether.ui.image.UIImage
+import net.prismclient.aether.ui.layout.*
 import net.prismclient.aether.ui.layout.AutoLayout
-import net.prismclient.aether.ui.layout.AutoLayoutStyle
-import net.prismclient.aether.ui.layout.LayoutModifier
-import net.prismclient.aether.ui.layout.UIListLayout
-import net.prismclient.aether.ui.layout.hug
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.layout.util.LayoutOrder
 import net.prismclient.aether.ui.modifier.Modifier
@@ -55,15 +52,16 @@ inline fun <T : Composable> component(composable: T, block: Block<T> = {}): T {
 /**
  * Creates a new composition with the given [name], and applies the [block].
  */
-inline fun compose(
+inline fun Compose(
     name: String,
     modifier: CompositionModifier<*> = DefaultCompositionModifier(),
     block: Block<Composition>
 ): Composition {
     val composition = Aether.instance.createComposition(name, modifier)
+    val previousComposition = ComponentUtil.activeComposition
     ComponentUtil.activeComposition = composition
     composition.block()
-    ComponentUtil.activeComposition = null
+    ComponentUtil.activeComposition = previousComposition
     return composition
 }
 
@@ -74,12 +72,12 @@ inline fun Button(
     block: Block<UIButton> = {}
 ): UIButton = component(UIButton(text, modifier, fontStyle), block)
 
-inline fun label(
+inline fun Label(
     text: String,
     modifier: UIModifier<*> = Modifier(),
     fontStyle: FontStyle = FontStyle(),
-    block: Block<Label> = {}
-): Label = component(Label(text, modifier, fontStyle), block)
+    block: Block<UIButton> = {}
+): UIButton = Button(text, modifier, fontStyle, block)
 
 inline fun Image(
     imageName: String,
@@ -100,7 +98,7 @@ inline fun icon(
  *
  * @see ConstructionDSL
  */
-inline fun construct(
+inline fun Construct(
     modifier: UIModifier<*> = Modifier(),
     block: ConstructionDSL.(construct: DefaultConstruct) -> Unit = {}
 ) = component(DefaultConstruct(modifier)) {
@@ -114,10 +112,10 @@ inline fun construct(
  * Creates a new list layout with the given [direction], [order], [childSpacing], [modifier] and
  * executes the [block] within the list layout's scope.
  *
- * @see horizontalList
- * @see verticalList
+ * @see HorizontalList
+ * @see VerticalList
  */
-inline fun listLayout(
+inline fun ListLayout(
     direction: LayoutDirection,
     order: LayoutOrder,
     childSpacing: UIUnit<*>?,
@@ -128,33 +126,56 @@ inline fun listLayout(
 /**
  * Creates a list layout with the [UIListLayout.direction] set to horizontal.
  *
- * @see listLayout
- * @see verticalList
+ * @see ListLayout
+ * @see VerticalList
  */
-inline fun horizontalList(
+inline fun HorizontalList(
     order: LayoutOrder = LayoutOrder.FIRST,
     childSpacing: UIUnit<*>? = null,
     modifier: LayoutModifier<*> = LayoutModifier(),
     block: Block<UIListLayout> = {}
-) = listLayout(LayoutDirection.HORIZONTAL, order, childSpacing, modifier, block)
+) = ListLayout(LayoutDirection.HORIZONTAL, order, childSpacing, modifier, block)
 
 /**
  * Creates a list layout with the [UIListLayout.direction] set to horizontal.
  *
- * @see listLayout
- * @see horizontalList
+ * @see ListLayout
+ * @see HorizontalList
  */
-inline fun verticalList(
+inline fun VerticalList(
     order: LayoutOrder = LayoutOrder.FIRST,
     childSpacing: UIUnit<*>? = null,
     modifier: LayoutModifier<*> = LayoutModifier(),
     block: Block<UIListLayout> = {}
-) = listLayout(LayoutDirection.VERTICAL, order, childSpacing, modifier, block)
+) = ListLayout(LayoutDirection.VERTICAL, order, childSpacing, modifier, block)
 
+
+/**
+ * Creates a Box Layout, which is one of the simplest layouts which does nothing with the
+ * items within it. In can be considered a container to organize a group of [Composable]s.
+ * The layout will automatically resize to the [Composable]s within.
+ */
+inline fun Box(
+    name: String = "Box",
+    modifier: LayoutModifier<*> = LayoutModifier(),
+    layoutStyle: BoxLayoutStyle = BoxLayoutStyle(),
+    block: Block<BoxLayout> = {}
+): BoxLayout = component(
+    BoxLayout(
+        name = name,
+        modifier = modifier.hug(),
+        layoutStyle = layoutStyle
+    ), block
+)
+
+/**
+ * Creates an [AutoLayout] which is an advanced list style layout which mimics the behaviour
+ * of Figma Auto Layouts.
+ */
 inline fun AutoLayout(
     name: String = "AutoLayout",
     modifier: LayoutModifier<*> = LayoutModifier(),
-    layoutStyle: AutoLayoutStyle = AutoLayoutStyle(),
+    layoutStyle: BoxLayoutStyle = BoxLayoutStyle(),
     block: Block<AutoLayout> = {}
 ): AutoLayout = component(AutoLayout(name, modifier, layoutStyle), block)
 
@@ -169,7 +190,7 @@ inline fun Row(
     verticalAlignment: VerticalAlignment = VerticalAlignment.TOP,
     /* horizontalArrangement */
     modifier: LayoutModifier<*> = LayoutModifier(),
-    layoutStyle: AutoLayoutStyle = AutoLayoutStyle(),
+    layoutStyle: BoxLayoutStyle = BoxLayoutStyle(),
     block: Block<AutoLayout> = {}
 ): AutoLayout = component(
     AutoLayout(
@@ -192,7 +213,7 @@ inline fun Column(
     horizontalAlignment: HorizontalAlignment = HorizontalAlignment.LEFT,
     /* verticalArrangement */
     modifier: LayoutModifier<*> = LayoutModifier(),
-    layoutStyle: AutoLayoutStyle = AutoLayoutStyle(),
+    layoutStyle: BoxLayoutStyle = BoxLayoutStyle(),
     block: Block<AutoLayout> = {}
 ): AutoLayout = component(
     AutoLayout(

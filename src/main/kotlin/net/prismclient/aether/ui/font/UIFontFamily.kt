@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.font
 
 import net.prismclient.aether.core.util.extensions.safeByteBuffer
+import net.prismclient.aether.ui.resource.Resource
 import java.nio.ByteBuffer
 
 /**
@@ -67,5 +68,5 @@ class UIFontFamily(
      * @author sen
      * @since 1.0
      */
-    class Font(val name: String, val buffer: ByteBuffer)
+    class Font(val name: String, val buffer: ByteBuffer) : Resource
 }

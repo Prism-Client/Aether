@@ -15,6 +15,9 @@ open class UIButton internal constructor(
     modifier: UIModifier<*>,
     override val font: UIFont
 ) : UIComponent<UIButton>(modifier), Font {
+    @Suppress("LeakingThis")
+    open val fontStyle: FontStyle = font.style
+
     constructor(text: String, modifier: UIModifier<*>, fontStyle: FontStyle) : this(text, modifier, UIFont(fontStyle))
 
     open var text: String = text
@@ -24,11 +27,21 @@ open class UIButton internal constructor(
             // TODO: compose update
         }
 
-    override fun update() {
+    override fun composePadding() {
         font.actualText = text
+        // Calculate the font metrics, and update the size. Compose
+        // Padding is invoked directly after updating the width.
+        font.composeSize(this)
+        super.composePadding()
+    }
+
+    override fun update() {
+        // After the position is calculated compose the font
         font.compose(this)
-        if (dynamic)
-            composePosition()
+
+//        font.compose(this)
+//        if (dynamic)
+//            composePosition()
     }
 
     override fun renderComponent() {

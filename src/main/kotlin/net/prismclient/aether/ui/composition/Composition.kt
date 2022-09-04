@@ -29,8 +29,8 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
     override val modifier: CompositionModifier<*> get() = super.modifier as CompositionModifier
     override val children: ArrayList<Composable> = arrayListOf()
 
-    override fun parentWidth(): Float = Aether.instance.displayWidth
-    override fun parentHeight(): Float = Aether.instance.displayHeight
+    override fun parentWidth(): Float = if (isTopLayer()) Aether.instance.displayWidth else super.parentWidth()
+    override fun parentHeight(): Float = if (isTopLayer()) Aether.instance.displayHeight else super.parentHeight()
 
     /**
      * Returns the parent composition or this.
