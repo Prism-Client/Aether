@@ -69,5 +69,23 @@ fun RGBA(r: Float, g: Float, b: Float, a: Float = 1f): Int =
  */
 fun RGBA(r: Int, g: Int, b: Int, a: Float) = RGBA(r, g, b, (a * 255 + 0.5).toInt())
 
+/**
+ * Creates a [UIColor] from the given [r], [g], [b] and [a] represented as a value between 0 and 255 each.
+ */
+@JvmOverloads
+fun ColorOf(r: Int, g: Int, b: Int, a: Int = 255) = RGBA(r, g, b, a).rgba
+
+/**
+ * Creates a [UIColor] from the given [r], [g], [b] and [a] represented as a value between 0 and 1 each.
+ */
+@JvmOverloads
+fun ColorOf(r: Float, g: Float, b: Float, a: Float = 1f) = RGBA(r, g, b, a).rgba
+
+/**
+ * Creates a [UIColor] from the given [r], [g], [b] represented as a value between 0 and 255 each and
+ * [a] represented as a value between 0 and 1.
+ */
+fun ColorOf(r: Int, g: Int, b: Int, a: Float) = RGBA(r, g, b, a).rgba
+
 // TODO: RGB(A) functions for UIColor
 // fun cRGBA(r: Float, g: Float, b: Float, a: Float = 1f): UIColor = RGBA(r, g, b, a).rgb
