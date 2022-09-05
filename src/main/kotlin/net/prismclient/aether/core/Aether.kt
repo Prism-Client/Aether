@@ -96,6 +96,7 @@ open class Aether(renderer: UIRenderer) {
                             val event = MousePress(mouseX, mouseY, mouseButton, item)
                             item.publish(event)
                             UIEventBus.publish(event)
+                            composition.compose()
                             return
                         }
                     }

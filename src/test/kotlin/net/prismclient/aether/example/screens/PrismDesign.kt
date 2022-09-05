@@ -52,19 +52,19 @@ object PrismDesign : UIScreen {
             Compose(
                 name = "$title-pane",
                 modifier = CompositionModifier()
-                    .backgroundColor(RGBA(1f, 0f, 0f, 0.1f).rgba)
+//                    .backgroundColor(RGBA(1f, 0f, 0f, 0.1f).rgba)
                     .constrain(253.px, 21.px, 1.rel - 253.px - 21.px, 1.rel - 42.px)
             ) {
-//                Button(
-//                    text = title,
-//                    modifier = Modifier()
-//                        .position(47, 29),
-//                    fontStyle = FontStyle()
-//                        .fontName("Poppins-Medium")
-//                        .fontColor(0x292D32.rgb)
-//                        .fontSize(24.px)
-//                        .fontType(FontType.AutoWidth)
-//                )
+                Button(
+                    text = title,
+                    modifier = Modifier()
+                        .position(47, 29),
+                    fontStyle = FontStyle()
+                        .fontName("Poppins-Medium")
+                        .fontColor(0x292D32.rgb)
+                        .fontSize(24.px)
+                        .fontType(FontType.AutoWidth)
+                )
 
                 fun Module(name: String, iconName: String, enabled: Boolean, favorited: Boolean) = Box {
                     modifier
@@ -120,9 +120,6 @@ object PrismDesign : UIScreen {
         }
 
         Pane("Mods")
-
-
-        return
 
         Compose(
             name = "Test",

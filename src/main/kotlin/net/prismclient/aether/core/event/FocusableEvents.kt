@@ -7,7 +7,7 @@ import net.prismclient.aether.ui.composition.Composable
 /**
  * A type of event which indicates that the only composable invoked is the focused component, [Aether.focusedComponent].
  */
-abstract class FocusedEvent(val focusedComposable: Composable) : UIEvent, CustomEvent
+abstract class FocusedEvent(val focusedComposable: Composable) : CustomEvent(focusedComposable)
 
 /**
  * A [FocusedEvent] which invokes the focused composable. [dstX] and [dstY] represents the distance

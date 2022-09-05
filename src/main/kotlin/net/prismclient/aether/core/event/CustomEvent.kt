@@ -20,6 +20,10 @@ import net.prismclient.aether.ui.composition.Composable
  * @author sen
  * @since 1.0
  */
-interface CustomEvent
+abstract class CustomEvent(val composable: Composable) : UIEvent {
+    open fun recompose() {
+        composable.recompose()
+    }
+}
 
 // TODO: Convert to annotation

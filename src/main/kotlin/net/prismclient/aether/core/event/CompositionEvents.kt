@@ -13,7 +13,7 @@ import net.prismclient.aether.ui.composition.Composition
  * @author sen
  * @since 1.0
  */
-abstract class PropagatingEvent(val initialComposable: Composable) : UIEvent, CustomEvent {
+abstract class PropagatingEvent(val initialComposable: Composable) : CustomEvent(initialComposable) {
     /**
      * The amount of [Composable] (nodes) which this [PropagatingEvent] has passed through; the amount
      * of times this has been propagated
@@ -57,7 +57,7 @@ abstract class PropagatingEvent(val initialComposable: Composable) : UIEvent, Cu
     /**
      * Indicates to the composition that this even is going to propagate to that the layout needs to be recomposed.
      */
-    fun recompose() {
+    override fun recompose() {
         requiresRecompose = true
     }
 }
