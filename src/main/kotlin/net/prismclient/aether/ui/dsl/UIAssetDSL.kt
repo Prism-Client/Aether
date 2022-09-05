@@ -3,8 +3,11 @@ package net.prismclient.aether.ui.dsl
 import net.prismclient.aether.core.debug.warn
 import net.prismclient.aether.core.util.extensions.byteBuffer
 import net.prismclient.aether.core.util.extensions.toByteBuffer
+import net.prismclient.aether.core.util.shorthands.Block
+import net.prismclient.aether.ui.font.UIFontFamily
 import net.prismclient.aether.ui.image.*
 import net.prismclient.aether.ui.resource.Resource
+import net.prismclient.aether.ui.resource.ResourceProvider
 import org.apache.commons.io.FilenameUtils
 import java.io.File
 import java.nio.ByteBuffer
@@ -64,7 +67,10 @@ object UIAssetDSL {
      * with the file location, and the [suffix] will also be appended afterwards.
      *
      * @param deepSearch If true, folders within the given [location] will be walked through.
+     * @return The number of files that were successfully loaded.
      */
+    @JvmStatic
+    @JvmOverloads
     fun heapLoad(
         location: File,
         prefix: String = "",
@@ -73,13 +79,18 @@ object UIAssetDSL {
         deepSearch: Boolean = true,
         action: (fileName: String, fileExtension: String, fileData: ByteBuffer) -> Resource?
     ): Int {
+        if (!location.exists()) {
+            warn("Failed to heap load from $location as it does not exist.")
+            return 0
+        }
+
         var count = 0
 
         for (
-            file in location.listFiles() ?: run {
-                warn("Given file location does not yield a list of files")
-                return 0
-            }
+        file in location.listFiles() ?: run {
+            warn("Given file location does not yield a list of files")
+            return 0
+        }
         ) {
             val extension = FilenameUtils.getExtension(file.name).lowercase()
 
@@ -92,10 +103,60 @@ object UIAssetDSL {
                         file.inputStream().byteBuffer(),
                     ) != null
                 ) {
+                    println("Loaded file: ${prefix + file.nameWithoutExtension + suffix}")
                     count++
                 }
             }
         }
         return count
     }
+
+    /**
+     * Creates a [File] from a local resource.
+     */
+    @JvmStatic
+    fun localResource(location: String): File = File(UIAssetDSL::class.java.getResource(location)!!.toURI())
+
+    /**
+     * Loads all the PNGs within the given [location] and sub-locations.
+     */
+    fun pngCollection(location: File, prefix: String = ""): Int = heapLoad(
+        location = location,
+        prefix = prefix,
+        fileExtensions = arrayOf("png"),
+    ) { name, _, buffer -> image(name, buffer) }
+
+    /**
+     * Loads all the SVGs within the given [location] and sub-locations.
+     */
+    @JvmStatic
+    @JvmOverloads
+    fun svgCollection(location: File, prefix: String = ""): Int = heapLoad(
+        location = location,
+        prefix = prefix,
+        fileExtensions = arrayOf("svg")
+    ) { name, _, buffer -> svg(name, buffer) }
+
+    /**
+     * Loads a folder of fonts with their file name as the registered name.
+     *
+     * @see fontFamily
+     */
+    @JvmStatic
+    fun fontCollection(location: File) = heapLoad(
+        location = location,
+        fileExtensions = arrayOf("ttf"),
+        deepSearch = false
+    ) { fileName, _, fileData -> ResourceProvider.registerFont(fileName, fileData) }
+
+    /**
+     * Like [fontCollection], except it is loaded into a [UIFontFamily].
+     */
+    @JvmStatic
+    fun fontFamily(): UIFontFamily = TODO("Font family bulk loading.")
 }
+
+/**
+ * Creates DSL block of [UIAssetDSL].
+ */
+inline fun resource(block: Block<UIAssetDSL>) = UIAssetDSL.block()
