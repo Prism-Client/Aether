@@ -54,9 +54,7 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
 
         composeSize()
         composePosition()
-
-        // Compose all static components
-        children.filterNot(Composable::dynamic).forEach(Composable::compose)
+        children.forEach(Composable::compose)
         modifier.compose(this)
         rasterize()
     }

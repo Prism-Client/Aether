@@ -44,7 +44,7 @@ class Runner(private val screen: UIScreen) : Game("Runner") {
 
         // Mouse scroll input
         glfwSetScrollCallback(window.handle) { _, xDst, yDst ->
-            aether.mouseScrolled(xDst.toFloat(), yDst.toFloat())
+            aether.mouseScrolled(xDst.toFloat() * 10f, yDst.toFloat() * 10f)
         }
 
         // Text / keyboard input

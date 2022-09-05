@@ -78,37 +78,20 @@ abstract class UILayout(
         // Calculate the initial and possible the final layout
         layoutSize = updateLayout()
 
-        if (dynamic) {
-            // Update the units after calculating the potential size and
-            // re-update the layout as updateUnits probably changed something
-            updateUnits()
-            updateLayout()
-        }
-
         modifier.compose(this)
         rasterize()
     }
 
     /**
-     * Invoked after the general properties of this have been already set, such as the
-     * size and position. At this point, any dynamic units should be calculated. If the
-     * unit is a dynamic unit, the width and height of the layout might need to be calculated
-     * if this is the case, this function will be invoked twice: once before the initial layout
-     * calculation, and one right after.
+     * Update any units of the layout. The potential layout size is already calculated
+     * at this point if necessary.
      *
      * @see layoutSize
      */
     abstract fun updateUnits()
 
     /**
-     * Invoked when the layout needs an update. There are two ways this is naturally invoked:
-     *
-     * **Initial:** This is ensured to happen.
-     *
-     * **Dynamic:** This will happen if a dynamic unit is set within the properties of this
-     *
-     * Because the property is dynamic, if the layout changes the components within it will not
-     * lay properly. To combat this, the layout is updated twice if deemed necessary.
+     * Invoked when the layout needs an update. At this point, [updateUnits] has already been invoked.
      *
      * @return Expects the size of the layout with the origin point as the (x, y) of this.
      */

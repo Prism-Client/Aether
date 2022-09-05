@@ -12,8 +12,15 @@ import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
+import java.io.FileNotFoundException
 
-class Icon(image: UIImage, modifier: IconModifier) : UIComponent<Icon>(modifier) {
+/**
+ * A type of [UIComponent] which renders an image.
+ *
+ * @author sen
+ * @since 1.0
+ */
+class ImageComponent(image: UIImage, modifier: IconModifier) : UIComponent<ImageComponent>(modifier) {
     override val modifier: IconModifier = super.modifier as IconModifier
 
     var image: UIImage = image
@@ -29,7 +36,11 @@ class Icon(image: UIImage, modifier: IconModifier) : UIComponent<Icon>(modifier)
      * Attempts to create an image from the [imageName]. A NPE will
      * be thrown if the image is not found within [ImageProvider].
      */
-    constructor(imageName: String, modifier: IconModifier) : this(ImageProvider.obtainImage(imageName)!!, modifier)
+    constructor(imageName: String, modifier: IconModifier) : this(
+        ImageProvider.obtainImage(imageName)
+            ?: throw FileNotFoundException("Image $imageName was not found. Was it registered?"),
+        modifier
+    )
 
     override fun update() {
         imageHandle = image.retrieveImage(width, height)
@@ -41,7 +52,8 @@ class Icon(image: UIImage, modifier: IconModifier) : UIComponent<Icon>(modifier)
         renderImage(imageHandle, x, y, width, height)
     }
 
-    override fun copy(): Icon = Icon(image, modifier.copy)
+    override fun copy(): ImageComponent =
+        ImageComponent(image, modifier.copy)
 }
 
 class IconModifier : UIModifier<IconModifier>() {

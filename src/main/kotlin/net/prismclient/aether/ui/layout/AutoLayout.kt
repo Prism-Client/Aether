@@ -5,11 +5,8 @@ import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.ui.alignment.Alignment.*
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.layout.util.LayoutDirection
-import net.prismclient.aether.ui.unit.DynamicUnit
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.unit.typeOf
 import kotlin.math.max
-import kotlin.math.roundToInt
 
 /**
  * [AutoLayout] mimics the Figma Auto Layout feature. In layman's terms, it is a list layout, with more
@@ -89,7 +86,7 @@ class AutoLayout(
  * @author sen
  * @since 1.0
  */
-open class SpaceBetween : DynamicUnit<SpaceBetween>(0f) {
+open class SpaceBetween : UIUnit<SpaceBetween>(0f) {
     override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float {
         if (composable !is AutoLayout)
             throw RuntimeException("The SpaceBetween unit cannot be applied to a ${composable?.javaClass?.simpleName ?: "null"}")
@@ -99,6 +96,27 @@ open class SpaceBetween : DynamicUnit<SpaceBetween>(0f) {
     override fun copy(): SpaceBetween = SpaceBetween()
 
     override fun toString(): String = "SpaceBetween($cachedValue)"
+}
+
+/**
+ * [SpaceEvenly] is a unit used to indicate layouts to space the elements within it evenly. A RuntimeException
+ * is thrown if this unit is used anywhere but inside a [UILayout]. Because of the lack of information, the layout
+ * has to calculate the value instead of the unit.
+ *
+ * @author sen
+ * @since 1.0
+ */
+class SpaceEvenly : UIUnit<SpaceEvenly>(0f) {
+    override fun compute(composable: Composable?, width: Float, height: Float, yaxis: Boolean) {
+        if (composable !is UILayout) throw RuntimeException("Expected a UILayout for a SpaceEvenly unit. Got: $composable")
+        super.compute(composable, width, height, yaxis)
+    }
+
+    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float = 0f
+
+    override fun copy(): SpaceEvenly = SpaceEvenly()
+
+    override fun toString(): String = "SpaceEvenly()"
 }
 
 /**

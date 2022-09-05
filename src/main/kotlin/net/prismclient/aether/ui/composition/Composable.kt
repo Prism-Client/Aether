@@ -58,11 +58,6 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      */
     open var composed: Boolean = false
 
-    /**
-     * Returns true if this or a child (but not sub-children) has a relative/dynamic unit.
-     */
-    open var dynamic: Boolean = false
-
     // The actual positions calculated based on the different properties, such as
     // the position and padding of the Composable. The relative units represent the
     // bounds of the composable (padding applied) which most content scales to.
@@ -173,7 +168,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
             if (allocateEventListener && !T::class.isSubclassOf(CustomEvent::class)) {
                 UIEventBus.register<T>(it) { event ->
                     publish(event)
-                    recompose()
+//                    recompose()
                 }
             }
             HashMap()

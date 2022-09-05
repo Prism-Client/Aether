@@ -1,5 +1,6 @@
 package net.prismclient.aether.ui.resource
 
+import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.font.UIFontFamily
 import net.prismclient.aether.ui.image.ImageProvider
 import java.nio.ByteBuffer
@@ -20,8 +21,9 @@ object ResourceProvider {
         fontFamilies[family.familyName] = family
     }
 
-    fun registerFont(fontName: String, fontData: ByteBuffer) {
-        registerFont(UIFontFamily.Font(fontName, fontData))
+    fun registerFont(fontName: String, fontData: ByteBuffer) = UIFontFamily.Font(fontName, fontData).also {
+        Aether.renderer.createFont(fontName, fontData)
+        registerFont(it)
     }
 
     fun registerFont(font: UIFontFamily.Font) {

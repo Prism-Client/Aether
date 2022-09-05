@@ -46,7 +46,7 @@ abstract class UIUnit<T : UIUnit<T>>(open var value: Float) : Copyable<T> {
  * @author sen
  * @since 1.0
  */
-internal class ResizeUnit : DynamicUnit<ResizeUnit>(0f) {
+internal class ResizeUnit : UIUnit<ResizeUnit>(0f) {
     override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float = 0f
 
     override fun copy(): ResizeUnit = ResizeUnit()

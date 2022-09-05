@@ -20,10 +20,8 @@ open class AnchorPoint : Copyable<AnchorPoint>, Mergable<AnchorPoint>, Animatabl
     open var y: UIUnit<*>? = null
 
     open fun compose(composable: Composable?, width: Float, height: Float) {
-        disableDynamicCheck(composable) {
-            x?.compute(composable, width, height, false)
-            y?.compute(composable, width, height, true)
-        }
+        x?.compute(composable, width, height, false)
+        y?.compute(composable, width, height, true)
     }
 
     /**

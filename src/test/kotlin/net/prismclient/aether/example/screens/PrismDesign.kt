@@ -1,6 +1,5 @@
 package net.prismclient.aether.example.screens
 
-import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.util.extensions.toByteBuffer
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.example.Renderer.fontBounds
@@ -8,7 +7,7 @@ import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.component.*
-import net.prismclient.aether.ui.component.type.Icon
+import net.prismclient.aether.ui.component.type.ImageComponent
 import net.prismclient.aether.ui.component.type.IconModifier
 import net.prismclient.aether.ui.component.type.UIButton
 import net.prismclient.aether.ui.component.type.imageColor
@@ -16,7 +15,7 @@ import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.composition.disableOptimizations
 import net.prismclient.aether.ui.composition.onClick
 import net.prismclient.aether.ui.composition.util.UIBackground
-import net.prismclient.aether.ui.dsl.UIAssetDSL
+import net.prismclient.aether.ui.dsl.resource
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.image.ImageProvider
 import net.prismclient.aether.ui.layout.AutoLayout
@@ -26,7 +25,6 @@ import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.layout.scroll.Scrollbar
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.modifier.Modifier
-import net.prismclient.aether.ui.resource.ResourceProvider
 import net.prismclient.aether.ui.screen.UIScreen
 import net.prismclient.aether.ui.unit.other.Padding
 import net.prismclient.aether.ui.unit.other.UIRadius
@@ -41,32 +39,14 @@ object PrismDesign : UIScreen {
     lateinit var activeSidebarButton: AutoLayout
 
     override fun createScreen() {
-        val regular = "/fonts/Montserrat/Montserrat-Regular.ttf".toByteBuffer()
-        val medium = "/fonts/Montserrat/Montserrat-Medium.ttf".toByteBuffer()
-        val poppinsMedium = "/fonts/Poppins/Poppins-Medium.ttf".toByteBuffer()
-        Aether.renderer.createFont("Montserrat-Regular", regular)
-        ResourceProvider.registerFont("Montserrat-Regular", regular)
-        Aether.renderer.createFont("Montserrat-Medium", medium)
-        ResourceProvider.registerFont("Montserrat-Medium", medium)
-        Aether.renderer.createFont("Poppins-Medium", poppinsMedium)
-        ResourceProvider.registerFont("Poppins-Medium", poppinsMedium)
+        resource {
+            fontCollection(localResource("/fonts/Poppins"))
+            fontCollection(localResource("/fonts/Montserrat"))
 
-        UIAssetDSL.heapLoad(
-            location = File(PrismDesign::class.java.getResource("/icons/vuesax/custom")!!.toURI()),
-            fileExtensions = arrayOf("svg"),
-        ) { fileName, _, fileData -> ImageProvider.createSVG(fileName, fileData) }
+            pngCollection(localResource("/images/"))
+            svgCollection(localResource("/icons/"))
+        }
 
-        UIAssetDSL.heapLoad(
-            location = File(PrismDesign::class.java.getResource("/icons/vuesax/solid")!!.toURI()),
-            prefix = "solid/",
-            fileExtensions = arrayOf("svg"),
-        ) { fileName, _, fileData -> ImageProvider.createSVG(fileName, fileData) }
-
-        UIAssetDSL.heapLoad(
-            location = File(PrismDesign::class.java.getResource("/icons/vuesax/outline")!!.toURI()),
-            prefix = "outline/",
-            fileExtensions = arrayOf("svg"),
-        ) { fileName, _, fileData -> ImageProvider.createSVG(fileName, fileData) }
 
         fun Pane(title: String) {
             Compose(
@@ -75,7 +55,6 @@ object PrismDesign : UIScreen {
                     .backgroundColor(RGBA(1f, 0f, 0f, 0.1f).rgba)
                     .constrain(253.px, 21.px, 1.rel - 253.px - 21.px, 1.rel - 42.px)
             ) {
-                // Title
 //                Button(
 //                    text = title,
 //                    modifier = Modifier()
@@ -95,15 +74,15 @@ object PrismDesign : UIScreen {
 
                     modifier.background!!.height = 1.crel - 39.px
 
-//                    val icon = Image(
-//                        imageName = iconName,
-//                        modifier = IconModifier()
-//                            .control(Alignment.CENTER)
-//                            .anchor(Alignment.TOPCENTER)
-//                            .y(36.px)
-//                            .size(69, 69)
-//                            .imageColor(0x292D32.rgb)
-//                    )
+                    Icon(
+                        imageName = iconName,
+                        modifier = IconModifier()
+                            .control(Alignment.CENTER)
+                            .anchor(Alignment.TOPCENTER)
+                            .y(36.px)
+                            .size(69, 69)
+                            .imageColor(0x292D32.rgb)
+                    )
 
                     Box(
                         modifier = LayoutModifier()
@@ -117,8 +96,7 @@ object PrismDesign : UIScreen {
                             text = name,
                             modifier = Modifier()
                                 .control(Alignment.MIDDLELEFT)
-                                .x(15.px)
-                                .backgroundColor(RGBA(0f, 1f, 0f, 0.1f).rgba),
+                                .x(15.px),
                             fontStyle = FontStyle()
                                 .fontName("Montserrat-Medium")
                                 .fontColor(0xF4F9FF.rgb)
@@ -127,47 +105,24 @@ object PrismDesign : UIScreen {
                                 .fontAlignment(UITextAlignment.LEFT, UITextAlignment.CENTER)
                         )
                         Icon(
-                            imageName = "grey/folder", //(if (favorited) "outline" else "solid") + "/star",
+                            imageName = (if (favorited) "outline" else "solid") + "/star",
                             modifier = IconModifier()
-                                .control(Alignment.BOTTOMRIGHT)
+                                .control(Alignment.MIDDLERIGHT)
+                                .x(1.rel - 15.px)
                                 .size(16, 16)
                                 .imageColor(0xFFFFFF.rgb)
                         )
                     }
-
-//                    val btn = Button(
-//                        text = name,
-//                        modifier = Modifier()
-//                            .size(1.rel, 39.px)
-//                            .control(Alignment.BOTTOMLEFT)
-//                            .backgroundColor(0x292D32.rgb)
-//                            .backgroundRadius(UIRadius(bottomLeft = 15.px, bottomRight = 15.px)),
-//                        fontStyle = FontStyle()
-//                            .fontName("Montserrat-Medium")
-//                            .fontSize(15.px)
-//                            .fontColor(0xF4F9FF.rgb)
-//                            .position(18.px, 0.5.crel - 7.px)
-//                            .width(1.crel)
-//                            .fontAlignment(UITextAlignment.LEFT, UITextAlignment.CENTER)
-//                    )
-//                    Icon(
-//                        imageName = (if (favorited) "outline" else "solid") + "/star",
-//                        modifier = IconModifier()
-//                            .size(16, 16)
-//                            .imageColor(0xFFFFFF.rgb)
-//                    )
-
-//                    if (enabled) {
-//                        btn.modifier.backgroundColor(0x1471EB.rgb)
-//                    }
                 }
 
-                Module("CPS", "solid/mouse", false, true)
+                Module("CPS", "mods/mouse", false, false)
             }
         }
 
         Pane("Mods")
 
+
+        return
 
         Compose(
             name = "Test",
@@ -193,20 +148,21 @@ object PrismDesign : UIScreen {
                 SideTitle("MENU")
 
                 Column(name = "layout1") {
+                    modifier.height(HugLayout() + 30.px)
                     activeSidebarButton = SideButton("gradient/home", "Dashboard")
                     (activeSidebarButton.children[1] as UIButton).fontStyle.fontColor(0x292D32.rgb)
-                    SideButton("grey/folder", "Mods")
-                    SideButton("grey/setting", "Settings")
-                    SideButton("grey/shop", "Store")
-                    SideButton("grey/profile", "Profiles")
+                    SideButton("solid/folder", "Mods")
+                    SideButton("solid/settings", "Settings")
+                    SideButton("solid/bag", "Store")
+                    SideButton("solid/profile", "Profiles")
                 }
 
                 SideTitle("SOCIAL")
 
                 Column(name = "layout2") {
-                    SideButton("grey/messages", "Messages")
-                    SideButton("grey/friends", "Friends")
-                    SideButton("grey/recordings", "Recordings")
+                    SideButton("solid/messages", "Messages")
+                    SideButton("solid/people", "Friends")
+                    SideButton("solid/video", "Recordings")
                 }
             }
         }
@@ -230,19 +186,19 @@ object PrismDesign : UIScreen {
 
         val button = Button(
             text = buttonText,
-            fontStyle = FontStyle().fontName("Montserrat-Regular").fontSize(14.px).fontColor(0x697483.rgb)
+            fontStyle = FontStyle().fontName("Poppins-Regular").fontSize(14.px).fontColor(0x697483.rgb)
                 .fontType(FontType.AutoWidth)
         )
 
         onClick {
-            val icn = activeSidebarButton.children[0] as Icon
-            icn.image = ImageProvider.obtainImage(icn.image.imageName.replace("gradient", "grey"))!!
+            val icn = activeSidebarButton.children[0] as ImageComponent
+            icn.image = ImageProvider.obtainImage(icn.image.imageName.replace("gradient", "solid"))!!
 
             val btn = activeSidebarButton.children[1] as UIButton
             btn.fontStyle.fontColor(0x697483.rgb)
 
             activeSidebarButton = this
-            image.image = ImageProvider.obtainImage(image.image.imageName.replace("grey", "gradient"))!!
+            image.image = ImageProvider.obtainImage(image.image.imageName.replace("solid", "gradient"))!!
             button.fontStyle.fontColor(0x292D32.rgb)
         }
     }
@@ -250,7 +206,11 @@ object PrismDesign : UIScreen {
     fun SideTitle(text: String) = Button(
         text = text,
         modifier = Modifier(),
-        fontStyle = FontStyle().fontName("Montserrat-Medium").fontSize(11.px).fontColor(0x697483.rgb)
+        fontStyle = FontStyle()
+            .x(8.px)
+            .fontName("Poppins-Medium")
+            .fontSize(11.px)
+            .fontColor(0x697483.rgb)
             .fontType(FontType.AutoWidth)
     )
 
@@ -267,9 +227,8 @@ object PrismDesign : UIScreen {
     }
 
     fun PrismLogo() = Construct {
-        val logo = ImageProvider.createImage("PrismLogo", 0, "/icons/prismclient/PrismLogo_x128.png".toByteBuffer())
-        val handle = logo.retrieveImage(34f, 37f)
-        it.modifier.position(49, 52)
+        val handle = ImageProvider.obtainImage("Prism-Logo")!!.retrieveImage(34f, 47f)
+        it.modifier.position(48 + 8, 52)
         it.modifier.size(145, 37)
         render {
             color(-1)
@@ -280,7 +239,7 @@ object PrismDesign : UIScreen {
 
             color(RGBA(105, 116, 131))
             font("Montserrat-Regular", 8f, UITextAlignment.RIGHT, UITextAlignment.TOP, 0f)
-            "Aether-v1.0.0".render(fontBounds()[2], it.y + 27f + 5f)
+            "v1.0.0-Beta".render(fontBounds()[2], it.y + 27f + 5f)
         }
     }
 

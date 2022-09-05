@@ -7,7 +7,10 @@ import net.prismclient.aether.ui.alignment.HorizontalAlignment
 import net.prismclient.aether.ui.alignment.VerticalAlignment
 import net.prismclient.aether.ui.alignment.horizontalConvert
 import net.prismclient.aether.ui.alignment.verticalConvert
-import net.prismclient.aether.ui.component.type.*
+import net.prismclient.aether.ui.component.type.DefaultConstruct
+import net.prismclient.aether.ui.component.type.IconModifier
+import net.prismclient.aether.ui.component.type.ImageComponent
+import net.prismclient.aether.ui.component.type.UIButton
 import net.prismclient.aether.ui.composition.*
 import net.prismclient.aether.ui.dsl.ConstructionDSL
 import net.prismclient.aether.ui.font.FontStyle
@@ -80,16 +83,22 @@ inline fun Label(
 ): UIButton = Button(text, modifier, fontStyle, block)
 
 inline fun Image(
+    imageName: UIImage,
+    modifier: IconModifier = IconModifier(),
+    block: Block<ImageComponent> = {}
+): ImageComponent = component(ImageComponent(imageName, modifier), block)
+
+inline fun Image(
     imageName: String,
     modifier: IconModifier = IconModifier(),
-    block: Block<Icon> = {}
-): Icon = component(Icon(imageName, modifier), block)
+    block: Block<ImageComponent> = {}
+): ImageComponent = component(ImageComponent(imageName, modifier), block)
 
-inline fun icon(
-    image: UIImage,
+inline fun Icon(
+    imageName: String,
     modifier: IconModifier = IconModifier(),
-    block: Block<Icon> = {}
-): Icon = component(Icon(image, modifier), block)
+    block: Block<ImageComponent> = {}
+): ImageComponent = Image(imageName, modifier, block)
 
 /**
  * Creates a new [DefaultConstruct], a component which executes the [block] when rendered. An example

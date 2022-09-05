@@ -2,6 +2,8 @@ package net.prismclient.aether.core.util.shorthands
 
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
+import net.prismclient.aether.ui.unit.other.Margin
+import net.prismclient.aether.ui.unit.other.Padding
 import net.prismclient.aether.ui.unit.other.UIRadius
 import net.prismclient.aether.ui.unit.type.dynamic.RelativeUnit
 import net.prismclient.aether.ui.unit.type.dynamic.SizeUnit
@@ -65,15 +67,6 @@ inline val UIUnit<*>.radii: UIRadius get() = UIRadius(this, this.copy(), this.co
 @get:JvmName("dp")
 inline val UIUnit<*>?.dp: Float get() = this?.cachedValue ?: 0f
 
-/**
- * Disables units from changing the state of [Composable.dynamic].
- */
-internal inline fun disableDynamicCheck(composable: Composable?, block: () -> Unit) {
-    val isDynamic = composable?.dynamic ?: false
-    block()
-    composable?.dynamic = isDynamic
-}
-
 // -- Operator Functions -- //
 
 operator fun UIUnit<*>?.plus(other: UIUnit<*>?): OperationUnit = OperationUnit(this, other, OperationUnit.Operation.ADD)
@@ -136,3 +129,17 @@ fun UIUnit<*>.range(min: UIUnit<*>? = null, max: UIUnit<*>? = null): RangeUnit {
     }
     return RangeUnit(this, min, max)
 }
+
+// -- Padding and Margin Functions -- //
+
+/**
+ * Creates a [Padding] with the given value for each side in pixels.
+ */
+@get:JvmName("padding")
+inline val Number.padding: Padding get() = Padding(this.px, this.px, this.px, this.px)
+
+/**
+ * Creates a [Margin] with the given value for each side in pixels.
+ */
+@get:JvmName("margin")
+inline val Number.margin: Margin get() = Margin(this.px, this.px, this.px, this.px)

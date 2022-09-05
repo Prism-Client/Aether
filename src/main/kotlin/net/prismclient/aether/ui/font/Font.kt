@@ -133,6 +133,8 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
      * Determines the [fontMetrics] of this based on the style, type, and [actualText].
      */
     open fun calculateMetrics() {
+        println("Calculated metrics!")
+
         // Change the text resizing based if null or a width or height is present
         style.textResizing = style.textResizing ?: FixedSize
         if (style.textResizing == AutoWidth && width != null && width !is AutoResize) {
