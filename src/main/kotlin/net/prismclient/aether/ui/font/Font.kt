@@ -16,6 +16,7 @@ import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.style.Style
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.AnchorPoint
+import java.util.Arrays
 import java.util.regex.Pattern
 
 /**
@@ -104,7 +105,6 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
      * Attempts to resize the [Composable] based on the metrics of the font.
      */
     open fun composeSize(composable: Composable?) {
-        // Update the style properties
         style.compose(composable)
         calculateMetrics()
         when (style.textResizing) {
@@ -133,8 +133,6 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
      * Determines the [fontMetrics] of this based on the style, type, and [actualText].
      */
     open fun calculateMetrics() {
-        println("Calculated metrics!")
-
         // Change the text resizing based if null or a width or height is present
         style.textResizing = style.textResizing ?: FixedSize
         if (style.textResizing == AutoWidth && width != null && width !is AutoResize) {
@@ -144,6 +142,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
             style.textResizing = FixedSize
         }
 
+        text.clear()
         // Calculate the bounds of the text based on the type and update the actual text.
         renderer {
             font(style.actualFontName ?: "", style.fontSize.dp, LEFT, TOP, style.fontSpacing.dp)
@@ -181,26 +180,20 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
         val lineHeight = style.lineHeight.dp
 
         val x = x.dp + initialX + when (horizontalAlignment) {
-            CENTER -> width / 2f
-            RIGHT -> width
+            CENTER -> (width - fontMetrics.maxX - fontMetrics.minY) / 2f
+            RIGHT -> (width - fontMetrics.maxX - fontMetrics.minY)
             else -> 0f
         } - anchor?.x.dp
 
         val y = y.dp + initialY + when (verticalAlignment) {
-            CENTER -> fontSize / 2f + (height - (fontSize * text.size) - (lineHeight * (text.size - 1))) / 2f
-            BOTTOM -> fontSize + (height - (fontSize * text.size) - (lineHeight * (text.size - 1)))
+            CENTER -> (height - fontMetrics.maxY - fontMetrics.minY) / 2f
+            BOTTOM -> (height - fontMetrics.maxY - fontMetrics.minY)
             else -> 0f
         } - anchor?.y.dp + if (style.offsetBaseline) fontMetrics[6] / 2f else 0f
 
         renderer {
             color(style.fontColor)
-            font(
-                style.actualFontName ?: "",
-                style.fontSize.dp,
-                LEFT,
-                TOP,
-                style.fontSpacing.dp
-            )
+            font(style.actualFontName ?: "", style.fontSize.dp, LEFT, TOP, style.fontSpacing.dp)
             when (style.textResizing) {
                 AutoWidth -> actualText.render(x, y)
                 AutoHeight -> renderer.renderText(text, x, y, lineHeight)
@@ -229,9 +222,11 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
  * An internal unit used to indicate if the [UIFont] is set to [FontType.AutoWidth] or [FontType.AutoHeight].
  */
 internal class AutoResize : UIUnit<AutoResize>(0f){
-    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float = 0f
+    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float = cachedValue
 
     override fun copy(): AutoResize = AutoResize()
+
+    override fun toString(): String = "AutoResize($cachedValue)"
 }
 
 /**
