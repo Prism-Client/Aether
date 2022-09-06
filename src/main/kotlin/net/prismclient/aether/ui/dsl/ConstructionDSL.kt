@@ -16,7 +16,7 @@ object ConstructionDSL {
      * Sets the [DefaultConstruct.action] to the [block] and executes it every frame. The [block] provides
      * access to all of [UIRendererDSL] which allows you to use the functions it provides.
      */
-    fun render(block: Block<UIRendererDSL>) {
+    fun Render(block: Block<UIRendererDSL>) {
         check()
         activeConstructor!!.action = Runnable {
             UIRendererDSL.block()

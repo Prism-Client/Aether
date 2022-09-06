@@ -1,8 +1,8 @@
 package net.prismclient.aether.example.screens
 
-import net.prismclient.aether.core.util.extensions.toByteBuffer
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.example.Renderer.fontBounds
+import net.prismclient.aether.example.Renderer.imagePattern
 import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
@@ -15,6 +15,7 @@ import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.composition.disableOptimizations
 import net.prismclient.aether.ui.composition.onClick
 import net.prismclient.aether.ui.composition.util.UIBackground
+import net.prismclient.aether.ui.controller.Control
 import net.prismclient.aether.ui.dsl.resource
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.image.ImageProvider
@@ -25,10 +26,11 @@ import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.layout.scroll.Scrollbar
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.modifier.Modifier
+import net.prismclient.aether.ui.registry.UIRegistry
+import net.prismclient.aether.ui.renderer.UIStrokeDirection
 import net.prismclient.aether.ui.screen.UIScreen
 import net.prismclient.aether.ui.unit.other.Padding
 import net.prismclient.aether.ui.unit.other.UIRadius
-import java.io.File
 
 object PrismDesign : UIScreen {
     @JvmStatic
@@ -47,15 +49,30 @@ object PrismDesign : UIScreen {
             svgCollection(localResource("/icons/"))
         }
 
+//        UIRegistry.registerStyle()
+
 
         fun Pane(title: String) {
             Compose(
                 name = "$title-pane",
                 modifier = CompositionModifier()
-//                    .backgroundColor(RGBA(1f, 0f, 0f, 0.1f).rgba)
+                    .backgroundColor(RGBA(0xE2ECFA, 0.8f).rgba)
                     .constrain(253.px, 21.px, 1.rel - 253.px - 21.px, 1.rel - 42.px)
             ) {
-                Button(
+                fun CategoryButton(text: String): UIButton = Button(
+                    text = text,
+                    modifier = Modifier()
+                        .position(100, 25)
+                        .backgroundRadius(10.radius)
+                        .padding(10.px, 17.px, 10.px, 17.px),
+                    fontStyle = FontStyle()
+                        .fontName("Poppins-Regular")
+                        .fontSize(16.px)
+                        .fontColor(0x697483.rgb)
+                        .fontType(FontType.AutoWidth)
+                )
+
+                Label(
                     text = title,
                     modifier = Modifier()
                         .position(47, 29),
@@ -65,6 +82,34 @@ object PrismDesign : UIScreen {
                         .fontSize(24.px)
                         .fontType(FontType.AutoWidth)
                 )
+
+                Row(
+                    modifier = LayoutModifier()
+                        .position(200, 41)
+                        .anchor(Alignment.MIDDLELEFT),
+                    layoutStyle = BoxLayoutStyle()
+                        .spacing(43.px)
+                ) {
+                    Control(
+                        selectedComposable = CategoryButton("All").apply {
+                            modifier.backgroundColor(0x292D32.rgb)
+                            fontStyle.fontColor(RGBA(255, 255, 255).rgba)
+                        }
+                    ) {
+                        children.add(CategoryButton("Performance"))
+                        children.add(CategoryButton("Server"))
+
+                        onSelect {
+                            it.modifier.backgroundColor(0x292D32.rgb)
+                            it.fontStyle.fontColor(RGBA(255, 255, 255).rgba)
+                        }
+                        onDeselect {
+                            it.modifier.backgroundColor(0.rgba)
+                            it.fontStyle.fontColor(0x697483.rgb)
+                        }
+                        children.forEach { btn -> btn.onClick { select(btn as UIButton) } }
+                    }
+                }
 
                 fun Module(name: String, iconName: String, enabled: Boolean, favorited: Boolean) = Box {
                     modifier
@@ -115,7 +160,7 @@ object PrismDesign : UIScreen {
                     }
                 }
 
-                Module("CPS", "mods/mouse", false, false)
+                //Module("CPS", "mods/mouse", false, false)
             }
         }
 
@@ -161,6 +206,35 @@ object PrismDesign : UIScreen {
                     SideButton("solid/people", "Friends")
                     SideButton("solid/video", "Recordings")
                 }
+            }
+
+            Row(
+                layoutStyle = BoxLayoutStyle()
+                    .spacing(20.px)
+                    .alignment(Alignment.MIDDLELEFT)
+            ) {
+                Construct(
+                    modifier = Modifier()
+                        .size(32, 32)
+                        .backgroundRadius(32.radius)
+                        .border(0x57FF72.rgb, 1.px, UIStrokeDirection.INSIDE)
+                        .padding(1.padding)
+                ) {
+                    Render {
+                        color(-1)
+                        renderImage("Character", it.x, it.y, it.width, it.height, 16f, 16f, 16f, 16f)
+                    }
+                }
+                Label(
+                    text = "Username",
+                    modifier = Modifier()
+                        .backgroundColor(RGBA(1f, 0f, 0f, 0.1f).rgba),
+                    fontStyle = FontStyle()
+                        .fontName("Poppins-Medium")
+                        .fontSize(14.px)
+                        .fontColor(0x292D32.rgb)
+                        .fontType(FontType.AutoWidth)
+                )
             }
         }
     }
@@ -213,7 +287,7 @@ object PrismDesign : UIScreen {
 
     fun Background() = Construct {
         it.modifier.size(1.rel, 1.rel)
-        render {
+        Render {
             path {
                 hole {
                     rect(it.x, it.y, it.width, it.height)
@@ -227,7 +301,7 @@ object PrismDesign : UIScreen {
         val handle = ImageProvider.obtainImage("Prism-Logo")!!.retrieveImage(34f, 47f)
         it.modifier.position(48 + 8, 52)
         it.modifier.size(145, 37)
-        render {
+        Render {
             color(-1)
             renderImage(handle, it.x, it.y, 34f, 37f)
             color(RGBA(41, 45, 50))

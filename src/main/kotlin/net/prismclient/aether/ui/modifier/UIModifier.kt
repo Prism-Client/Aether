@@ -10,9 +10,11 @@ import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.Alignment.*
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.util.UIBackground
+import net.prismclient.aether.ui.composition.util.UIBorder
 import net.prismclient.aether.ui.composition.util.color
 import net.prismclient.aether.ui.composition.util.radius
 import net.prismclient.aether.ui.registry.UIRegistry
+import net.prismclient.aether.ui.renderer.UIStrokeDirection
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.unit.other.Margin
@@ -115,7 +117,7 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     }
 
     /**
-     * Adjusts the position of this Modifier<*> to the given [x] and [y] coordinate units.
+     * Adjusts the position of this [UIModifier] to the given [x] and [y] coordinate units.
      */
     fun position(x: UIUnit<*>, y: UIUnit<*>): M {
         this.x = x
@@ -124,12 +126,12 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     }
 
     /**
-     * Adjusts the position of this Modifier<*> to the given [x] and [y] coordinate values.
+     * Adjusts the position of this [UIModifier] to the given [x] and [y] coordinate values.
      */
     fun position(x: Number, y: Number) = position(x.px, y.px)
 
     /**
-     * Adjusts the size of this Modifier<*> to the given [width] and [height] units.
+     * Adjusts the size of this [UIModifier] to the given [width] and [height] units.
      */
     fun size(width: UIUnit<*>, height: UIUnit<*>): M {
         this.width = width
@@ -138,12 +140,12 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     }
 
     /**
-     * Adjusts the size of this Modifier<*> to the given [width] and [height] values.
+     * Adjusts the size of this [UIModifier] to the given [width] and [height] values.
      */
     fun size(width: Number, height: Number) = size(width.px, height.px)
 
     /**
-     * Constrains this Modifier<*> to be within the bounds of the given units.
+     * Constrains this [UIModifier] to be within the bounds of the given units.
      */
     fun constrain(x: UIUnit<*>, y: UIUnit<*>, width: UIUnit<*>, height: UIUnit<*>): M {
         this.x = x
@@ -154,7 +156,7 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     }
 
     /**
-     * Constrains this Modifier<*> to be within the bounds of the given values.
+     * Constrains this [UIModifier] to be within the bounds of the given values.
      */
     fun constrain(x: Number, y: Number, width: Number, height: Number) =
         constrain(x.px, y.px, width.px, height.px)
@@ -183,7 +185,7 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     }
 
     /**
-     * Aligns and positions this Modifier<*> to the given [alignment] relative to its parent.
+     * Aligns and positions this [UIModifier] to the given [alignment] relative to its parent.
      */
     fun control(alignment: Alignment): M {
         anchor(alignment)
@@ -201,32 +203,55 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     }
 
     /**
-     * Sets the padding of this Modifier<*> to the given units.
+     * Sets [UIModifier.padding] to the given [padding].
      */
-    fun padding(top: UIUnit<*>?, right: UIUnit<*>?, bottom: UIUnit<*>?, left: UIUnit<*>?): M {
-        padding = Padding(top, right, bottom, left)
+    fun padding(padding: Padding): M {
+        this.padding = padding
         return this as M
     }
 
     /**
-     * Sets the padding of this Modifier<*> to the given values.
+     * Sets the padding of this [UIModifier] to the given units.
+     */
+    fun padding(top: UIUnit<*>?, right: UIUnit<*>?, bottom: UIUnit<*>?, left: UIUnit<*>?): M =
+        padding(Padding(top, right, bottom, left))
+
+    /**
+     * Sets the padding of this [UIModifier] to the given values.
      */
     fun padding(top: Number, right: Number, bottom: Number, left: Number) =
         padding(top.px, right.px, bottom.px, left.px)
 
     /**
-     * Sets the margin of this Modifier<*> to the given units.
+     * Sets [UIModifier.margin] to the given [margin].
      */
-    fun margin(top: UIUnit<*>?, right: UIUnit<*>?, bottom: UIUnit<*>?, left: UIUnit<*>?): M {
-        margin = Margin(top, right, bottom, left)
+    fun margin(margin: Margin): M {
+        this.margin = margin
         return this as M
     }
 
     /**
-     * Sets the margin of this Modifier<*> to the given values.
+     * Sets the margin of this [UIModifier] to the given units.
+     */
+    fun margin(top: UIUnit<*>?, right: UIUnit<*>?, bottom: UIUnit<*>?, left: UIUnit<*>?): M =
+        margin(Margin(top, right, bottom, left))
+
+    /**
+     * Sets the margin of this [UIModifier] to the given values.
      */
     fun margin(top: Number, right: Number, bottom: Number, left: Number) =
         margin(top.px, right.px, bottom.px, left.px)
+
+    /**
+     * Creates a new background if necessary. The background color is set to [color]
+     * and the radius of the background is set to [radius], if not null.
+     */
+    @JvmOverloads
+    fun background(color: UIColor, radius: UIRadius? = null): M {
+        backgroundColor(color)
+        if (radius != null) backgroundRadius(radius)
+        return this as M
+    }
 
     /**
      * Sets the background color of this [Modifier] to the given [color]. A background is allocated if none is set.
@@ -243,6 +268,48 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     fun backgroundRadius(radius: UIRadius): M {
         background = background ?: UIBackground()
         background!!.radius(radius)
+        return this as M
+    }
+
+    /**
+     * Creates a background and border if necessary. The given [color] is set to the border color, and
+     * [width], and [direction] are set to the border width and direction, respectively, if not null.
+     */
+    @JvmOverloads
+    fun border(color: UIColor, width: UIUnit<*>? = null, direction: UIStrokeDirection? = null): M {
+        borderColor(color)
+        if (width != null) borderWidth(width)
+        if (direction != null) borderDirection(direction)
+        return this as M
+    }
+
+    /**
+     * Allocates a [UIBackground] and [UIBorder] if necessary and sets the [UIBorder.borderColor] to [color].
+     */
+    fun borderColor(color: UIColor): M {
+        background = background ?: UIBackground()
+        background!!.backgroundBorder = background!!.backgroundBorder ?: UIBorder()
+        background!!.backgroundBorder!!.borderColor = color
+        return this as M
+    }
+
+    /**
+     * Allocates a [UIBackground] and [UIBorder] if necessary and sets the [UIBorder.borderWidth] to [width].
+     */
+    fun borderWidth(width: UIUnit<*>): M {
+        background = background ?: UIBackground()
+        background!!.backgroundBorder = background!!.backgroundBorder ?: UIBorder()
+        background!!.backgroundBorder!!.borderWidth = width
+        return this as M
+    }
+
+    /**
+     * Allocates a [UIBackground] and [UIBorder] if necessary and sets the [UIBorder.borderDirection] to [direction].
+     */
+    fun borderDirection(direction: UIStrokeDirection): M {
+        background = background ?: UIBackground()
+        background!!.backgroundBorder = background!!.backgroundBorder ?: UIBorder()
+        background!!.backgroundBorder!!.borderDirection = direction
         return this as M
     }
 }

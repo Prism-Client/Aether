@@ -119,7 +119,7 @@ abstract class Game(val windowTitle: String) {
     open fun run() {
         while (!glfwWindowShouldClose(window.handle)) {
             glViewport(0, 0, window.width, window.height)
-            glClearColor(0.3f, 0.3f, 0.3f, 0f)
+            glClearColor(0f, 0f, 0f, 0f)
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT or GL_STENCIL_BUFFER_BIT)
 
             // Render Aether :)

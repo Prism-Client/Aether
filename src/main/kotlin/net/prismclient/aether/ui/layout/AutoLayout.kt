@@ -54,25 +54,25 @@ class AutoLayout(
 
         for (child in children) {
             if (layoutStyle.layoutDirection == LayoutDirection.HORIZONTAL) {
-                child.x = x
+                child.x = x + child.modifier.padding?.left.dp
                 child.y = y + when (layoutStyle.layoutAlignment) {
                     MIDDLELEFT, CENTER, MIDDLERIGHT -> (height - child.relHeight - top - bottom) / 2f
                     BOTTOMLEFT, BOTTOMCENTER, BOTTOMRIGHT -> (height - child.relHeight - top - bottom)
                     else -> 0f
-                }
+                } + child.modifier.padding?.top.dp
                 x += child.relWidth + layoutStyle.itemSpacing.dp
             } else {
                 child.x = x + when (layoutStyle.layoutAlignment) {
                     TOPCENTER, CENTER, BOTTOMCENTER -> (width - child.relWidth - left - right) / 2f
                     TOPRIGHT, MIDDLERIGHT, BOTTOMRIGHT -> (width - child.relWidth - left - right)
                     else -> 0f
-                }
-                child.y = y
+                } + child.modifier.padding?.left.dp
+                child.y = y + child.modifier.padding?.top.dp
                 y += child.relHeight + layoutStyle.itemSpacing.dp
             }
             child.compose()
-            w = max(child.x + child.relWidth - this.x, w)
-            h = max(child.y + child.relHeight - this.y, h)
+            w = max(child.relX + child.relWidth - this.x, w)
+            h = max(child.relY + child.relHeight - this.y, h)
         }
 
         return Size(w, h)

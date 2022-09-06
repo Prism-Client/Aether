@@ -38,7 +38,7 @@ open class BoxLayout(
             child.compose()
             if (layoutStyle.layoutDirection == LayoutDirection.HORIZONTAL) {
                 width += child.relWidth + layoutStyle.itemSpacing.dp
-                height = max(height, child.height)
+                height = max(height, child.relHeight)
             } else {
                 width = max(width, child.relWidth)
                 height += child.relHeight + layoutStyle.itemSpacing.dp

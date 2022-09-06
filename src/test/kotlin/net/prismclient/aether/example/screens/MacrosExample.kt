@@ -100,7 +100,7 @@ class MacrosExample : UIScreen {
 
     fun lineBreak() {
         Construct(modifier = Modifier().size(1.rel, 1.px)) {
-            render {
+            Render {
                 color(RGBA(223, 224, 235))
                 rect(it.x, it.y, it.width, it.height)
             }

@@ -51,6 +51,18 @@ inline val Number.rgb: UIColor get() = UIColor((this.toInt() and 0x00FFFFFF) or 
 inline val Number.rgba: UIColor get() = UIColor(this.toInt())
 
 /**
+ * Returns the given [color] with 255 alpha.
+ */
+fun RGB(color: Int): Int = (color and 0x00FFFFFF) or (0xFF shl 24)
+
+/**
+ * Returns the given [color] with the applied [alpha]
+ */
+fun RGBA(color: Int, alpha: Int): Int = (color and 0x00FFFFFF) or (alpha shl 24)
+
+fun RGBA(color: Int, alpha: Float): Int = RGBA(color, (alpha * 255 + 0.5f).toInt())
+
+/**
  * Returns an ARGB formatted Int from the given [r], [g], [b] and [a].
  */
 @JvmOverloads

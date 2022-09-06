@@ -11,6 +11,7 @@ import net.prismclient.aether.ui.dsl.renderer
 import net.prismclient.aether.ui.renderer.UIStrokeDirection
 import net.prismclient.aether.ui.shape.Shape
 import net.prismclient.aether.ui.unit.UIUnit
+import net.prismclient.aether.ui.unit.other.UIRadius
 
 /**
  * [UIBorder] is intended to be paired with [UIBackground] to create borders for [Composable]s.
@@ -21,11 +22,13 @@ import net.prismclient.aether.ui.unit.UIUnit
  * @since 1.0
  */
 open class UIBorder : Shape(), Animatable<UIBorder>, Copyable<UIBorder>, Mergable<UIBorder> {
+    private lateinit var background: UIBackground
     /**
      * The width of the border. Represents the x-axis when computing.
      */
     var borderWidth: UIUnit<*>? = null
     var borderColor: UIColor? = null
+    var borderRadius: UIRadius? = null
     var borderDirection: UIStrokeDirection? = null
 
     var initialX: Float = 0f
@@ -34,6 +37,7 @@ open class UIBorder : Shape(), Animatable<UIBorder>, Copyable<UIBorder>, Mergabl
     var initialHeight: Float = 0f
 
     open fun compose(background: UIBackground) {
+        this.background = background
         borderWidth?.compute(null, background.width.dp, background.height.dp, false)
         initialX = background.x.dp + background.initialX
         initialY = background.y.dp + background.initialY
@@ -44,7 +48,7 @@ open class UIBorder : Shape(), Animatable<UIBorder>, Copyable<UIBorder>, Mergabl
     override fun render() {
         renderer {
             stroke(borderWidth.dp, borderColor?.rgba ?: 0, borderDirection ?: UIStrokeDirection.CENTER) {
-                rect(initialX, initialY, initialWidth, initialHeight)
+                rect(initialX, initialY, initialWidth, initialHeight, background.backgroundRadius)
             }
         }
     }
