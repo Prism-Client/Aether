@@ -208,27 +208,30 @@ object PrismDesign : UIScreen {
                 }
             }
 
+            val radius = 16f
+
             Row(
+                modifier = LayoutModifier()
+                    .position(48.px, 1.rel - 51.px)
+                    .anchor(Alignment.BOTTOMLEFT),
                 layoutStyle = BoxLayoutStyle()
                     .spacing(20.px)
-                    .alignment(Alignment.MIDDLELEFT)
             ) {
+                layoutStyle.alignment(Alignment.MIDDLELEFT)
                 Construct(
                     modifier = Modifier()
                         .size(32, 32)
-                        .backgroundRadius(32.radius)
+                        .backgroundRadius(radius.radius)
                         .border(0x57FF72.rgb, 1.px, UIStrokeDirection.INSIDE)
                         .padding(1.padding)
                 ) {
                     Render {
                         color(-1)
-                        renderImage("Character", it.x, it.y, it.width, it.height, 16f, 16f, 16f, 16f)
+                        renderImage("Character", it.x, it.y, it.width, it.height, radius, radius, radius, radius)
                     }
                 }
                 Label(
                     text = "Username",
-                    modifier = Modifier()
-                        .backgroundColor(RGBA(1f, 0f, 0f, 0.1f).rgba),
                     fontStyle = FontStyle()
                         .fontName("Poppins-Medium")
                         .fontSize(14.px)
