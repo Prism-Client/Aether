@@ -47,6 +47,15 @@ dependencies {
     testRuntimeOnly "org.lwjgl:lwjgl-stb:$lwjglVersion:$lwjglNatives"
 }
 
+allprojects {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = '1.8'
+            freeCompilerArgs += '-Xjvm-default=enable'
+        }
+    }
+}
+
 publishing {
     publications {
         maven(MavenPublication) {

@@ -26,6 +26,11 @@ object ResourceProvider {
         registerFont(it)
     }
 
+    fun deleteFont(fontName: String) {
+        fonts.remove(fontName)
+        Aether.renderer.deleteFont(fontName)
+    }
+
     fun registerFont(font: UIFontFamily.Font) {
         fonts[font.name] = font
     }

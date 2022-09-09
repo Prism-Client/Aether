@@ -138,7 +138,7 @@ interface UIRenderer {
      */
     fun unbindFBO()
 
-    // -- Asset Loading --/
+    // -- Asset Loading -- //
 
     /**
      * Generates an image from the given [imageBuffer]. The returned [GeneratedImage.buffer] should
@@ -168,6 +168,11 @@ interface UIRenderer {
      * @return Returns if the font was successfully created.
      */
     fun createFont(fontName: String, fontData: ByteBuffer?): Boolean
+
+    /**
+     * Attempts to delete the font with the given font handle name.
+     */
+    fun deleteFont(fontName: String)
 
     /** Image **/
 

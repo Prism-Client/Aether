@@ -9,6 +9,7 @@ import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.renderer.UIRenderer
+import net.prismclient.aether.ui.screen.CloseableScreen
 import net.prismclient.aether.ui.screen.UIScreen
 
 // TODO: Event plotting optimizations (invoke only when the composition is within range)
@@ -30,13 +31,19 @@ open class Aether(renderer: UIRenderer) {
         protected set
     var mouseX: Float = 0f
         protected set
-    var mouseY: Float = 0f
+    open var mouseY: Float = 0f
         protected set
 
     /**
      * The compositions represented as a HashMap with the key as the name of the composition.
      */
-    var compositions: ArrayList<Composition>? = null
+    open var compositions: ArrayList<Composition>? = null
+        protected set
+
+    /**
+     * All active, or top layer compositions that Aether directly acccess to render.
+     */
+    open var activeCompositions: ArrayList<Composition>? = null
         protected set
 
     /**
@@ -89,7 +96,7 @@ open class Aether(renderer: UIRenderer) {
 
         if (mouseButton != MouseButtonType.None) {
             if (!isRelease) {
-                compositions!!.filter(Composition::isTopLayer).forEach { composition ->
+                activeCompositions!!.forEach { composition ->
                     if (composition.mouseWithinBounds()) {
                         val item = findDeepest(mouseX, mouseY, composition)
                         if (item != null) {
@@ -113,13 +120,14 @@ open class Aether(renderer: UIRenderer) {
      * Invoked when the mouse scroll or trackpad is interacted with.
      */
     open fun mouseScrolled(dstX: Float, dstY: Float) {
-        for (i in compositions!!.size - 1 downTo 0) {
-            val composition = compositions!![i]
+        for (i in activeCompositions!!.size - 1 downTo 0) {
+            val composition = activeCompositions!![i]
             if (composition.mouseWithinBounds()) {
                 val item = scrollFind(composition)
 
                 if (item != null) {
                     focusedComponent = item
+
                     break
                 }
             }
@@ -173,7 +181,7 @@ open class Aether(renderer: UIRenderer) {
     open fun render() {
         if (activeScreen.notNull()) {
             renderer.beginFrame(displayWidth, displayHeight, devicePixelRatio)
-            for (i in compositions!!.indices) compositions!![i].render()
+            for (i in activeCompositions!!.indices) activeCompositions!![i].render()
             renderer.endFrame()
         }
     }
@@ -184,7 +192,9 @@ open class Aether(renderer: UIRenderer) {
      * @see Aether.Companion.displayScreen to display a screen
      */
     open fun screen(screen: UIScreen) {
+        deleteActiveScreen()
         compositions = arrayListOf()
+        activeCompositions = arrayListOf()
         activeScreen = screen
 //        defaultComposition = createComposition("Default", CompositionModifier())
 //        defaultComposition!!.modifier.size(1.rel, 1.rel)
@@ -198,8 +208,18 @@ open class Aether(renderer: UIRenderer) {
     open fun createComposition(name: String, modifier: CompositionModifier<*>): Composition =
         Composition(name, modifier).also {
             check()
-            compositions!!.add(it)
+            activeCompositions?.add(it)
         }
+
+    open fun deleteActiveScreen() {
+        if (activeScreen != null) {
+            compositions!!.forEach(Composition::delete)
+            compositions = null
+            activeCompositions = null
+            if (activeScreen!! is CloseableScreen)
+                (activeScreen!! as CloseableScreen).closeScreen()
+        }
+    }
 
     /**
      * Returns true if the activeScreen and composition doesn't equal null

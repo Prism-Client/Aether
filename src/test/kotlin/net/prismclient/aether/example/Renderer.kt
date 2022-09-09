@@ -177,6 +177,10 @@ object Renderer : UIRenderer {
         return true
     }
 
+    override fun deleteFont(fontName: String) {
+        throw RuntimeException("NanoVG does not support deleting fonts. Please opt to load fonts once instead.")
+    }
+
     override fun imagePattern(
         imageName: String, x: Float, y: Float, width: Float, height: Float, angle: Float, alpha: Float
     ) = imagePattern(images[imageName] ?: 0, x, y, width, height, angle, alpha)
@@ -224,7 +228,9 @@ object Renderer : UIRenderer {
         nvgFillColor(ctx, fillColor)
         nvgText(ctx, x, y, text)
         nvgTextMetrics(ctx, ascender, descender, null)
+        nvgFontFace(ctx, "Montserrat-Regular")
         fontBounds[4] = nvgTextBounds(ctx, x, y, text, fontBounds)
+//        println(fontBounds)
     }
 
     override fun renderText(text: ArrayList<String>, x: Float, y: Float, lineHeight: Float) {

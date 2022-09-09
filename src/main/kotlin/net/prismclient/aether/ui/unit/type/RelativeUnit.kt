@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.unit.type.dynamic
+package net.prismclient.aether.ui.unit.type
 
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.composition.Composable

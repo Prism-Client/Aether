@@ -169,6 +169,8 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
         fontMetrics[4] = fontBounds().advance
         fontMetrics[5] = fontAscender()
         fontMetrics[6] = fontDescender()
+
+//        println("Calculated metrics as: ${fontMetrics.contentToString()}")
     }
 
     override fun render() {
@@ -176,7 +178,6 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
         val verticalAlignment = style.verticalAlignment ?: TOP
         val width = width.dp
         val height = height.dp
-        val fontSize = style.fontSize.dp
         val lineHeight = style.lineHeight.dp
 
         val x = x.dp + initialX + when (horizontalAlignment) {

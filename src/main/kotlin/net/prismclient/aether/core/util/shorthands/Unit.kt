@@ -1,12 +1,11 @@
 package net.prismclient.aether.core.util.shorthands
 
-import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
 import net.prismclient.aether.ui.unit.other.UIRadius
-import net.prismclient.aether.ui.unit.type.dynamic.RelativeUnit
-import net.prismclient.aether.ui.unit.type.dynamic.SizeUnit
+import net.prismclient.aether.ui.unit.type.RelativeUnit
+import net.prismclient.aether.ui.unit.type.SizeUnit
 import net.prismclient.aether.ui.unit.type.other.OperationUnit
 import net.prismclient.aether.ui.unit.type.range.RangeUnit
 import net.prismclient.aether.ui.unit.type.solid.PixelUnit

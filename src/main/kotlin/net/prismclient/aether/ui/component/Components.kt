@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.component
 
 import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.shorthands.Block
 import net.prismclient.aether.ui.alignment.HorizontalAlignment
@@ -58,7 +59,7 @@ inline fun <T : Composable> component(composable: T, block: Block<T> = {}): T {
 inline fun Compose(
     name: String,
     modifier: CompositionModifier<*> = DefaultCompositionModifier(),
-    block: Block<Composition>
+    block: Block<Composition>,
 ): Composition {
     val composition = Aether.instance.createComposition(name, modifier)
     val previousComposition = ComponentUtil.activeComposition
@@ -72,32 +73,32 @@ inline fun Button(
     text: String,
     modifier: UIModifier<*> = Modifier(),
     fontStyle: FontStyle = FontStyle(),
-    block: Block<UIButton> = {}
+    block: Block<UIButton> = {},
 ): UIButton = component(UIButton(text, modifier, fontStyle), block)
 
 inline fun Label(
     text: String,
     modifier: UIModifier<*> = Modifier(),
     fontStyle: FontStyle = FontStyle(),
-    block: Block<UIButton> = {}
+    block: Block<UIButton> = {},
 ): UIButton = Button(text, modifier, fontStyle, block)
 
 inline fun Image(
     imageName: UIImage,
     modifier: IconModifier = IconModifier(),
-    block: Block<ImageComponent> = {}
+    block: Block<ImageComponent> = {},
 ): ImageComponent = component(ImageComponent(imageName, modifier), block)
 
 inline fun Image(
     imageName: String,
     modifier: IconModifier = IconModifier(),
-    block: Block<ImageComponent> = {}
+    block: Block<ImageComponent> = {},
 ): ImageComponent = component(ImageComponent(imageName, modifier), block)
 
 inline fun Icon(
     imageName: String,
     modifier: IconModifier = IconModifier(),
-    block: Block<ImageComponent> = {}
+    block: Block<ImageComponent> = {},
 ): ImageComponent = Image(imageName, modifier, block)
 
 /**
@@ -109,7 +110,7 @@ inline fun Icon(
  */
 inline fun Construct(
     modifier: UIModifier<*> = Modifier(),
-    block: ConstructionDSL.(construct: DefaultConstruct) -> Unit = {}
+    block: ConstructionDSL.(construct: DefaultConstruct) -> Unit = {},
 ) = component(DefaultConstruct(modifier)) {
     val previousConstruct = ConstructionDSL.activeConstructor
     ConstructionDSL.activeConstructor = this
@@ -129,7 +130,7 @@ inline fun ListLayout(
     order: LayoutOrder,
     childSpacing: UIUnit<*>?,
     modifier: LayoutModifier<*>,
-    block: Block<UIListLayout> = {}
+    block: Block<UIListLayout> = {},
 ) = component(UIListLayout("Vertical List", direction, order, childSpacing, modifier), block)
 
 /**
@@ -142,7 +143,7 @@ inline fun HorizontalList(
     order: LayoutOrder = LayoutOrder.FIRST,
     childSpacing: UIUnit<*>? = null,
     modifier: LayoutModifier<*> = LayoutModifier(),
-    block: Block<UIListLayout> = {}
+    block: Block<UIListLayout> = {},
 ) = ListLayout(LayoutDirection.HORIZONTAL, order, childSpacing, modifier, block)
 
 /**
@@ -155,7 +156,7 @@ inline fun VerticalList(
     order: LayoutOrder = LayoutOrder.FIRST,
     childSpacing: UIUnit<*>? = null,
     modifier: LayoutModifier<*> = LayoutModifier(),
-    block: Block<UIListLayout> = {}
+    block: Block<UIListLayout> = {},
 ) = ListLayout(LayoutDirection.VERTICAL, order, childSpacing, modifier, block)
 
 
@@ -168,7 +169,7 @@ inline fun Box(
     name: String = "Box",
     modifier: LayoutModifier<*> = LayoutModifier(),
     layoutStyle: BoxLayoutStyle = BoxLayoutStyle(),
-    block: Block<BoxLayout> = {}
+    block: Block<BoxLayout> = {},
 ): BoxLayout = component(
     BoxLayout(
         name = name,
@@ -185,7 +186,7 @@ inline fun AutoLayout(
     name: String = "AutoLayout",
     modifier: LayoutModifier<*> = LayoutModifier(),
     layoutStyle: BoxLayoutStyle = BoxLayoutStyle(),
-    block: Block<AutoLayout> = {}
+    block: Block<AutoLayout> = {},
 ): AutoLayout = component(AutoLayout(name, modifier, layoutStyle), block)
 
 /**
@@ -200,7 +201,7 @@ inline fun Row(
     /* horizontalArrangement */
     modifier: LayoutModifier<*> = LayoutModifier(),
     layoutStyle: BoxLayoutStyle = BoxLayoutStyle(),
-    block: Block<AutoLayout> = {}
+    block: Block<AutoLayout> = {},
 ): AutoLayout = component(
     AutoLayout(
         name = name,
@@ -223,7 +224,7 @@ inline fun Column(
     /* verticalArrangement */
     modifier: LayoutModifier<*> = LayoutModifier(),
     layoutStyle: BoxLayoutStyle = BoxLayoutStyle(),
-    block: Block<AutoLayout> = {}
+    block: Block<AutoLayout> = {},
 ): AutoLayout = component(
     AutoLayout(
         name = name,
@@ -232,4 +233,17 @@ inline fun Column(
             .layoutAlignment(horizontalConvert(horizontalAlignment))
             .layoutDirection(LayoutDirection.VERTICAL)
     ), block
+)
+
+inline fun Layout(
+    name: String = "CustomLayout",
+    modifier: LayoutModifier<*> = LayoutModifier(),
+    layoutStyle: BoxLayoutStyle = BoxLayoutStyle(),
+    noinline sizeCalculation: CustomLayout.() -> Size = { Size(0f, 0f) },
+    noinline unitCalculation: CustomLayout.(layoutSize: Size?) -> Unit = {},
+    noinline layout: CustomLayout.(children: ArrayList<Composable>, layoutSize: Size?) -> Size,
+    block: Block<CustomLayout> = {}
+): CustomLayout = component(
+    CustomLayout(name, modifier, layoutStyle, sizeCalculation, unitCalculation, layout),
+    block
 )

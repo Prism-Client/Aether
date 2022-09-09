@@ -20,7 +20,7 @@ import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
 import net.prismclient.aether.ui.unit.other.UIRadius
-import net.prismclient.aether.ui.unit.type.dynamic.SizeUnit
+import net.prismclient.aether.ui.unit.type.SizeUnit
 
 /**
  * [UIModifier] contains information such as the position, background, padding and other properties that

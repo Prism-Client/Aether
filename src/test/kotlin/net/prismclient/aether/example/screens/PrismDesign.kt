@@ -1,8 +1,8 @@
 package net.prismclient.aether.example.screens
 
+import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.example.Renderer.fontBounds
-import net.prismclient.aether.example.Renderer.imagePattern
 import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
@@ -26,13 +26,17 @@ import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.layout.scroll.Scrollbar
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.modifier.Modifier
-import net.prismclient.aether.ui.registry.UIRegistry
 import net.prismclient.aether.ui.renderer.UIStrokeDirection
+import net.prismclient.aether.ui.screen.CloseableScreen
 import net.prismclient.aether.ui.screen.UIScreen
 import net.prismclient.aether.ui.unit.other.Padding
 import net.prismclient.aether.ui.unit.other.UIRadius
+import net.prismclient.aether.ui.unit.type.Dependent
+import kotlin.math.max
 
-object PrismDesign : UIScreen {
+object PrismDesign : CloseableScreen {
+    var initialized = false
+
     @JvmStatic
     fun main(args: Array<String>) {
         Runner(PrismDesign)
@@ -41,12 +45,15 @@ object PrismDesign : UIScreen {
     lateinit var activeSidebarButton: AutoLayout
 
     override fun createScreen() {
-        resource {
-            fontCollection(localResource("/fonts/Poppins"))
-            fontCollection(localResource("/fonts/Montserrat"))
+        if (!initialized) {
+            resource {
+                fontCollection(localResource("/fonts/Poppins"))
+                fontCollection(localResource("/fonts/Montserrat"))
 
-            pngCollection(localResource("/images/"))
-            svgCollection(localResource("/icons/"))
+                pngCollection(localResource("/images/"))
+                svgCollection(localResource("/icons/"))
+            }
+            initialized = true
         }
 
 //        UIRegistry.registerStyle()
@@ -71,45 +78,6 @@ object PrismDesign : UIScreen {
                         .fontColor(0x697483.rgb)
                         .fontType(FontType.AutoWidth)
                 )
-
-                Label(
-                    text = title,
-                    modifier = Modifier()
-                        .position(47, 29),
-                    fontStyle = FontStyle()
-                        .fontName("Poppins-Medium")
-                        .fontColor(0x292D32.rgb)
-                        .fontSize(24.px)
-                        .fontType(FontType.AutoWidth)
-                )
-
-                Row(
-                    modifier = LayoutModifier()
-                        .position(200, 41)
-                        .anchor(Alignment.MIDDLELEFT),
-                    layoutStyle = BoxLayoutStyle()
-                        .spacing(43.px)
-                ) {
-                    Control(
-                        selectedComposable = CategoryButton("All").apply {
-                            modifier.backgroundColor(0x292D32.rgb)
-                            fontStyle.fontColor(RGBA(255, 255, 255).rgba)
-                        }
-                    ) {
-                        children.add(CategoryButton("Performance"))
-                        children.add(CategoryButton("Server"))
-
-                        onSelect {
-                            it.modifier.backgroundColor(0x292D32.rgb)
-                            it.fontStyle.fontColor(RGBA(255, 255, 255).rgba)
-                        }
-                        onDeselect {
-                            it.modifier.backgroundColor(0.rgba)
-                            it.fontStyle.fontColor(0x697483.rgb)
-                        }
-                        children.forEach { btn -> btn.onClick { select(btn as UIButton) } }
-                    }
-                }
 
                 fun Module(name: String, iconName: String, enabled: Boolean, favorited: Boolean) = Box {
                     modifier
@@ -160,7 +128,99 @@ object PrismDesign : UIScreen {
                     }
                 }
 
-                //Module("CPS", "mods/mouse", false, false)
+                var spacing = 0f
+
+                Layout(
+                    modifier = LayoutModifier()
+                        .y(79.px)
+                        .size(1.rel, 1.rel - 79.px),
+                    layout = { children, _ ->
+                        spacing = 0f
+
+                        // Calculate the spacing
+                        run loop@ {
+                            children.forEachIndexed { i, child ->
+                                child.overridden = true
+                                child.compose()
+                                spacing += child.relWidth
+
+                                if (spacing + child.relWidth > width) {
+                                    spacing = (width - spacing) / (i + 2)
+                                    return@loop
+                                }
+                            }
+                        }
+
+                        var x = x + spacing
+                        var y = y
+                        var w = 0f
+                        var h = 0f
+
+                        children.forEach { child ->
+                            child.overridden = true
+                            child.compose()
+                            child.x = x
+                            child.y = y
+                            x += child.relWidth + spacing
+                            child.compose()
+
+                            if (x > width + this.x) {
+                                x = this.x + spacing
+                                y += child.relHeight + spacing
+                            }
+
+                            w = max(child.relX + child.relWidth - this.x, w)
+                            h = max(child.relY + child.relHeight - this.y, h)
+                        }
+
+                        return@Layout Size(w, h)
+                    }
+                ) {
+                    modifier.verticalScrollbar = Scrollbar()
+
+                    for (i in 0 .. 20) {
+                        Module("CPS", "mods/mouse", false, false)
+                    }
+                }
+
+                val title = Label(
+                    text = title,
+                    modifier = Modifier()
+                        .position(Dependent { spacing }, 29.px),
+                    fontStyle = FontStyle()
+                        .fontName("Poppins-Medium")
+                        .fontColor(0x292D32.rgb)
+                        .fontSize(24.px)
+                        .fontType(FontType.AutoWidth)
+                )
+
+                Row(
+                    modifier = LayoutModifier()
+                        .position(Dependent { spacing + title.width } + 50.px, 41.px)
+                        .anchor(Alignment.MIDDLELEFT),
+                    layoutStyle = BoxLayoutStyle()
+                        .spacing(43.px)
+                ) {
+                    Control(
+                        selectedComposable = CategoryButton("All").apply {
+                            modifier.backgroundColor(0x292D32.rgb)
+                            fontStyle.fontColor(RGBA(255, 255, 255).rgba)
+                        }
+                    ) {
+                        children.add(CategoryButton("Performance"))
+                        children.add(CategoryButton("Server"))
+
+                        onSelect {
+                            it.modifier.backgroundColor(0x292D32.rgb)
+                            it.fontStyle.fontColor(RGBA(255, 255, 255).rgba)
+                        }
+                        onDeselect {
+                            it.modifier.backgroundColor(0.rgba)
+                            it.fontStyle.fontColor(0x697483.rgb)
+                        }
+                        children.forEach { btn -> btn.onClick { select(btn as UIButton) } }
+                    }
+                }
             }
         }
 
@@ -255,7 +315,10 @@ object PrismDesign : UIScreen {
         modifier.optimizeComposition = false
 
         val image = Image(
-            imageName = iconName, modifier = IconModifier().size(24, 24).imageColor((-1).rgb)
+            imageName = iconName,
+            modifier = IconModifier()
+                .size(24, 24)
+                .imageColor((-1).rgb)
         )
 
         val button = Button(
@@ -331,5 +394,9 @@ object PrismDesign : UIScreen {
         scrollbarBackground.backgroundRadius = 2.5.radius
 
         background = scrollbarBackground
+    }
+
+    override fun closeScreen() {
+
     }
 }

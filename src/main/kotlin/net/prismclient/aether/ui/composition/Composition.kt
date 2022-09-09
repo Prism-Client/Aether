@@ -47,6 +47,10 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
     open var framebuffer: UIFramebuffer? = null
         protected set
 
+    init {
+        Aether.instance.compositions?.add(this)
+    }
+
     // -- Core -- //
 
     override fun compose() {
@@ -79,7 +83,7 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
     }
 
     override fun recompose() {
-        compose()
+        if (isTopLayer()) compose() else super.recompose()
     }
 
     /**
@@ -88,7 +92,10 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
     open fun rasterize() {
         if (!modifier.optimizeComposition) return
 
+
         if (framebuffer == null || framebuffer!!.width != width || framebuffer!!.height != height) {
+            if (framebuffer != null)
+                Aether.renderer.deleteFBO(framebuffer!!)
             framebuffer = Aether.renderer.createFBO(width, height)
         }
 
@@ -111,6 +118,16 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
 
 
     // -- Util -- //
+
+    /**
+     * Deletes any allocated resources if necessary.
+     */
+    open fun delete() {
+        if (framebuffer != null) {
+            Aether.renderer.deleteFBO(framebuffer!!)
+        }
+    }
+
 
     /**
      * Returns true if this Composition is at the top of the Composition tree. A composition within
