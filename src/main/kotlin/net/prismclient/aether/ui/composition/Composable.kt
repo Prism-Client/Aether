@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.animation.Animation
 import net.prismclient.aether.core.event.*
 import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.ui.layout.UILayout
