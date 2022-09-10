@@ -13,23 +13,25 @@ import kotlin.reflect.KClass
  * @since 1.0
  */
 object UIEventBus {
-    val events: ConcurrentHashMap<KClass<out UIEvent>, ArrayList<Consumer<out UIEvent>>> = ConcurrentHashMap()
+    val events: ConcurrentHashMap<KClass<out UIEvent>, HashMap<String, Consumer<out UIEvent>>> = ConcurrentHashMap()
 
     /**
      * Registers the given the [event] to the given event type [T].
      *
      * @return If the event was successfully registered.
      */
-    inline fun <reified T : UIEvent> register(event: Consumer<T>) =
-        events.computeIfAbsent(T::class) { ArrayList() }.add(event)
+    inline fun <reified T : UIEvent> register(eventName: String? = null, event: Consumer<T>) {
+        events.computeIfAbsent(T::class) { HashMap() }[eventName ?: event.toString()] = event
+    }
 
     /**
      * The Java version of [register]. Registers the given [event] to the even type [type].
      *
      * @return If the event was successfully registered.
      */
-    fun <T : UIEvent> register(type: KClass<out UIEvent>, event: Consumer<T>) =
-        events.computeIfAbsent(type) { ArrayList() }.add(event)
+    fun <T : UIEvent> register(eventName: String? = null, type: Class<out UIEvent>, event: Consumer<T>) {
+        events.computeIfAbsent(type.kotlin) { HashMap() }[eventName ?: event.toString()] = event
+    }
 
     /**
      * Invokes all listeners of the given [event].
