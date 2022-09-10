@@ -11,7 +11,7 @@ import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.dsl.UIRendererDSL
-import net.prismclient.aether.ui.dsl.renderer
+import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.layout.scroll.DefaultScrollbar
 import net.prismclient.aether.ui.layout.scroll.Scrollbar
 import net.prismclient.aether.ui.layout.util.LayoutDirection
@@ -98,7 +98,7 @@ abstract class UILayout(
     abstract fun updateLayout(): Size
 
     override fun render() {
-        renderer {
+        Renderer {
             if (modifier.optimizeComposition) {
                 color(-1)
                 path {

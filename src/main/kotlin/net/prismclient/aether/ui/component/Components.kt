@@ -1,4 +1,4 @@
-package net.prismclient.aether.ui.component
+package net.prismclient.aether.ui.composable
 
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.metrics.Size
@@ -13,6 +13,7 @@ import net.prismclient.aether.ui.component.type.IconModifier
 import net.prismclient.aether.ui.component.type.ImageComponent
 import net.prismclient.aether.ui.component.type.UIButton
 import net.prismclient.aether.ui.composition.*
+import net.prismclient.aether.ui.dsl.ComposeDSL.composable
 import net.prismclient.aether.ui.dsl.ConstructionDSL
 import net.prismclient.aether.ui.font.FontStyle
 import net.prismclient.aether.ui.image.UIImage
@@ -24,57 +25,12 @@ import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 
-/**
- * Used to encapsulate the values
- */
-object ComponentUtil {
-    @JvmStatic
-    var activeComposition: Composition? = null
-
-    @JvmStatic
-    var activeComposable: Composable? = null
-}
-
-/**
- * TODO: doc
- */
-inline fun <T : Composable> component(composable: T, block: Block<T> = {}): T {
-    // TODO: Error when composition not foudn n stuff
-    ComponentUtil.activeComposition = ComponentUtil.activeComposition!!// ?: Aether.instance.defaultComposition
-    composable.composition = ComponentUtil.activeComposition!!
-    composable.parent = ComponentUtil.activeComposable ?: ComponentUtil.activeComposition!!
-    if (composable.parent is ComposableGroup) {
-        (composable.parent as ComposableGroup).children.add(composable)
-    }
-    val previousActiveComponent = ComponentUtil.activeComposable
-    ComponentUtil.activeComposable = composable
-    composable.block()
-    ComponentUtil.activeComposable = previousActiveComponent
-    return composable
-}
-
-/**
- * Creates a new composition with the given [name], and applies the [block].
- */
-inline fun Compose(
-    name: String,
-    modifier: CompositionModifier<*> = DefaultCompositionModifier(),
-    block: Block<Composition>,
-): Composition {
-    val composition = Aether.instance.createComposition(name, modifier)
-    val previousComposition = ComponentUtil.activeComposition
-    ComponentUtil.activeComposition = composition
-    composition.block()
-    ComponentUtil.activeComposition = previousComposition
-    return composition
-}
-
 inline fun Button(
     text: String,
     modifier: UIModifier<*> = Modifier(),
     fontStyle: FontStyle = FontStyle(),
     block: Block<UIButton> = {},
-): UIButton = component(UIButton(text, modifier, fontStyle), block)
+): UIButton = composable(UIButton(text, modifier, fontStyle), block)
 
 inline fun Label(
     text: String,
@@ -87,13 +43,13 @@ inline fun Image(
     imageName: UIImage,
     modifier: IconModifier = IconModifier(),
     block: Block<ImageComponent> = {},
-): ImageComponent = component(ImageComponent(imageName, modifier), block)
+): ImageComponent = composable(ImageComponent(imageName, modifier), block)
 
 inline fun Image(
     imageName: String,
     modifier: IconModifier = IconModifier(),
     block: Block<ImageComponent> = {},
-): ImageComponent = component(ImageComponent(imageName, modifier), block)
+): ImageComponent = composable(ImageComponent(imageName, modifier), block)
 
 inline fun Icon(
     imageName: String,
@@ -102,8 +58,8 @@ inline fun Icon(
 ): ImageComponent = Image(imageName, modifier, block)
 
 /**
- * Creates a new [DefaultConstruct], a component which executes the [block] when rendered. An example
- * use case is creating a shape without using components. [ConstructionDSL] is intended to be
+ * Creates a new [DefaultConstruct], a composable which executes the [block] when rendered. An example
+ * use case is creating a shape without using composables. [ConstructionDSL] is intended to be
  * used along with this function.
  *
  * @see ConstructionDSL
@@ -111,7 +67,7 @@ inline fun Icon(
 inline fun Construct(
     modifier: UIModifier<*> = Modifier(),
     block: ConstructionDSL.(construct: DefaultConstruct) -> Unit = {},
-) = component(DefaultConstruct(modifier)) {
+) = composable(DefaultConstruct(modifier)) {
     val previousConstruct = ConstructionDSL.activeConstructor
     ConstructionDSL.activeConstructor = this
     ConstructionDSL.block(this)
@@ -131,7 +87,7 @@ inline fun ListLayout(
     childSpacing: UIUnit<*>?,
     modifier: LayoutModifier<*>,
     block: Block<UIListLayout> = {},
-) = component(UIListLayout("Vertical List", direction, order, childSpacing, modifier), block)
+) = composable(UIListLayout("Vertical List", direction, order, childSpacing, modifier), block)
 
 /**
  * Creates a list layout with the [UIListLayout.direction] set to horizontal.
@@ -170,7 +126,7 @@ inline fun Box(
     modifier: LayoutModifier<*> = LayoutModifier(),
     layoutStyle: BoxLayoutStyle = BoxLayoutStyle(),
     block: Block<BoxLayout> = {},
-): BoxLayout = component(
+): BoxLayout = composable(
     BoxLayout(
         name = name,
         modifier = modifier.hug(),
@@ -187,7 +143,7 @@ inline fun AutoLayout(
     modifier: LayoutModifier<*> = LayoutModifier(),
     layoutStyle: BoxLayoutStyle = BoxLayoutStyle(),
     block: Block<AutoLayout> = {},
-): AutoLayout = component(AutoLayout(name, modifier, layoutStyle), block)
+): AutoLayout = composable(AutoLayout(name, modifier, layoutStyle), block)
 
 /**
  * Creates an [AutoLayout] with a row based layout style. Each [Composable] will be placed to the
@@ -202,7 +158,7 @@ inline fun Row(
     modifier: LayoutModifier<*> = LayoutModifier(),
     layoutStyle: BoxLayoutStyle = BoxLayoutStyle(),
     block: Block<AutoLayout> = {},
-): AutoLayout = component(
+): AutoLayout = composable(
     AutoLayout(
         name = name,
         modifier = modifier.hug().disableOptimizations(),
@@ -225,7 +181,7 @@ inline fun Column(
     modifier: LayoutModifier<*> = LayoutModifier(),
     layoutStyle: BoxLayoutStyle = BoxLayoutStyle(),
     block: Block<AutoLayout> = {},
-): AutoLayout = component(
+): AutoLayout = composable( // TODO: Modified State checking
     AutoLayout(
         name = name,
         modifier = modifier.hug().disableOptimizations(),
@@ -243,7 +199,7 @@ inline fun Layout(
     noinline unitCalculation: CustomLayout.(layoutSize: Size?) -> Unit = {},
     noinline layout: CustomLayout.(children: ArrayList<Composable>, layoutSize: Size?) -> Size,
     block: Block<CustomLayout> = {}
-): CustomLayout = component(
+): CustomLayout = composable(
     CustomLayout(name, modifier, layoutStyle, sizeCalculation, unitCalculation, layout),
     block
 )

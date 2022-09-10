@@ -17,8 +17,6 @@ object UIEventBus {
 
     /**
      * Registers the given the [event] to the given event type [T].
-     *
-     * @return If the event was successfully registered.
      */
     inline fun <reified T : UIEvent> register(eventName: String? = null, event: Consumer<T>) {
         events.computeIfAbsent(T::class) { HashMap() }[eventName ?: event.toString()] = event
@@ -26,11 +24,23 @@ object UIEventBus {
 
     /**
      * The Java version of [register]. Registers the given [event] to the even type [type].
-     *
-     * @return If the event was successfully registered.
      */
     fun <T : UIEvent> register(eventName: String? = null, type: Class<out UIEvent>, event: Consumer<T>) {
         events.computeIfAbsent(type.kotlin) { HashMap() }[eventName ?: event.toString()] = event
+    }
+
+    /**
+     * Unregisters the [eventName] associated with the event, [T].
+     */
+    inline fun <reified T : UIEvent> unregister(eventName: String) {
+        events[T::class]?.remove(eventName)
+    }
+
+    /**
+     * The java version of [unregister]. Unregisters the [eventName] associated with the event, [event].
+     */
+    fun unregister(eventName: String, event: Class<out UIEvent>) {
+        events[event.kotlin]?.remove(eventName)
     }
 
     /**
@@ -41,7 +51,7 @@ object UIEventBus {
     @Suppress("Unchecked_Cast")
     fun <T : UIEvent> publish(event: T) {
         if (events.containsKey(event::class)) {
-            events[event::class]!!.forEach { consumer ->
+            events[event::class]!!.forEach { (_, consumer) ->
                 try {
                     (consumer as Consumer<T>).accept(event)
                 } catch (e: Exception) {

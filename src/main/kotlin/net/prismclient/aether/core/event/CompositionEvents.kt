@@ -63,6 +63,20 @@ abstract class PropagatingEvent(val initialComposable: Composable) : CustomEvent
 }
 
 /**
+ * Invoked prior to rendering.
+ *
+ * @see RenderEvent
+ */
+class PreRenderEvent : UIEvent
+
+/**
+ * Invoked after rendering the compositions.
+ *
+ * @see PreRenderEvent
+ */
+class RenderEvent : UIEvent
+
+/**
  * Invoked when the mouse is moved. [mouseX] and [mouseY] represent the mouse coordinates.
  */
 class MouseMove(val mouseX: Float, val mouseY: Float) : UIEvent
@@ -70,9 +84,6 @@ class MouseMove(val mouseX: Float, val mouseY: Float) : UIEvent
 /**
  * A [PropagatingEvent] which holds the [mouseX] and [mouseY] coordinates as well as the [button] pressed. Because
  * this is a [PropagatingEvent], a specific composable is invoked and then the parent of that composable is invoked.
- *
- * @author sen
- * @since 1.0
  */
 class MousePress(val mouseX: Float, val mouseY: Float, val button: MouseButtonType, composable: Composable) :
     PropagatingEvent(composable)

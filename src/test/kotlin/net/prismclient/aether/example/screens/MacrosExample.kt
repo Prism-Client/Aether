@@ -5,10 +5,15 @@ import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.component.*
+import net.prismclient.aether.ui.composable.Construct
+import net.prismclient.aether.ui.composable.Label
+import net.prismclient.aether.ui.composable.VerticalList
 import net.prismclient.aether.ui.composition.DefaultCompositionModifier
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.composition.util.UIBorder
-import net.prismclient.aether.ui.dsl.renderer
+import net.prismclient.aether.ui.dsl.ComposeDSL.Composition
+import net.prismclient.aether.ui.dsl.ComposeDSL.composable
+import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.modifier.Modifier
@@ -31,7 +36,7 @@ class MacrosExample : UIScreen {
         }
     }
 
-    override fun createScreen() {
+    override fun compose() {
         val BACKGROUND_COLOR = (-1).rgb
         val FONT = FontStyle() // Define the base font style
             .fontSpacing(0.1.px).fontType(FontType.AutoWidth).fontAlignment(UITextAlignment.LEFT, UITextAlignment.TOP)
@@ -53,7 +58,7 @@ class MacrosExample : UIScreen {
 
         register(name = "Regular", style = FONT.fontName("Montserrat/Montserrat-Regular"))
 
-        Compose(
+        Composition(
             name = "Test", modifier = DefaultCompositionModifier()
                 .size(546.px, 336.px)
                 .backgroundRadius(8.radius)
@@ -92,8 +97,8 @@ class MacrosExample : UIScreen {
                     .constrain(0.px, 96.px, 1.rel, 232.px), // 328 - 96
                 childSpacing = (-1).px
             ) {
-                component(DefaultMacro("Lorem Ipsum", false, Modifier()))
-                component(DefaultMacro("Lorem Ipsum", true, Modifier()))
+                composable(DefaultMacro("Lorem Ipsum", false, Modifier())) {}
+                composable(DefaultMacro("Lorem Ipsum", true, Modifier())) {}
             }
         }
     }
@@ -133,7 +138,7 @@ class MacrosExample : UIScreen {
         }
 
         override fun renderComponent() {
-            renderer {
+            Renderer {
                 // Render the radio button or whatever to show that it is enabled/disabled
                 if (enabled) {
                     // Render an ellipse and draw a checkmark over it
@@ -159,7 +164,7 @@ class MacrosExample : UIScreen {
          * Renders a label and returns the x ending position of it
          */
         open fun renderLabel(): Float {
-            renderer {
+            Renderer {
                 color(RGBA(37, 39, 51))
                 font("Montserrat/Montserrat-Medium", 14f, UITextAlignment.LEFT, UITextAlignment.CENTER, 0f)
                 label.render(x + 68, y + height / 2f)

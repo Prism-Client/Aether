@@ -11,7 +11,7 @@ import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.core.util.shorthands.within
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.util.UIBackground
-import net.prismclient.aether.ui.dsl.renderer
+import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.layout.util.LayoutDirection
@@ -196,7 +196,7 @@ class DefaultScrollbar : Scrollbar() {
     override fun render() {
         if (!shouldRender) return
         background?.render()
-        renderer {
+        Renderer {
             color(thumbColor)
             rect(thumbBounds[0], thumbBounds[1], thumbBounds[2], thumbBounds[3], thumbRadius)
         }

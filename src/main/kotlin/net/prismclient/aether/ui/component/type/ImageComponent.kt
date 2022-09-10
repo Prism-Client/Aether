@@ -5,7 +5,7 @@ import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.composition.util.UIBackground
-import net.prismclient.aether.ui.dsl.renderer
+import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.image.ImageProvider
 import net.prismclient.aether.ui.image.UIImage
 import net.prismclient.aether.ui.modifier.UIModifier
@@ -47,7 +47,7 @@ class ImageComponent(image: UIImage, modifier: IconModifier) : UIComponent<Image
     }
 
 
-    override fun renderComponent() = renderer {
+    override fun renderComponent() = Renderer {
         color(modifier.imageColor)
         renderImage(imageHandle, x, y, width, height)
     }

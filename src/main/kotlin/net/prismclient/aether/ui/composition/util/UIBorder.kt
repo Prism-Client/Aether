@@ -7,7 +7,7 @@ import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.core.util.shorthands.copy
 import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.dsl.renderer
+import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.renderer.UIStrokeDirection
 import net.prismclient.aether.ui.shape.Shape
 import net.prismclient.aether.ui.unit.UIUnit
@@ -46,7 +46,7 @@ open class UIBorder : Shape(), Animatable<UIBorder>, Copyable<UIBorder>, Mergabl
     }
 
     override fun render() {
-        renderer {
+        Renderer {
             stroke(borderWidth.dp, borderColor?.rgba ?: 0, borderDirection ?: UIStrokeDirection.CENTER) {
                 rect(initialX, initialY, initialWidth, initialHeight, background.backgroundRadius)
             }

@@ -8,7 +8,7 @@ import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment.*
 import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.dsl.renderer
+import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.font.FontType.*
 import net.prismclient.aether.ui.registry.UIRegistry
 import net.prismclient.aether.ui.renderer.UIRenderer
@@ -16,7 +16,6 @@ import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.style.Style
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.AnchorPoint
-import java.util.Arrays
 import java.util.regex.Pattern
 
 /**
@@ -144,7 +143,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
 
         text.clear()
         // Calculate the bounds of the text based on the type and update the actual text.
-        renderer {
+        Renderer {
             font(style.actualFontName ?: "", style.fontSize.dp, LEFT, TOP, style.fontSpacing.dp)
             when (style.textResizing) {
                 AutoWidth -> {
@@ -192,7 +191,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
             else -> 0f
         } - anchor?.y.dp + if (style.offsetBaseline) fontMetrics[6] / 2f else 0f
 
-        renderer {
+        Renderer {
             color(style.fontColor)
             font(style.actualFontName ?: "", style.fontSize.dp, LEFT, TOP, style.fontSpacing.dp)
             when (style.textResizing) {

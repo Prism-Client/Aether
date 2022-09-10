@@ -4,7 +4,7 @@ import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.property.UIProperty
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.dsl.renderer
+import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.other.UIRadius
@@ -34,7 +34,7 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
     }
 
     override fun render() {
-        renderer {
+        Renderer {
             color(backgroundColor)
             rect(initialX + x.dp, initialY + y.dp, width.dp, height.dp, backgroundRadius)
         }

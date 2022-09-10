@@ -6,7 +6,7 @@ import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.dsl.UIRendererDSL
-import net.prismclient.aether.ui.dsl.renderer
+import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.renderer.UIFramebuffer
 import net.prismclient.aether.ui.unit.other.AnchorPoint
@@ -64,7 +64,7 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
     }
 
     override fun render() {
-        renderer {
+        Renderer {
             if (modifier.optimizeComposition) {
                 color(-1)
                 path {
@@ -91,7 +91,6 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
      */
     open fun rasterize() {
         if (!modifier.optimizeComposition) return
-
 
         if (framebuffer == null || framebuffer!!.width != width || framebuffer!!.height != height) {
             if (framebuffer != null)

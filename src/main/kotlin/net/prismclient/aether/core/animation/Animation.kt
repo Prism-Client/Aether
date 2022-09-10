@@ -1,5 +1,9 @@
 package net.prismclient.aether.core.animation
 
+import net.prismclient.aether.core.event.PreRenderEvent
+import net.prismclient.aether.core.event.UIEventBus
+import net.prismclient.aether.core.event.UIEventBus.register
+import net.prismclient.aether.core.event.UIEventBus.unregister
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.modifier.UIModifier
 import kotlin.reflect.KClass
@@ -8,15 +12,18 @@ import kotlin.reflect.KClass
  * @author sen
  * @since 1.0
  */
-abstract class Animation<C : Composable> {
-    var keyframes: ArrayList<Keyframe<*>> = arrayListOf()
-    var activeKeyframe: Keyframe<*>? = null
-    var nextKeyframe: Keyframe<*>? = null
+abstract class Animation<C : Composable, M : UIModifier<M>> {
+    var keyframes: ArrayList<Keyframe<M>> = arrayListOf()
+    var activeKeyframe: Keyframe<M>? = null
+    var nextKeyframe: Keyframe<M>? = null
 
     var animating = false
 
-    fun start() {
+    lateinit var composable: Composable
+
+    open fun start(composable: Composable) {
         println("Starting the animation... ")
+        this.composable = composable
         if (keyframes.isEmpty()) throw IllegalStateException("No keyframes to animate")
 
         activeKeyframe = keyframes[0]
@@ -25,20 +32,23 @@ abstract class Animation<C : Composable> {
         activeKeyframe!!.ease.start()
 
         animating = true
+
+        register<PreRenderEvent>(toString()) { update() }
     }
 
-    fun next() {
+    open fun next() {
         println("Next")
         activeKeyframe = nextKeyframe
         nextKeyframe = keyframes.getOrNull(keyframes.indexOf(activeKeyframe) + 1)
         activeKeyframe?.ease?.start()
     }
 
-    fun complete() {
+    open fun complete() {
         println("Completed the animation!")
+        unregister<PreRenderEvent>(toString())
     }
 
-    fun update(composable: Composable) {
+    open fun update() {
         if (activeKeyframe == null || nextKeyframe == null) {
             complete()
             return
@@ -53,10 +63,10 @@ abstract class Animation<C : Composable> {
         }
         
 
-//        composable.modifier.animate(
-//            activeKeyframe?.modifier,
-//            activeKeyframe?.modifier,
-//            (activeKeyframe?.ease?.getValue() ?: 0.0).toFloat()
-//        )
+        (composable.modifier as M).animate(
+            activeKeyframe?.modifier as M,
+            activeKeyframe?.modifier as M,
+            (activeKeyframe?.ease?.getValue() ?: 0.0).toFloat()
+        )
     }
 }

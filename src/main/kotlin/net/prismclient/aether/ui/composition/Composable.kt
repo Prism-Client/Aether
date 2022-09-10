@@ -55,6 +55,11 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     open var listeners: HashMap<KClass<out UIEvent>, HashMap<String, Consumer<out UIEvent>>>? = null
 
     /**
+     *
+     */
+    open var animations: HashMap<String, Animation<*, *>>? = null
+
+    /**
      * Returns true if this has been composed at least once.
      */
     open var composed: Boolean = false
@@ -167,7 +172,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
             // handle publishing and composing itself.
 
             if (allocateEventListener && !T::class.isSubclassOf(CustomEvent::class)) {
-                UIEventBus.register<T>(it) { event ->
+                UIEventBus.register<T> { event ->
                     publish(event)
 //                    recompose()
                 }

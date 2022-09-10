@@ -12,16 +12,21 @@ import net.prismclient.aether.ui.renderer.UIStrokeDirection
 import net.prismclient.aether.ui.unit.other.UIRadius
 
 /**
- * [UIRendererDSL] wraps the [UIRenderer] class to minimize the amount of calls
- * to render something on screen. It also supplies support functions for more advanced
- * rendering features that the UIRenderer does not have.
+ * Executes the given [block] within the [UIRendererDSL] scope.
+ */
+inline fun Renderer(block: Block<UIRendererDSL>) = UIRendererDSL.block()
+
+/**
+ * [UIRendererDSL] wraps the [UIRenderer] to provide utility to functions, and to minimize the
+ * of code necessary to draw general shapes on screen with Kotlin. It also supplies support
+ * functions for more advanced rendering features that the UIRenderer does not directly support.
  *
  * @author sen
  * @since 1.0
  */
 object UIRendererDSL {
     @JvmStatic
-    val renderer get() = Aether.renderer
+    val renderer: UIRenderer get() = Aether.renderer
 
     @JvmStatic
     var activeColor: Int = 0

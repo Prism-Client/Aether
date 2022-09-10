@@ -11,12 +11,14 @@ import net.prismclient.aether.ui.component.type.ImageComponent
 import net.prismclient.aether.ui.component.type.IconModifier
 import net.prismclient.aether.ui.component.type.UIButton
 import net.prismclient.aether.ui.component.type.imageColor
+import net.prismclient.aether.ui.composable.*
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.composition.disableOptimizations
 import net.prismclient.aether.ui.composition.onClick
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.controller.Control
-import net.prismclient.aether.ui.dsl.resource
+import net.prismclient.aether.ui.dsl.Compose
+import net.prismclient.aether.ui.dsl.Resource
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.image.ImageProvider
 import net.prismclient.aether.ui.layout.AutoLayout
@@ -28,7 +30,6 @@ import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.renderer.UIStrokeDirection
 import net.prismclient.aether.ui.screen.CloseableScreen
-import net.prismclient.aether.ui.screen.UIScreen
 import net.prismclient.aether.ui.unit.other.Padding
 import net.prismclient.aether.ui.unit.other.UIRadius
 import net.prismclient.aether.ui.unit.type.Dependent
@@ -44,9 +45,9 @@ object PrismDesign : CloseableScreen {
 
     lateinit var activeSidebarButton: AutoLayout
 
-    override fun createScreen() {
+    override fun compose() = Compose {
         if (!initialized) {
-            resource {
+            Resource {
                 fontCollection(localResource("/fonts/Poppins"))
                 fontCollection(localResource("/fonts/Montserrat"))
 
@@ -60,7 +61,7 @@ object PrismDesign : CloseableScreen {
 
 
         fun Pane(title: String) {
-            Compose(
+            Composition(
                 name = "$title-pane",
                 modifier = CompositionModifier()
                     .backgroundColor(RGBA(0xE2ECFA, 0.8f).rgba)
@@ -194,6 +195,8 @@ object PrismDesign : CloseableScreen {
                         .fontType(FontType.AutoWidth)
                 )
 
+                title.animations = HashMap()
+
                 Row(
                     modifier = LayoutModifier()
                         .position(Dependent { spacing + title.width } + 50.px, 41.px)
@@ -224,9 +227,10 @@ object PrismDesign : CloseableScreen {
             }
         }
 
+
         Pane("Mods")
 
-        Compose(
+        Composition(
             name = "Test",
             modifier = CompositionModifier()
                 .size(1.rel, 1.rel)

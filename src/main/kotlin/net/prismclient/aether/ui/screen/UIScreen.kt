@@ -10,7 +10,7 @@ interface UIScreen {
     /**
      * Invoked when Aether has prepared the screen.
      */
-    fun createScreen()
+    fun compose()
 }
 
 interface CloseableScreen : UIScreen {

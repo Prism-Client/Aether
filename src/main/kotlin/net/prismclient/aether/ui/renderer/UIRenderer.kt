@@ -1,14 +1,15 @@
 package net.prismclient.aether.ui.renderer
 
+import net.prismclient.aether.core.Aether
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.image.UIImage
 import java.nio.ByteBuffer
 
 /**
- * [UIRenderer] wraps all the necessary render calls into this class. An implementation of this must
- * be provided to Aether within its constructor. The class is modeled after NanoVG, which is
- * "loosely" modeled on the HTML5 Canvas API. Depending on how the renderer that is used is designed,
- * certain methods might be blank calls as they might not need to inform the renderer.
+ * [UIRenderer] wraps all render calls into a class. An implementation of this must be provided to [Aether]
+ * within its constructor. The class is modeled after NanoVG, which is "loosely" modeled on the HTML5 Canvas
+ * API. Depending on how the renderer that is used is designed, certain methods might be blank calls as they
+ * might not need to inform the renderer.
  *
  * @author sen
  * @since 1.0
@@ -65,11 +66,7 @@ interface UIRenderer {
     fun globalAlpha(alpha: Float)
 
     /**
-     * Pre multiplies the current coordinate system by the given matrix. The matrix is as:
-     *
-     *      [a, c, e]
-     *      [b, d, f]
-     *      [0, 0, 1]
+     * Pre multiplies the current coordinate system by the given matrix.
      */
     fun transform(a: Float, b: Float, c: Float, d: Float, e: Float, f: Float)
 

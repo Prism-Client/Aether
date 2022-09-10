@@ -13,7 +13,12 @@ import java.io.File
 import java.nio.ByteBuffer
 
 /**
- * [UIAssetDSL] provides utility functions for loading assets such as fonts and images.
+ * Executes the given [block] within the [UIAssetDSL] scope.
+ */
+inline fun Resource(block: Block<UIAssetDSL>) = UIAssetDSL.block()
+
+/**
+ * [UIAssetDSL] provides utility functions for loading assets.
  *
  * @author sen
  * @since 1.0
@@ -103,7 +108,6 @@ object UIAssetDSL {
                         file.inputStream().byteBuffer(),
                     ) != null
                 ) {
-                    println("Loaded file: ${prefix + file.nameWithoutExtension + suffix}")
                     count++
                 }
             }
@@ -155,8 +159,3 @@ object UIAssetDSL {
     @JvmStatic
     fun fontFamily(): UIFontFamily = TODO("Font family bulk loading.")
 }
-
-/**
- * Creates DSL block of [UIAssetDSL].
- */
-inline fun resource(block: Block<UIAssetDSL>) = UIAssetDSL.block()

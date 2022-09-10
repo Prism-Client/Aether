@@ -1,10 +1,12 @@
 package net.prismclient.aether.core
 
 import net.prismclient.aether.core.event.*
+import net.prismclient.aether.core.event.UIEventBus.publish
 import net.prismclient.aether.core.input.MouseButtonType
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.property.Focusable
 import net.prismclient.aether.core.util.shorthands.notNull
+import net.prismclient.aether.core.util.shorthands.rel
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
@@ -50,8 +52,8 @@ open class Aether(renderer: UIRenderer) {
      * The default composition, where all "composition-less" composables are placed. The size
      * of the composition is equal to size of the window.
      */
-//    var defaultComposition: Composition? = null
-//        protected set
+    var defaultComposition: Composition? = null
+        protected set
 
     init {
         instance = this
@@ -179,11 +181,13 @@ open class Aether(renderer: UIRenderer) {
     }
 
     open fun render() {
+        publish(PreRenderEvent())
         if (activeScreen.notNull()) {
             renderer.beginFrame(displayWidth, displayHeight, devicePixelRatio)
             for (i in activeCompositions!!.indices) activeCompositions!![i].render()
             renderer.endFrame()
         }
+        publish(RenderEvent())
     }
 
     /**
@@ -196,9 +200,9 @@ open class Aether(renderer: UIRenderer) {
         compositions = arrayListOf()
         activeCompositions = arrayListOf()
         activeScreen = screen
-//        defaultComposition = createComposition("Default", CompositionModifier())
-//        defaultComposition!!.modifier.size(1.rel, 1.rel)
-        activeScreen!!.createScreen()
+        defaultComposition = createComposition("Default", CompositionModifier())
+        defaultComposition!!.modifier.size(1.rel, 1.rel)
+        activeScreen!!.compose()
         update(displayWidth, displayHeight, devicePixelRatio)
     }
 
