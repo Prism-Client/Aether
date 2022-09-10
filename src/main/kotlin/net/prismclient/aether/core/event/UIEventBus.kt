@@ -25,6 +25,7 @@ object UIEventBus {
     /**
      * The Java version of [register]. Registers the given [event] to the even type [type].
      */
+    @JvmOverloads
     fun <T : UIEvent> register(eventName: String? = null, type: Class<out UIEvent>, event: Consumer<T>) {
         events.computeIfAbsent(type.kotlin) { HashMap() }[eventName ?: event.toString()] = event
     }

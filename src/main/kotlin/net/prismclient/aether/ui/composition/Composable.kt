@@ -172,8 +172,8 @@ abstract class Composable(open val modifier: UIModifier<*>) {
             // handle publishing and composing itself.
 
             if (allocateEventListener && !T::class.isSubclassOf(CustomEvent::class)) {
-                UIEventBus.register<T> { event ->
-                    publish(event)
+                UIEventBus.register<T>(listenerName) {
+                    publish(it)
 //                    recompose()
                 }
             }

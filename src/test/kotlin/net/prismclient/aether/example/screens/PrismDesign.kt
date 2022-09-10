@@ -85,6 +85,7 @@ object PrismDesign : CloseableScreen {
                         .size(230, 180)
                         .backgroundColor(0xF4F9FF.rgb)
                         .backgroundRadius(UIRadius(topLeft = 15.px, topRight = 15.px))
+                        .disableOptimizations()
 
                     modifier.background!!.height = 1.crel - 39.px
 
