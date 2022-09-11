@@ -343,8 +343,8 @@ open class FontStyle : Style<FontStyle, Composable>() {
         }
     }
 
-    override fun animate(start: FontStyle?, end: FontStyle?, fraction: Float) {
-        TODO("Feature yet to be implemented")
+    override fun animate(start: FontStyle?, end: FontStyle?, fraction: Float): Boolean {
+        TODO("Feature not yet implemented")
     }
 }
 

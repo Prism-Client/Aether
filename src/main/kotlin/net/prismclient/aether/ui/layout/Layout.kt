@@ -1,7 +1,6 @@
 package net.prismclient.aether.ui.layout
 
 import net.prismclient.aether.core.Aether
-import net.prismclient.aether.core.color.UIAlpha
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.property.Focusable
@@ -9,16 +8,11 @@ import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
-import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.Renderer
-import net.prismclient.aether.ui.layout.scroll.DefaultScrollbar
 import net.prismclient.aether.ui.layout.scroll.Scrollbar
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.modifier.UIModifier
-import net.prismclient.aether.ui.unit.other.AnchorPoint
-import net.prismclient.aether.ui.unit.other.Margin
-import net.prismclient.aether.ui.unit.other.Padding
 
 /**
  * [UILayout] is composition subset designed for controlling a group of components in a specific way. It is a Focusable
@@ -241,54 +235,7 @@ class DefaultLayoutModifier : LayoutModifier<DefaultLayoutModifier>() {
         }
     }
 
-    override fun animate(start: DefaultLayoutModifier?, end: DefaultLayoutModifier?, fraction: Float) {
-        ifNotNull(start?.x, end?.x) {
-            x = x ?: 0.px
-            x!!.lerp(x, start?.x, end?.x, fraction)
-        }
-        ifNotNull(start?.y, end?.y) {
-            y = y ?: 0.px
-            y!!.lerp(y, start?.y, end?.y, fraction)
-        }
-        ifNotNull(start?.width, end?.width) {
-            width = width ?: 0.px
-            width!!.lerp(width, start?.width, end?.width, fraction)
-        }
-        ifNotNull(start?.height, end?.height) {
-            height = height ?: 0.px
-            height!!.lerp(height, start?.height, end?.height, fraction)
-        }
-        ifNotNull(start?.anchorPoint, end?.anchorPoint) {
-            anchorPoint = anchorPoint ?: AnchorPoint()
-            anchorPoint!!.animate(start?.anchorPoint, end?.anchorPoint, fraction)
-        }
-        ifNotNull(start?.padding, end?.padding) {
-            padding = padding ?: Padding(null, null, null, null)
-            padding!!.animate(start?.padding, end?.padding, fraction)
-        }
-        ifNotNull(start?.margin, end?.margin) {
-            margin = margin ?: Margin(null, null, null, null)
-            margin!!.animate(start?.margin, end?.margin, fraction)
-        }
-        ifNotNull(start?.opacity, end?.opacity) {
-            opacity = opacity ?: UIAlpha(1f)
-            opacity!!.value = lerp(start?.opacity?.value ?: 1f, end?.opacity?.value ?: 1f, fraction)
-        }
-        ifNotNull(start?.background, end?.background) {
-            background = background ?: UIBackground()
-            background!!.animate(start?.background, end?.background, fraction)
-        }
-        if (end != null) {
-            optimizeComposition = end.optimizeComposition
-            clipContent = end.clipContent
-        }
-        ifNotNull(start?.horizontalScrollbar, end?.horizontalScrollbar) {
-            horizontalScrollbar = horizontalScrollbar ?: DefaultScrollbar()
-            horizontalScrollbar!!.animate(start?.horizontalScrollbar, end?.horizontalScrollbar, fraction)
-        }
-        ifNotNull(start?.verticalScrollbar, end?.verticalScrollbar) {
-            verticalScrollbar = verticalScrollbar ?: DefaultScrollbar()
-            verticalScrollbar!!.animate(start?.verticalScrollbar, end?.verticalScrollbar, fraction)
-        }
+    override fun animate(start: DefaultLayoutModifier?, end: DefaultLayoutModifier?, fraction: Float): Boolean {
+        TODO("Feature not yet implemented")
     }
 }

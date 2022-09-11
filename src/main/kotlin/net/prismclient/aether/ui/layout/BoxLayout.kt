@@ -2,8 +2,6 @@ package net.prismclient.aether.ui.layout
 
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.shorthands.*
-import net.prismclient.aether.core.util.shorthands.ifNotNull
-import net.prismclient.aether.core.util.shorthands.lerp
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.layout.util.LayoutDirection
@@ -155,23 +153,8 @@ class BoxLayoutStyle : Style<BoxLayoutStyle, BoxLayout>() {
                 composable!!.potentialSize!!.width else composable!!.potentialSize!!.height) / composable.children.size
     }
 
-    override fun animate(start: BoxLayoutStyle?, end: BoxLayoutStyle?, fraction: Float) {
-        ifNotNull(start?.layoutPadding, end?.layoutPadding) {
-            layoutPadding = layoutPadding ?: Padding(null, null, null, null)
-            layoutPadding!!.animate(start!!.layoutPadding, end!!.layoutPadding, fraction)
-        }
-        ifNotNull(start?.itemSpacing, end?.itemSpacing) {
-            itemSpacing = itemSpacing ?: 0.px
-            itemSpacing!!.lerp(itemSpacing, start?.itemSpacing, end?.itemSpacing, fraction)
-        }
-
-        if (fraction < 0.5f && start != null) {
-            layoutAlignment = start.layoutAlignment
-            layoutDirection = start.layoutDirection
-        } else if (end != null) {
-            layoutAlignment = end.layoutAlignment
-            layoutDirection = end.layoutDirection
-        }
+    override fun animate(start: BoxLayoutStyle?, end: BoxLayoutStyle?, fraction: Float): Boolean {
+        TODO("Feature not yet implemented")
     }
 
     override fun copy(): BoxLayoutStyle = BoxLayoutStyle().also {

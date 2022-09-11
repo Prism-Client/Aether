@@ -1,10 +1,7 @@
 package net.prismclient.aether.ui.unit.other
 
 import net.prismclient.aether.core.util.property.UIProperty
-import net.prismclient.aether.core.util.shorthands.ifNotNull
-import net.prismclient.aether.core.util.shorthands.lerp
 import net.prismclient.aether.core.util.shorthands.or
-import net.prismclient.aether.core.util.shorthands.px
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
@@ -43,23 +40,8 @@ open class Padding(
         }
     }
 
-    override fun animate(start: Padding?, end: Padding?, fraction: Float) {
-        ifNotNull(start?.top, end?.top) {
-            top = top ?: 0.px
-            top!!.lerp(top, start?.top, end?.top, fraction)
-        }
-        ifNotNull(start?.right, end?.right) {
-            right = right ?: 0.px
-            right!!.lerp(right, start?.right, end?.right, fraction)
-        }
-        ifNotNull(start?.bottom, end?.bottom) {
-            bottom = bottom ?: 0.px
-            bottom!!.lerp(bottom, start?.bottom, end?.bottom, fraction)
-        }
-        ifNotNull(start?.left, end?.left) {
-            left = left ?: 0.px
-            left!!.lerp(left, start?.left, end?.left, fraction)
-        }
+    override fun animate(start: Padding?, end: Padding?, fraction: Float): Boolean {
+
     }
 
     operator fun component1() = top

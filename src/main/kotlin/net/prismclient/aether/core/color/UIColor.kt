@@ -1,6 +1,5 @@
 package net.prismclient.aether.core.color
 
-import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.core.util.shorthands.*
@@ -63,14 +62,8 @@ class UIColor(color: Int) : Copyable<UIColor>, Mergable<UIColor>, Animatable<UIC
 
     private var initial: UIColor? = null
 
-    override fun animate(start: UIColor?, end: UIColor?, fraction: Float) {
-        ifNotNull(start, end) {
-            rgba = colorLerp(
-                startColor = start?.rgba ?: run { initial = initial ?: copy; initial!!.rgba },
-                endColor = end?.rgba ?: run { initial = initial ?: copy; initial!!.rgba },
-                fraction
-            )
-        }
+    override fun animate(start: UIColor?, end: UIColor?, fraction: Float): Boolean {
+        rgba = colorLerp(start.rgba, end.rgba, fraction)
     }
 
     override fun toString(): String =

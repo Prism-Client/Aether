@@ -1,10 +1,7 @@
 package net.prismclient.aether.ui.unit.other
 
 import net.prismclient.aether.core.util.property.UIProperty
-import net.prismclient.aether.core.util.shorthands.ifNotNull
-import net.prismclient.aether.core.util.shorthands.lerp
 import net.prismclient.aether.core.util.shorthands.or
-import net.prismclient.aether.core.util.shorthands.px
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.compute
@@ -41,23 +38,8 @@ open class UIRadius(
         }
     }
 
-    override fun animate(start: UIRadius?, end: UIRadius?, fraction: Float) {
-        ifNotNull(start?.topLeft, end?.topLeft) {
-            topLeft = topLeft ?: 0.px
-            topLeft!!.lerp(topLeft, start?.topLeft, end?.topLeft, fraction)
-        }
-        ifNotNull(start?.topRight, end?.topRight) {
-            topRight = topRight ?: 0.px
-            topRight!!.lerp(topRight, start?.topRight, end?.topRight, fraction)
-        }
-        ifNotNull(start?.bottomRight, end?.bottomRight) {
-            bottomRight = bottomRight ?: 0.px
-            bottomRight!!.lerp(bottomRight, start?.bottomRight, end?.bottomRight, fraction)
-        }
-        ifNotNull(start?.bottomLeft, end?.bottomLeft) {
-            bottomLeft = bottomLeft ?: 0.px
-            bottomLeft!!.lerp(bottomLeft, start?.bottomLeft, end?.bottomLeft, fraction)
-        }
+    override fun animate(start: UIRadius?, end: UIRadius?, fraction: Float): Boolean {
+        TODO("Feature not yet implemented")
     }
 
     override fun toString(): String =

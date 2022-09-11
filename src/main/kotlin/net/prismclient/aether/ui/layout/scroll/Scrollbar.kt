@@ -228,7 +228,7 @@ class DefaultScrollbar : Scrollbar() {
         TODO("Not yet implemented")
     }
 
-    override fun animate(start: Scrollbar?, end: Scrollbar?, fraction: Float) {
+    override fun animate(start: Scrollbar?, end: Scrollbar?, fraction: Float): Boolean {
         TODO("Not yet implemented")
     }
 }

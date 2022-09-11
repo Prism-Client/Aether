@@ -1,17 +1,12 @@
 package net.prismclient.aether.ui.component.type
 
-import net.prismclient.aether.core.color.UIAlpha
 import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.component.UIComponent
-import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.image.ImageProvider
 import net.prismclient.aether.ui.image.UIImage
 import net.prismclient.aether.ui.modifier.UIModifier
-import net.prismclient.aether.ui.unit.other.AnchorPoint
-import net.prismclient.aether.ui.unit.other.Margin
-import net.prismclient.aether.ui.unit.other.Padding
 import java.io.FileNotFoundException
 
 /**
@@ -87,47 +82,8 @@ class IconModifier : UIModifier<IconModifier>() {
         }
     }
 
-    override fun animate(start: IconModifier?, end: IconModifier?, fraction: Float) {
-        ifNotNull(start?.x, end?.x) {
-            x = x ?: 0.px
-            x!!.lerp(x, start?.x, end?.x, fraction)
-        }
-        ifNotNull(start?.y, end?.y) {
-            y = y ?: 0.px
-            y!!.lerp(y, start?.y, end?.y, fraction)
-        }
-        ifNotNull(start?.width, end?.width) {
-            width = width ?: 0.px
-            width!!.lerp(width, start?.width, end?.width, fraction)
-        }
-        ifNotNull(start?.height, end?.height) {
-            height = height ?: 0.px
-            height!!.lerp(height, start?.height, end?.height, fraction)
-        }
-        ifNotNull(start?.anchorPoint, end?.anchorPoint) {
-            anchorPoint = anchorPoint ?: AnchorPoint()
-            anchorPoint!!.animate(start?.anchorPoint, end?.anchorPoint, fraction)
-        }
-        ifNotNull(start?.padding, end?.padding) {
-            padding = padding ?: Padding(null, null, null, null)
-            padding!!.animate(start?.padding, end?.padding, fraction)
-        }
-        ifNotNull(start?.margin, end?.margin) {
-            margin = margin ?: Margin(null, null, null, null)
-            margin!!.animate(start?.margin, end?.margin, fraction)
-        }
-        ifNotNull(start?.opacity, end?.opacity) {
-            opacity = opacity ?: UIAlpha(1f)
-            opacity!!.value = lerp(start?.opacity?.value ?: 1f, end?.opacity?.value ?: 1f, fraction)
-        }
-        ifNotNull(start?.background, end?.background) {
-            background = background ?: UIBackground()
-            background!!.animate(start?.background, end?.background, fraction)
-        }
-        ifNotNull(start?.imageColor, end?.imageColor) {
-            imageColor = imageColor ?: UIColor(-1)
-            imageColor!!.animate(start?.imageColor, end?.imageColor, fraction)
-        }
+    override fun animate(start: IconModifier?, end: IconModifier?, fraction: Float): Boolean {
+        TODO("Feature not yet implemented")
     }
 }
 

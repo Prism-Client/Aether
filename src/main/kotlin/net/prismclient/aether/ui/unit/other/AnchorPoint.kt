@@ -1,6 +1,5 @@
 package net.prismclient.aether.ui.unit.other
 
-import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.core.util.shorthands.*
@@ -52,15 +51,8 @@ open class AnchorPoint : Copyable<AnchorPoint>, Mergable<AnchorPoint>, Animatabl
         }
     }
 
-    override fun animate(start: AnchorPoint?, end: AnchorPoint?, fraction: Float) {
-        ifNotNull(start?.x, end?.x) {
-            x = x ?: 0.px
-            x!!.lerp(x, start?.x, end?.x, fraction)
-        }
-        ifNotNull(start?.y, end?.y) {
-            y = y ?: 0.px
-            y!!.lerp(y, start?.y, end?.y, fraction)
-        }
+    override fun animate(start: AnchorPoint?, end: AnchorPoint?, fraction: Float): Boolean {
+        TODO("Feature not yet implemented")
     }
 
     override fun toString(): String = "AnchorPoint($x, $y)"

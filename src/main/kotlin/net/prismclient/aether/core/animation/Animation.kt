@@ -1,12 +1,10 @@
 package net.prismclient.aether.core.animation
 
 import net.prismclient.aether.core.event.PreRenderEvent
-import net.prismclient.aether.core.event.UIEventBus
 import net.prismclient.aether.core.event.UIEventBus.register
 import net.prismclient.aether.core.event.UIEventBus.unregister
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.modifier.UIModifier
-import kotlin.reflect.KClass
 
 /**
  * @author sen
@@ -20,6 +18,8 @@ abstract class Animation<C : Composable, M : UIModifier<M>> {
     var animating = false
 
     lateinit var composable: Composable
+
+    var cachedState: M? = null
 
     open fun start(composable: Composable) {
         println("Starting the animation... ")
@@ -37,17 +37,16 @@ abstract class Animation<C : Composable, M : UIModifier<M>> {
     }
 
     open fun next() {
-        println("Next")
         activeKeyframe = nextKeyframe
         nextKeyframe = keyframes.getOrNull(keyframes.indexOf(activeKeyframe) + 1)
         activeKeyframe?.ease?.start()
     }
 
     open fun complete() {
-        println("Completed the animation!")
         unregister<PreRenderEvent>(toString())
     }
 
+    @Suppress("UNCHECKED_CAST")
     open fun update() {
         if (activeKeyframe == null || nextKeyframe == null) {
             complete()
@@ -61,11 +60,14 @@ abstract class Animation<C : Composable, M : UIModifier<M>> {
                 return
             }
         }
+
+
+        cachedState = cachedState ?: (composable.modifier as M).copy()
         
 
         (composable.modifier as M).animate(
-            activeKeyframe?.modifier as M,
-            nextKeyframe?.modifier as M,
+            (activeKeyframe?.modifier as? M) ?: cachedState!!,
+            (nextKeyframe?.modifier as? M) ?: cachedState!!,
             (activeKeyframe?.ease?.getValue() ?: 0.0).toFloat()
         )
     }

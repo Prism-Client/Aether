@@ -2,7 +2,6 @@ package net.prismclient.aether.ui.modifier
 
 import net.prismclient.aether.core.color.UIAlpha
 import net.prismclient.aether.core.color.UIColor
-import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.core.util.shorthands.*
@@ -35,7 +34,7 @@ import net.prismclient.aether.ui.unit.type.SizeUnit
  * @see DefaultModifier
  */
 @Suppress("Unchecked_Cast", "LeakingThis")
-abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animatable<M> {
+abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M> {
     open var x: UIUnit<*>? = null
     open var y: UIUnit<*>? = null
     open var width: UIUnit<*>? = null
@@ -355,43 +354,8 @@ class DefaultModifier : UIModifier<DefaultModifier>() {
             background = other.background or background
         }
     }
+}
 
-    override fun animate(start: DefaultModifier?, end: DefaultModifier?, fraction: Float) {
-        ifNotNull(start?.x, end?.x) {
-            x = x ?: 0.px
-            x!!.lerp(x, start?.x, end?.x, fraction)
-        }
-        ifNotNull(start?.y, end?.y) {
-            y = y ?: 0.px
-            y!!.lerp(y, start?.y, end?.y, fraction)
-        }
-        ifNotNull(start?.width, end?.width) {
-            width = width ?: 0.px
-            width!!.lerp(width, start?.width, end?.width, fraction)
-        }
-        ifNotNull(start?.height, end?.height) {
-            height = height ?: 0.px
-            height!!.lerp(height, start?.height, end?.height, fraction)
-        }
-        ifNotNull(start?.anchorPoint, end?.anchorPoint) {
-            anchorPoint = anchorPoint ?: AnchorPoint()
-            anchorPoint!!.animate(start?.anchorPoint, end?.anchorPoint, fraction)
-        }
-        ifNotNull(start?.padding, end?.padding) {
-            padding = padding ?: Padding(null, null, null, null)
-            padding!!.animate(start?.padding, end?.padding, fraction)
-        }
-        ifNotNull(start?.margin, end?.margin) {
-            margin = margin ?: Margin(null, null, null, null)
-            margin!!.animate(start?.margin, end?.margin, fraction)
-        }
-        ifNotNull(start?.opacity, end?.opacity) {
-            opacity = opacity ?: UIAlpha(1f)
-            opacity!!.value = lerp(start?.opacity?.value ?: 1f, end?.opacity?.value ?: 1f, fraction)
-        }
-        ifNotNull(start?.background, end?.background) {
-            background = background ?: UIBackground()
-            background!!.animate(start?.background, end?.background, fraction)
-        }
-    }
+inline fun <T> has(obj1: T?, obj2: T?, block: () -> Unit) {
+    if (obj1 != null && obj2 != null) block()
 }

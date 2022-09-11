@@ -67,31 +67,8 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
         }
     }
 
-    override fun animate(start: UIBackground?, end: UIBackground?, fraction: Float) {
-        ifNotNull(start?.x, end?.x) {
-            x = x ?: 0.px
-            x!!.lerp(x, start?.x, end?.x, fraction)
-        }
-        ifNotNull(start?.y, end?.y) {
-            y = y ?: 0.px
-            y!!.lerp(y, start?.y, end?.y, fraction)
-        }
-        ifNotNull(start?.width, end?.width) {
-            width = width ?: 0.px
-            width!!.lerp(width, start?.width, end?.width, fraction)
-        }
-        ifNotNull(start?.height, end?.height) {
-            height = height ?: 0.px
-            height!!.lerp(height, start?.height, end?.height, fraction)
-        }
-        ifNotNull(start?.backgroundColor, end?.backgroundColor) {
-            backgroundColor = backgroundColor ?: UIColor(0)
-            backgroundColor!!.animate(start?.backgroundColor, end?.backgroundColor, fraction)
-        }
-        ifNotNull(start?.backgroundRadius, end?.backgroundRadius) {
-            backgroundRadius = backgroundRadius ?: UIRadius()
-            backgroundRadius!!.animate(start?.backgroundRadius, end?.backgroundRadius, fraction)
-        }
+    override fun animate(start: UIBackground?, end: UIBackground?, fraction: Float): Boolean {
+        TODO("Feature not yet implemented")
     }
 
     override fun toString(): String =

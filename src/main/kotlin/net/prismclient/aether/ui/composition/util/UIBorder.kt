@@ -1,7 +1,6 @@
 package net.prismclient.aether.ui.composition.util
 
 import net.prismclient.aether.core.color.UIColor
-import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.core.util.shorthands.copy
@@ -59,7 +58,7 @@ open class UIBorder : Shape(), Animatable<UIBorder>, Copyable<UIBorder>, Mergabl
         it.borderDirection = borderDirection ?: it.borderDirection
     }
 
-    override fun animate(start: UIBorder?, end: UIBorder?, fraction: Float) {
+    override fun animate(start: UIBorder?, end: UIBorder?, fraction: Float): Boolean {
         TODO("Not yet implemented")
     }
 
