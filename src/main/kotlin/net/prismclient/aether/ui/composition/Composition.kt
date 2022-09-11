@@ -47,6 +47,8 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
     open var framebuffer: UIFramebuffer? = null
         protected set
 
+    open var requiresRasterization: Boolean = false
+
     init {
         Aether.instance.compositions?.add(this)
     }
@@ -60,12 +62,13 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
         composePosition()
         children.forEach(Composable::compose)
         modifier.compose(this)
-        rasterize()
+        requestRasterization()
     }
 
     override fun render() {
         Renderer {
             if (modifier.optimizeComposition) {
+                if (framebuffer == null || requiresRasterization) rasterize()
                 color(-1)
                 path {
                     renderer.imagePattern(framebuffer!!.imagePattern, x, y, width, height, 0f, 1f)
@@ -86,16 +89,25 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
         if (isTopLayer()) compose() else super.recompose()
     }
 
+    open fun requestRasterization() {
+        if (modifier.optimizeComposition) {
+            requiresRasterization = true
+        }
+    }
+
     /**
      * Converts the active composition layout to a raster image.
      */
     open fun rasterize() {
         if (!modifier.optimizeComposition) return
 
+        requiresRasterization = false
+
         if (framebuffer == null || framebuffer!!.width != width || framebuffer!!.height != height) {
             if (framebuffer != null)
                 Aether.renderer.deleteFBO(framebuffer!!)
             framebuffer = Aether.renderer.createFBO(width, height)
+            println("Requested a new Framebuffer")
         }
 
         UIRendererDSL.renderToFramebuffer(framebuffer!!) {

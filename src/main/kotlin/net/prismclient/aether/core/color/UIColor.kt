@@ -61,9 +61,15 @@ class UIColor(color: Int) : Copyable<UIColor>, Mergable<UIColor>, Animatable<UIC
         }
     }
 
+    private var initial: UIColor? = null
+
     override fun animate(start: UIColor?, end: UIColor?, fraction: Float) {
         ifNotNull(start, end) {
-            rgba = lerp(start?.rgba ?: rgba, end?.rgba ?: rgba, fraction)
+            rgba = colorLerp(
+                startColor = start?.rgba ?: run { initial = initial ?: copy; initial!!.rgba },
+                endColor = end?.rgba ?: run { initial = initial ?: copy; initial!!.rgba },
+                fraction
+            )
         }
     }
 

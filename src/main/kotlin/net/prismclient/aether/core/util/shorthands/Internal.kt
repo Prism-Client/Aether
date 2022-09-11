@@ -62,6 +62,17 @@ internal fun lerp(start: Int, end: Int, progress: Float): Int = start + ((end - 
 internal fun lerp(start: Float, end: Float, progress: Float) = start + (end - start) * progress.roundToInt()
 
 /**
+ * Splits the given [color]s into four channels and lerps them individually to provide
+ * a semi-accurate, fast lerping between two colors.
+ */
+internal fun colorLerp(startColor: Int, endColor: Int, progress: Float) = RGBA(
+    startColor.red + ((endColor.red - startColor.red) * progress + 0.5f).toInt(),
+    startColor.green + ((endColor.green - startColor.green) * progress + 0.5f).toInt(),
+    startColor.blue + ((endColor.blue - startColor.blue) * progress + 0.5f).toInt(),
+    startColor.alpha + ((endColor.alpha - startColor.alpha) * progress + 0.5f).toInt()
+)
+
+/**
  * Linearly interpolates between [start] and [end] by [progress] which are Units, and adjust the
  * cached value to the output. If [start] or [end] are null, the value of [initial] is used. The
  * value of [initial] is considered 0f if null.

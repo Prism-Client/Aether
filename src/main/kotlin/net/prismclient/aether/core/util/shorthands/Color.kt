@@ -12,6 +12,11 @@ import net.prismclient.aether.core.color.UIColor
  */
 
 /**
+ * Returns a String from the given [Int] with the format of (R.G,B,A)
+ */
+fun Int.toColorString() = "${this.red},${this.green},${this.blue},${this.alpha}"
+
+/**
  * Returns the red color of the given color. The provided Int is expected to store the color as RGBA.
  */
 @get:JvmName("red")

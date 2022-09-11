@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.composable
 
 import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.event.MousePress
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.shorthands.Block
@@ -24,6 +25,8 @@ import net.prismclient.aether.ui.layout.util.LayoutOrder
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
+import java.util.function.BiConsumer
+import java.util.function.Consumer
 
 inline fun Button(
     text: String,
@@ -36,8 +39,11 @@ inline fun Label(
     text: String,
     modifier: UIModifier<*> = Modifier(),
     fontStyle: FontStyle = FontStyle(),
+    noinline onClick: (UIButton.(MousePress) -> Unit)? = null,
     block: Block<UIButton> = {},
-): UIButton = Button(text, modifier, fontStyle, block)
+): UIButton = Button(text, modifier, fontStyle, block).apply {
+    if (onClick != null) onClick { this.onClick(it) }
+}
 
 inline fun Image(
     imageName: UIImage,

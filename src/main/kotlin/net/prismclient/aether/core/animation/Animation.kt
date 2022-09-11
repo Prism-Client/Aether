@@ -65,7 +65,7 @@ abstract class Animation<C : Composable, M : UIModifier<M>> {
 
         (composable.modifier as M).animate(
             activeKeyframe?.modifier as M,
-            activeKeyframe?.modifier as M,
+            nextKeyframe?.modifier as M,
             (activeKeyframe?.ease?.getValue() ?: 0.0).toFloat()
         )
     }
