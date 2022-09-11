@@ -1,5 +1,6 @@
 package net.prismclient.aether.ui.unit.other
 
+import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.util.property.UIProperty
 import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.ui.composition.Composable
@@ -27,6 +28,10 @@ open class UIRadius(
         bottomLeft?.compute(composable, false)
     }
 
+    override fun animate(context: AnimationContext<*>, start: UIRadius?, end: UIRadius?, progress: Float) {
+        TODO("Not yet implemented")
+    }
+
     override fun copy(): UIRadius = UIRadius(topLeft?.copy(), topRight?.copy(), bottomRight?.copy(), bottomLeft?.copy())
 
     override fun merge(other: UIRadius?) {
@@ -36,10 +41,6 @@ open class UIRadius(
             bottomRight = other.bottomRight or bottomRight
             bottomLeft = other.bottomLeft or bottomLeft
         }
-    }
-
-    override fun animate(start: UIRadius?, end: UIRadius?, fraction: Float): Boolean {
-        TODO("Feature not yet implemented")
     }
 
     override fun toString(): String =

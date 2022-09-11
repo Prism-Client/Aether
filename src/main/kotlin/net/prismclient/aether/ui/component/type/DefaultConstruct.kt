@@ -44,7 +44,7 @@ abstract class Construct<T : Construct<T>>(modifier: UIModifier<*>) : UIComponen
  * @see Construct
  */
 open class DefaultConstruct(modifier: UIModifier<*>) : Construct<DefaultConstruct>(modifier) {
-    override fun copy(): DefaultConstruct = DefaultConstruct(modifier.copy).also {
+    override fun copy(): DefaultConstruct = DefaultConstruct(modifier.copy()).also {
         it.action = action
     }
 }

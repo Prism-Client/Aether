@@ -119,7 +119,7 @@ class MacrosExample : UIScreen {
             renderLabel()
         }
 
-        override fun copy(): DefaultMacro = DefaultMacro(label, enabled, modifier.copy)
+        override fun copy(): DefaultMacro = DefaultMacro(label, enabled, modifier.copy())
     }
 
     abstract class Macro<T : Macro<T>>(val label: String, var enabled: Boolean = false, modifier: UIModifier<*>) :

@@ -2,6 +2,8 @@ package net.prismclient.aether.example
 
 import net.prismclient.aether.core.Aether
 import net.prismclient.aether.example.util.Window
+import net.prismclient.aether.ui.alignment.UITextAlignment
+import net.prismclient.aether.ui.dsl.Renderer
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -17,11 +19,13 @@ import kotlin.math.max
  * An example game using LWJGL 3 and GLFW to run Aether.
  */
 abstract class Game(val windowTitle: String) {
-    lateinit var aether: Aether
-    lateinit var window: Window
+    open lateinit var aether: Aether
+    open lateinit var window: Window
 
-    var mouseX: Float = 0f
-    var mouseY: Float = 0f
+    open var mouseX: Float = 0f
+    open var mouseY: Float = 0f
+
+    open var fps = 0
 
     open fun initialize() {
         createWindow()
@@ -117,6 +121,9 @@ abstract class Game(val windowTitle: String) {
     abstract fun createCallbacks()
 
     open fun run() {
+        var frames = 0
+        var lastSecond = System.currentTimeMillis()
+
         while (!glfwWindowShouldClose(window.handle)) {
             glViewport(0, 0, window.width, window.height)
             glClearColor(0f, 0f, 0f, 0f)
@@ -125,8 +132,22 @@ abstract class Game(val windowTitle: String) {
             // Render Aether :)
             aether.render()
 
+            Renderer {
+                beginFrame(Aether.instance.displayWidth, Aether.instance.displayHeight, Aether.instance.devicePixelRatio)
+                color(-1)
+                font("Poppins-Regular", 16f, UITextAlignment.LEFT, UITextAlignment.TOP, 0f)
+                "FPS: $fps".render(0f, 0f)
+                endFrame()
+            }
+
             glfwSwapBuffers(window.handle)
             glfwPollEvents()
+
+            if (lastSecond + 1000 < System.currentTimeMillis()) {
+                lastSecond = System.currentTimeMillis()
+                fps = frames
+                frames = 0
+            } else frames++
         }
 
         GL.setCapabilities(null)

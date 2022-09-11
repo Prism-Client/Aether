@@ -1,5 +1,6 @@
 package net.prismclient.aether.ui.layout.scroll
 
+import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.event.MouseMove
 import net.prismclient.aether.core.event.MousePress
@@ -220,15 +221,15 @@ class DefaultScrollbar : Scrollbar() {
         }
     }
 
+    override fun animate(context: AnimationContext<*>, start: Scrollbar?, end: Scrollbar?, progress: Float) {
+        TODO("Not yet implemented")
+    }
+
     override fun copy(): Scrollbar {
         TODO("Not yet implemented")
     }
 
     override fun merge(other: Scrollbar?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun animate(start: Scrollbar?, end: Scrollbar?, fraction: Float): Boolean {
         TODO("Not yet implemented")
     }
 }

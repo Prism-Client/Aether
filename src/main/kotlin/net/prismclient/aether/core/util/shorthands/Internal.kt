@@ -87,4 +87,4 @@ internal fun UIUnit<*>.lerp(initial: UIUnit<*>?, start: UIUnit<*>?, end: UIUnit<
  * Creates a deep copy of the [Copyable] or null if it is null.
  */
 @Suppress("unchecked_cast")
-internal inline val <T : Copyable<*>> T?.copy: T get() = this?.copy() as T
+internal inline val <T : Copyable<*>> T?.copy: T? get() = this?.copy() as? T

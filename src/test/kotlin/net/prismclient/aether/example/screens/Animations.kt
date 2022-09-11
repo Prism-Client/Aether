@@ -1,15 +1,16 @@
 package net.prismclient.aether.example.screens
 
-import net.prismclient.aether.core.animation.Keyframe
-import net.prismclient.aether.core.animation.type.PropertyAnimation
+import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.animation.type.ComposableAnimation
+import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.ease.impl.UIQuart
 import net.prismclient.aether.core.util.shorthands.ColorOf
 import net.prismclient.aether.core.util.shorthands.px
 import net.prismclient.aether.core.util.shorthands.rgb
 import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.Alignment
-import net.prismclient.aether.ui.component.type.UIButton
 import net.prismclient.aether.ui.composable.Label
+import net.prismclient.aether.ui.composition.disableOptimizations
 import net.prismclient.aether.ui.dsl.Compose
 import net.prismclient.aether.ui.dsl.Resource
 import net.prismclient.aether.ui.font.*
@@ -37,7 +38,9 @@ object Animations : UIScreen {
             initialized = true
         }
 
-        val propertyAnimation = PropertyAnimation<UIButton, DefaultModifier>()
+        val propertyAnimation = ComposableAnimation<DefaultModifier>()
+
+        //Aether.instance.defaultComposition?.modifier?.disableOptimizations()
 
         val title = Label(
             text = "Some text!",
@@ -50,13 +53,19 @@ object Animations : UIScreen {
                 .fontSize(24.px)
                 .fontType(FontType.AutoWidth),
             onClick = {
-                propertyAnimation.start(this)
+                propertyAnimation.start(this, modifier as DefaultModifier)
             }
         )
 
-        propertyAnimation.keyframes.add(Keyframe(UIQuart(1250L), DefaultModifier()))
+        propertyAnimation.completionAction = Runnable {
+            propertyAnimation.start(title, title.modifier as DefaultModifier)
+        }
+
+        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(1250L), DefaultModifier()))
 //        propertyAnimation.keyframes.add(Keyframe(UILinear(10000L), DefaultModifier().x(50.px)))
-        propertyAnimation.keyframes.add(Keyframe(UIQuart(100L), DefaultModifier().backgroundColor(ColorOf(1f, 0f, 0f))))
+        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(1250), DefaultModifier().backgroundColor(ColorOf(1f, 0f, 0f))))
+
+        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(100L), DefaultModifier().backgroundColor(UIColor(0))))
 
         title.animations = HashMap()
         title.animations!!["Hello"] = propertyAnimation

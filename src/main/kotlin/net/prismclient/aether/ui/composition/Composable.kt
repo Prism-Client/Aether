@@ -57,7 +57,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     /**
      *
      */
-    open var animations: HashMap<String, Animation<*, *>>? = null
+    open var animations: HashMap<String, Animation<*>>? = null
 
     /**
      * Returns true if this has been composed at least once.

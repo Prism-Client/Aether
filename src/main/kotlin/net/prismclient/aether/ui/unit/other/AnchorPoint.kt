@@ -1,5 +1,7 @@
 package net.prismclient.aether.ui.unit.other
 
+import net.prismclient.aether.core.animation.AnimationContext
+import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.core.util.shorthands.*
@@ -14,7 +16,7 @@ import net.prismclient.aether.ui.unit.UIUnit
  * @author sen
  * @since 1.0
  */
-open class AnchorPoint : Copyable<AnchorPoint>, Mergable<AnchorPoint>, Animatable<AnchorPoint> {
+open class AnchorPoint : Animatable<AnchorPoint>, Copyable<AnchorPoint>, Mergable<AnchorPoint> {
     open var x: UIUnit<*>? = null
     open var y: UIUnit<*>? = null
 
@@ -39,6 +41,10 @@ open class AnchorPoint : Copyable<AnchorPoint>, Mergable<AnchorPoint>, Animatabl
         }.crel
     }
 
+    override fun animate(context: AnimationContext<*>, start: AnchorPoint?, end: AnchorPoint?, progress: Float) {
+        TODO("Not yet implemented")
+    }
+
     override fun copy(): AnchorPoint = AnchorPoint().also {
         it.x = x?.copy()
         it.y = y?.copy()
@@ -50,10 +56,5 @@ open class AnchorPoint : Copyable<AnchorPoint>, Mergable<AnchorPoint>, Animatabl
             y = other.y or y
         }
     }
-
-    override fun animate(start: AnchorPoint?, end: AnchorPoint?, fraction: Float): Boolean {
-        TODO("Feature not yet implemented")
-    }
-
     override fun toString(): String = "AnchorPoint($x, $y)"
 }

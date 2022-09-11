@@ -1,5 +1,6 @@
 package net.prismclient.aether.ui.layout
 
+import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.alignment.Alignment
@@ -153,8 +154,8 @@ class BoxLayoutStyle : Style<BoxLayoutStyle, BoxLayout>() {
                 composable!!.potentialSize!!.width else composable!!.potentialSize!!.height) / composable.children.size
     }
 
-    override fun animate(start: BoxLayoutStyle?, end: BoxLayoutStyle?, fraction: Float): Boolean {
-        TODO("Feature not yet implemented")
+    override fun animate(context: AnimationContext<*>, start: BoxLayoutStyle?, end: BoxLayoutStyle?, progress: Float) {
+        TODO("Not yet implemented")
     }
 
     override fun copy(): BoxLayoutStyle = BoxLayoutStyle().also {

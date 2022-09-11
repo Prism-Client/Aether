@@ -1,7 +1,9 @@
 package net.prismclient.aether.ui.modifier
 
+import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.color.UIAlpha
 import net.prismclient.aether.core.color.UIColor
+import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.core.util.shorthands.*
@@ -34,7 +36,7 @@ import net.prismclient.aether.ui.unit.type.SizeUnit
  * @see DefaultModifier
  */
 @Suppress("Unchecked_Cast", "LeakingThis")
-abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M> {
+abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animatable<M> {
     open var x: UIUnit<*>? = null
     open var y: UIUnit<*>? = null
     open var width: UIUnit<*>? = null
@@ -352,6 +354,16 @@ class DefaultModifier : UIModifier<DefaultModifier>() {
             margin = other.margin or margin
             opacity = other.opacity or opacity
             background = other.background or background
+        }
+    }
+
+    override fun animate(context: AnimationContext<*>, start: DefaultModifier?, end: DefaultModifier?, progress: Float) {
+        ifNotNull(start?.background, end?.background) {
+            background = background ?: run {
+                context.recompose()
+                UIBackground()
+            }
+            background!!.animate(context, start?.background, end?.background, progress)
         }
     }
 }

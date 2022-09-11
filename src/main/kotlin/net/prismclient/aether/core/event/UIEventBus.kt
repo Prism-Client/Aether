@@ -15,26 +15,13 @@ import kotlin.reflect.KClass
  */
 object UIEventBus {
     @JvmStatic
-    val events: ConcurrentHashMap<KClass<out UIEvent>, HashMap<String, Consumer<out UIEvent>>> = ConcurrentHashMap()
-
-    /**
-     * In the case of the event being removed while it is being published, it will be
-     * added to a queue and invoked after the event is completed.
-     */
-    @JvmStatic
-    val eventUnregisters: ArrayList<Pair<KClass<out UIEvent>, String>> = arrayListOf()
-
-    /**
-     * The active event being published, or null.
-     */
-    @JvmStatic
-    var activeEvent: KClass<out UIEvent>? = null
+    val events: HashMap<KClass<out UIEvent>, ConcurrentHashMap<String, Consumer<out UIEvent>>> = hashMapOf()
 
     /**
      * Registers the given the [event] to the given event type [T].
      */
     inline fun <reified T : UIEvent> register(eventName: String? = null, event: Consumer<T>) {
-        events.computeIfAbsent(T::class) { HashMap() }[eventName ?: event.toString()] = event
+        events.computeIfAbsent(T::class) { ConcurrentHashMap() }[eventName ?: event.toString()] = event
     }
 
     /**
@@ -43,7 +30,7 @@ object UIEventBus {
     @JvmStatic
     @JvmOverloads
     fun <T : UIEvent> register(eventName: String? = null, type: Class<out UIEvent>, event: Consumer<T>) {
-        events.computeIfAbsent(type.kotlin) { HashMap() }[eventName ?: event.toString()] = event
+        events.computeIfAbsent(type.kotlin) { ConcurrentHashMap() }[eventName ?: event.toString()] = event
     }
 
     /**
@@ -51,11 +38,7 @@ object UIEventBus {
      * during publishing; however, it will not actually be removed until after the event is published.
      */
     inline fun <reified T : UIEvent> unregister(eventName: String) {
-        if (activeEvent == T::class) {
-            eventUnregisters.add(Pair(T::class, eventName))
-        } else {
-            events[T::class]?.remove(eventName)
-        }
+        events[T::class]?.remove(eventName)
     }
 
     /**
@@ -77,10 +60,7 @@ object UIEventBus {
     @Suppress("Unchecked_Cast")
     fun <T : UIEvent> publish(event: T) {
         if (events.containsKey(event::class)) {
-            val events = events[event::class]!!
-            val previous = activeEvent
-            activeEvent = event::class
-            events.forEach { (_, consumer) ->
+            events[event::class]!!.forEach { (_, consumer) ->
                 try {
                     (consumer as Consumer<T>).accept(event)
                 } catch (e: Exception) {
@@ -88,16 +68,6 @@ object UIEventBus {
                     e.printStackTrace()
                 }
             }
-            if (eventUnregisters.isNotEmpty()) {
-                eventUnregisters.removeIf { (type, eventName) ->
-                    (type == event::class).also {
-                        if (it) {
-                            events.remove(eventName)
-                        }
-                    }
-                }
-            }
-            activeEvent = previous
         }
     }
 }

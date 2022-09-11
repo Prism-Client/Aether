@@ -1,5 +1,6 @@
 package net.prismclient.aether.ui.component.type
 
+import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.component.UIComponent
@@ -48,7 +49,7 @@ class ImageComponent(image: UIImage, modifier: IconModifier) : UIComponent<Image
     }
 
     override fun copy(): ImageComponent =
-        ImageComponent(image, modifier.copy)
+        ImageComponent(image, modifier.copy())
 }
 
 class IconModifier : UIModifier<IconModifier>() {
@@ -82,8 +83,8 @@ class IconModifier : UIModifier<IconModifier>() {
         }
     }
 
-    override fun animate(start: IconModifier?, end: IconModifier?, fraction: Float): Boolean {
-        TODO("Feature not yet implemented")
+    override fun animate(context: AnimationContext<*>, start: IconModifier?, end: IconModifier?, progress: Float) {
+        TODO("Not yet implemented")
     }
 }
 

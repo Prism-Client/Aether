@@ -28,7 +28,7 @@ class RangeUnit(var unit: UIUnit<*>, var min: UIUnit<*>?, var max: UIUnit<*>?) :
         return unit.dp
     }
 
-    override fun copy(): RangeUnit = RangeUnit(unit.copy, min.copy, max.copy)
+    override fun copy(): RangeUnit = RangeUnit(unit.copy(), min.copy, max.copy)
 
     override fun toString(): String = "RangeUnit($unit, $min, $max)"
 

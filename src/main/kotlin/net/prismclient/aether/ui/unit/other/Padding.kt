@@ -1,5 +1,6 @@
 package net.prismclient.aether.ui.unit.other
 
+import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.util.property.UIProperty
 import net.prismclient.aether.core.util.shorthands.or
 import net.prismclient.aether.ui.composition.Composable
@@ -29,6 +30,10 @@ open class Padding(
         left?.compute(composable, false)
     }
 
+    override fun animate(context: AnimationContext<*>, start: Padding?, end: Padding?, progress: Float) {
+        TODO("Not yet implemented")
+    }
+
     override fun copy(): Padding = Padding(top?.copy(), right?.copy(), bottom?.copy(), left?.copy())
 
     override fun merge(other: Padding?) {
@@ -38,10 +43,6 @@ open class Padding(
             bottom = other.bottom or bottom
             left = other.left or left
         }
-    }
-
-    override fun animate(start: Padding?, end: Padding?, fraction: Float): Boolean {
-
     }
 
     operator fun component1() = top

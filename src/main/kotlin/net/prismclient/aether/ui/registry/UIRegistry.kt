@@ -92,5 +92,5 @@ fun register(modifier: UIModifier<*>, name: String = modifier::class.simpleName!
  * to the active modifier, all properties of it are applied to the active modifier.
  */
 fun register(style: Style<*, *>, name: String = style::class.simpleName!!) {
-    UIRegistry.registerStyle(name, style.copy)
+    UIRegistry.registerStyle(name, style.copy())
 }

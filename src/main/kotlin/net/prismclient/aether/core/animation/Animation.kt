@@ -1,29 +1,31 @@
 package net.prismclient.aether.core.animation
 
+import net.prismclient.aether.core.ease.UIEase
 import net.prismclient.aether.core.event.PreRenderEvent
 import net.prismclient.aether.core.event.UIEventBus.register
 import net.prismclient.aether.core.event.UIEventBus.unregister
+import net.prismclient.aether.core.util.property.Animatable
+import net.prismclient.aether.core.util.shorthands.copy
 import net.prismclient.aether.ui.composition.Composable
-import net.prismclient.aether.ui.modifier.UIModifier
+import java.lang.NullPointerException
 
 /**
  * @author sen
  * @since 1.0
  */
-abstract class Animation<C : Composable, M : UIModifier<M>> {
-    var keyframes: ArrayList<Keyframe<M>> = arrayListOf()
-    var activeKeyframe: Keyframe<M>? = null
-    var nextKeyframe: Keyframe<M>? = null
+abstract class Animation<T : Animatable<T>> {
+    open var context: AnimationContext<T>? = null
 
-    var animating = false
+    open var keyframes: ArrayList<Keyframe> = arrayListOf()
+    open var activeKeyframe: Keyframe? = null
+    open var nextKeyframe: Keyframe? = null
 
-    lateinit var composable: Composable
+    open var completionAction: Runnable? = null
 
-    var cachedState: M? = null
+    open var animating = false
+        protected set
 
-    open fun start(composable: Composable) {
-        println("Starting the animation... ")
-        this.composable = composable
+    open fun start() {
         if (keyframes.isEmpty()) throw IllegalStateException("No keyframes to animate")
 
         activeKeyframe = keyframes[0]
@@ -33,21 +35,31 @@ abstract class Animation<C : Composable, M : UIModifier<M>> {
 
         animating = true
 
-        register<PreRenderEvent>(toString()) { update() }
+        context = AnimationContext(activeKeyframe!!.animatable.copy)
     }
 
     open fun next() {
         activeKeyframe = nextKeyframe
         nextKeyframe = keyframes.getOrNull(keyframes.indexOf(activeKeyframe) + 1)
         activeKeyframe?.ease?.start()
+
+        if (activeKeyframe == null || nextKeyframe == null) {
+            complete()
+            return
+        }
+
+        if (context == null)
+            throw NullPointerException("Animation context is null. Has the animation been started?")
+        context!!.updateContext(activeKeyframe!!.animatable.copy as? T)
     }
 
     open fun complete() {
-        unregister<PreRenderEvent>(toString())
+        completionAction?.run()
     }
 
-    @Suppress("UNCHECKED_CAST")
-    open fun update() {
+    open fun update(obj: T) {
+        val context = context ?: throw NullPointerException("Animation context is null. Has the animation been started?")
+
         if (activeKeyframe == null || nextKeyframe == null) {
             complete()
             return
@@ -61,14 +73,15 @@ abstract class Animation<C : Composable, M : UIModifier<M>> {
             }
         }
 
-
-        cachedState = cachedState ?: (composable.modifier as M).copy()
-        
-
-        (composable.modifier as M).animate(
-            (activeKeyframe?.modifier as? M) ?: cachedState!!,
-            (nextKeyframe?.modifier as? M) ?: cachedState!!,
+        obj.animate(
+            context,
+            (activeKeyframe?.animatable ?: context.snapshot) as? T,
+            (nextKeyframe?.animatable ?: context.snapshot) as? T,
             (activeKeyframe?.ease?.getValue() ?: 0.0).toFloat()
         )
     }
+
+    open fun createKeyframe(ease: UIEase, animatable: T) = Keyframe(ease, animatable)
+
+    inner class Keyframe(val ease: UIEase, val animatable: T)
 }

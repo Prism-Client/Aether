@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.layout
 
 import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.property.Focusable
@@ -201,6 +202,10 @@ abstract class LayoutModifier<T : LayoutModifier<T>> : CompositionModifier<T>() 
 fun LayoutModifier(): DefaultLayoutModifier = DefaultLayoutModifier()
 
 class DefaultLayoutModifier : LayoutModifier<DefaultLayoutModifier>() {
+    override fun animate(context: AnimationContext<*>, start: DefaultLayoutModifier?, end: DefaultLayoutModifier?, progress: Float) {
+        TODO("Not yet implemented")
+    }
+
     override fun copy(): DefaultLayoutModifier = DefaultLayoutModifier().also {
         it.x = x.copy
         it.y = y.copy
@@ -233,9 +238,5 @@ class DefaultLayoutModifier : LayoutModifier<DefaultLayoutModifier>() {
             horizontalScrollbar = other.horizontalScrollbar or horizontalScrollbar
             verticalScrollbar = other.verticalScrollbar or verticalScrollbar
         }
-    }
-
-    override fun animate(start: DefaultLayoutModifier?, end: DefaultLayoutModifier?, fraction: Float): Boolean {
-        TODO("Feature not yet implemented")
     }
 }

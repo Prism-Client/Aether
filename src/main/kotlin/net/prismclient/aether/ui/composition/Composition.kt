@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.composition
 
 import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.dsl.UIRendererDSL
@@ -182,6 +183,10 @@ fun CompositionModifier(): DefaultCompositionModifier = DefaultCompositionModifi
  * @since 1.0
  */
 class DefaultCompositionModifier : CompositionModifier<DefaultCompositionModifier>() {
+    override fun animate(context: AnimationContext<*>, start: DefaultCompositionModifier?, end: DefaultCompositionModifier?, progress: Float) {
+        TODO("Not yet implemented")
+    }
+
     override fun copy(): DefaultCompositionModifier = DefaultCompositionModifier().also {
         it.x = x.copy
         it.y = y.copy
@@ -210,9 +215,5 @@ class DefaultCompositionModifier : CompositionModifier<DefaultCompositionModifie
             optimizeComposition = other.optimizeComposition
             clipContent = other.clipContent
         }
-    }
-
-    override fun animate(start: DefaultCompositionModifier?, end: DefaultCompositionModifier?, fraction: Float): Boolean {
-        TODO("Feature not yet implemented")
     }
 }

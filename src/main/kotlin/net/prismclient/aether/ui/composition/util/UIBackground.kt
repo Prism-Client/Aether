@@ -1,5 +1,6 @@
 package net.prismclient.aether.ui.composition.util
 
+import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.property.UIProperty
 import net.prismclient.aether.core.util.shorthands.*
@@ -67,8 +68,12 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
         }
     }
 
-    override fun animate(start: UIBackground?, end: UIBackground?, fraction: Float): Boolean {
-        TODO("Feature not yet implemented")
+    override fun animate(context: AnimationContext<*>, start: UIBackground?, end: UIBackground?, progress: Float) {
+        // TODO: Animate position and size
+        ifNotNull(start?.backgroundColor, end?.backgroundColor) {
+            backgroundColor = backgroundColor.default
+            backgroundColor!!.animate(context, start?.backgroundColor, end?.backgroundColor, progress)
+        }
     }
 
     override fun toString(): String =

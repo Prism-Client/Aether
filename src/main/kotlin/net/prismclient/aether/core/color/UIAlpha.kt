@@ -1,5 +1,7 @@
 package net.prismclient.aether.core.color
 
+import net.prismclient.aether.core.animation.AnimationContext
+import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.core.util.shorthands.lerp
@@ -16,8 +18,8 @@ class UIAlpha(var value: Float) : Copyable<UIAlpha>, Mergable<UIAlpha>, Animatab
      */
     constructor(value: Int) : this((value and 0xFF) / 255f)
 
-    override fun animate(start: UIAlpha?, end: UIAlpha?, fraction: Float): Boolean {
-        value = lerp(start.value, end.value, fraction)
+    override fun animate(context: AnimationContext<*>, start: UIAlpha?, end: UIAlpha?, progress: Float) {
+        TODO("Not yet implemented")
     }
 
     override fun copy(): UIAlpha = UIAlpha(value)

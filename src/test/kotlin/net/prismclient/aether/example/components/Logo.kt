@@ -17,7 +17,7 @@ class Logo(modifier: UIModifier<*>) : Construct<Logo>(modifier) {
         action = logoAction
     }
 
-    override fun copy(): Logo = Logo(modifier.copy)
+    override fun copy(): Logo = Logo(modifier.copy())
 
     companion object {
         @JvmStatic

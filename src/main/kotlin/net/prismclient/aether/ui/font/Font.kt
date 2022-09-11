@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.font
 
 import net.prismclient.aether.core.Aether
+import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.shorthands.*
@@ -301,6 +302,10 @@ open class FontStyle : Style<FontStyle, Composable>() {
         fontSpacing?.compute(composable, composable.width, composable.height, false)
     }
 
+    override fun animate(context: AnimationContext<*>, start: FontStyle?, end: FontStyle?, progress: Float) {
+        TODO("Not yet implemented")
+    }
+
     override fun copy(): FontStyle = FontStyle().also {
         it.x = x?.copy()
         it.y = y?.copy()
@@ -341,10 +346,6 @@ open class FontStyle : Style<FontStyle, Composable>() {
             lineHeight = other.lineHeight ?: lineHeight
             offsetBaseline = other.offsetBaseline || offsetBaseline
         }
-    }
-
-    override fun animate(start: FontStyle?, end: FontStyle?, fraction: Float): Boolean {
-        TODO("Feature not yet implemented")
     }
 }
 
