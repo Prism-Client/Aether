@@ -138,7 +138,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      * todo be doced
      */
     open fun recompose() {
-        // TODO: Determine when to recompose only necessary elements if necesssary
+        // TODO: Determine when to recompose only necessary elements if neccsssary
         composition.recompose()
     }
 
