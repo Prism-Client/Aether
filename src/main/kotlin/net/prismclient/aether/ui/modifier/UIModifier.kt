@@ -379,6 +379,10 @@ class DefaultModifier : UIModifier<DefaultModifier>() {
     }
 
     override fun animate(context: AnimationContext<*>, start: DefaultModifier?, end: DefaultModifier?, progress: Float) {
+        ifNotNull(start?.opacity, end?.opacity) {
+            opacity = opacity ?: UIAlpha(1f)
+            opacity!!.animate(context, start?.opacity, end?.opacity, progress)
+        }
         ifNotNull(start?.background, end?.background) {
             background = background ?: run {
                 context.recompose()
