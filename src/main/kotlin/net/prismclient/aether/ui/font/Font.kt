@@ -8,6 +8,7 @@ import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment.*
+import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.font.FontType.*
@@ -95,10 +96,10 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
      * Expects [composeSize] to be invoked prior to this. This should be invoked after the size
      * and position of the composable have been calculated.
      */
-    override fun compose(composable: Composable?) {
+    override fun compose(context: ComposableContext) {
         style.preCompose()
-        super.compose(composable)
-        anchor?.compose(composable, width.dp, height.dp)
+        super.compose(context)
+        anchor?.compose(context, width.dp, height.dp)
     }
 
     /**
@@ -292,14 +293,14 @@ open class FontStyle : Style<FontStyle, Composable>() {
         font.anchor = anchor ?: font.anchor
     }
 
-    override fun compose(composable: Composable?) {
-        composable!!
+    override fun compose(context: ComposableContext) {
+        context!!
         ifNotNull(fontFamily) {
             //println("here")
             actualFontName = "${fontFamily!!.familyName}-${fontFaceType?.name?.lowercase()}"
         }
-        fontSize?.compute(composable, composable.width, composable.height, false)
-        fontSpacing?.compute(composable, composable.width, composable.height, false)
+        fontSize?.compute(context, context.width, context.height, false)
+        fontSpacing?.compute(context, context.width, context.height, false)
     }
 
     override fun animate(context: AnimationContext<*>, start: FontStyle?, end: FontStyle?, progress: Float) {

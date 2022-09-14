@@ -6,7 +6,6 @@ import net.prismclient.aether.example.Renderer.fontBounds
 import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
-import net.prismclient.aether.ui.component.*
 import net.prismclient.aether.ui.component.type.ImageComponent
 import net.prismclient.aether.ui.component.type.IconModifier
 import net.prismclient.aether.ui.component.type.UIButton

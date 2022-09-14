@@ -10,6 +10,7 @@ import net.prismclient.aether.core.util.property.UIUniqueProperty
 import net.prismclient.aether.core.util.shorthands.Block
 import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.core.util.shorthands.within
+import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.dsl.Renderer
@@ -82,32 +83,32 @@ abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollb
      */
     open var thumbSelected: Boolean = false
 
-    override fun compose(composable: UILayout?) {
-        super.compose(composable); this.composable = composable!!
+    override fun compose(context: ComposableContext) {
+        super.compose(context); this.composable = context!!
 
         // Compute if the scrollbar should be
         // rendered and the size of the thumb.
         if (direction == LayoutDirection.HORIZONTAL) {
             shouldRender = when (overflow) {
                 Overflow.SCROLLBAR -> true
-                Overflow.AUTO -> composable.widthOverflow() > 0f
+                Overflow.AUTO -> context.widthOverflow() > 0f
                 else -> false
             }
             actualThumbSize =
-                (composable.width / composable.layoutSize.width.coerceAtLeast(composable.width)) * width.dp
+                (context.width / context.layoutSize.width.coerceAtLeast(context.width)) * width.dp
         } else {
             shouldRender = when (overflow) {
                 Overflow.SCROLLBAR -> true
-                Overflow.AUTO -> composable.heightOverflow() > 0f
+                Overflow.AUTO -> context.heightOverflow() > 0f
                 else -> false
             }
             actualThumbSize =
-                (composable.height / (composable.layoutSize.height.coerceAtLeast(composable.height))) * height.dp
+                (context.height / (context.layoutSize.height.coerceAtLeast(context.height))) * height.dp
         }
-        composable.addListener("$this:$direction", listener = ::onScroll)
-        composable.addListener("$this:$direction", listener = ::onMousePress)
-        composable.addListener("$this:$direction", listener = ::onMouseRelease)
-        composable.addListener("$this:$direction", listener = ::onMouseMove)
+        context.addListener("$this:$direction", listener = ::onScroll)
+        context.addListener("$this:$direction", listener = ::onMousePress)
+        context.addListener("$this:$direction", listener = ::onMouseRelease)
+        context.addListener("$this:$direction", listener = ::onMouseMove)
     }
 
     /**
@@ -183,14 +184,14 @@ class DefaultScrollbar : Scrollbar() {
             thumbBounds[3] = h
         }
 
-    override fun compose(composable: UILayout?) {
-        super.compose(composable)
+    override fun compose(context: ComposableContext) {
+        super.compose(context)
         background?.x = x
         background?.y = y
         background?.width = width
         background?.height = height
-        background?.compose(composable)
-        thumbRadius?.compose(composable)
+        background?.compose(context)
+        thumbRadius?.compose(context)
         value = value // Update the thumbBounds
     }
 

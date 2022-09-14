@@ -4,6 +4,7 @@ import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.alignment.Alignment
+import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.style.Style
@@ -57,7 +58,7 @@ open class BoxLayout(
         )
     }
 
-    override fun compose() {
+    override fun compose(context: ComposableContext) {
         // Calculate hte potential size of the layout so the functions
         // invoked from compose such as updateLayout and updateSize will
         // have a general idea of the final dimensions of the layout.
@@ -141,17 +142,17 @@ class BoxLayoutStyle : Style<BoxLayoutStyle, BoxLayout>() {
      */
     var itemSpacing: UIUnit<*>? = null
 
-    override fun compose(composable: BoxLayout?) {
+    override fun compose(context: ComposableContext) {
         itemSpacing?.compute(
-            composable!!,
-            composable.width,
-            composable.height,
+            context!!,
+            context.width,
+            context.height,
             layoutDirection == LayoutDirection.VERTICAL
         )
-        layoutPadding?.compose(composable!!)
+        layoutPadding?.compose(context!!)
         if (itemSpacing is SpaceBetween)
             itemSpacing!!.value = (if (layoutDirection == LayoutDirection.HORIZONTAL)
-                composable!!.potentialSize!!.width else composable!!.potentialSize!!.height) / composable.children.size
+                context!!.potentialSize!!.width else context!!.potentialSize!!.height) / context.children.size
     }
 
     override fun animate(context: AnimationContext<*>, start: BoxLayoutStyle?, end: BoxLayoutStyle?, progress: Float) {

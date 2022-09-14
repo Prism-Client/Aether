@@ -4,6 +4,7 @@ import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.animation.Animation
 import net.prismclient.aether.core.event.*
 import net.prismclient.aether.core.util.shorthands.dp
+import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composer.ComposerHint
 import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.UIModifier
@@ -81,9 +82,9 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     /**
      * Updates the anchor point and computes the [UIModifier.x] and [UIModifier.y] values and sets them to [x] and [y].
      */
-    open fun composePosition() {
-        modifier.composeAnchor()
-        modifier.composePosition()
+    open fun composePosition(context: ComposableContext) {
+        modifier.composeAnchor(context)
+        modifier.composePosition(context)
 
         if (!overridden) {
             x = (modifier.x.dp - modifier.anchorPoint?.x.dp + parentX()).roundToInt().toFloat()
@@ -96,11 +97,11 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      * Updates the size of this and sets the calculated properties to [width] and [height]. If the
      * units are dynamic, [Composable.dynamic] will be true. The padding is calculated.
      */
-    open fun composeSize() {
-        modifier.composeSize()
+    open fun composeSize(context: ComposableContext) {
+        modifier.composeSize(context)
         width = modifier.width.dp.roundToInt().toFloat()
         height = modifier.height.dp.roundToInt().toFloat()
-        modifier.composePadding()
+        modifier.composePadding(context)
     }
 
     /**
@@ -117,7 +118,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      * todo be doced
      *
      */
-    abstract fun compose()
+    abstract fun compose(context: ComposableContext)
 
     /**
      * todo be doced

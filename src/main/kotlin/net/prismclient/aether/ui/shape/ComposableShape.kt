@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.shape
 
 import net.prismclient.aether.core.util.property.Updatable
+import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 
@@ -11,7 +12,7 @@ import net.prismclient.aether.ui.unit.UIUnit
  * @author sen
  * @since 1.0
  */
-abstract class ComposableShape<T : Composable> : Shape(), Updatable<T> {
+abstract class ComposableShape<T : Composable> : Shape(), Updatable {
     /**
      * The x position of the composable.
      */
@@ -22,8 +23,8 @@ abstract class ComposableShape<T : Composable> : Shape(), Updatable<T> {
      */
     var initialY: Float = 0f
 
-    override fun compose(composable: T?) {
-        composable!!
+    override fun compose(context: ComposableContext) {
+
         x?.compute(composable, false)
         y?.compute(composable, true)
         width?.compute(composable, false)

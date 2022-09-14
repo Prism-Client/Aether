@@ -4,6 +4,7 @@ import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.property.UIProperty
 import net.prismclient.aether.core.util.shorthands.*
+import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.shape.ComposableShape
@@ -26,11 +27,11 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
     var backgroundRadius: UIRadius? = null
     var backgroundBorder: UIBorder? = null
 
-    override fun compose(composable: Composable?) {
-        super.compose(composable)
-        initialX = composable!!.relX
-        initialY = composable.relY
-        backgroundRadius?.compose(composable)
+    override fun compose(context: ComposableContext) {
+        super.compose(context)
+        initialX = context!!.relX
+        initialY = context.relY
+        backgroundRadius?.compose(context)
         backgroundBorder?.compose(this)
     }
 

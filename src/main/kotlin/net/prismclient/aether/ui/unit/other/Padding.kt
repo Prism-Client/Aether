@@ -3,7 +3,7 @@ package net.prismclient.aether.ui.unit.other
 import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.util.property.UIProperty
 import net.prismclient.aether.core.util.shorthands.or
-import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.compute
@@ -22,12 +22,12 @@ open class Padding(
     var bottom: UIUnit<*>?,
     var left: UIUnit<*>?
 ) : UIProperty<Padding> {
-    override fun compose(composable: Composable?) {
-        composable!!
-        top?.compute(composable, true)
-        right?.compute(composable, false)
-        bottom?.compute(composable, true)
-        left?.compute(composable, false)
+    override fun compose(context: ComposableContext) {
+        context!!
+        top?.compute(context, true)
+        right?.compute(context, false)
+        bottom?.compute(context, true)
+        left?.compute(context, false)
     }
 
     override fun animate(context: AnimationContext<*>, start: Padding?, end: Padding?, progress: Float) {

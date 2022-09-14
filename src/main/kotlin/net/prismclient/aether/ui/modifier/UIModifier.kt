@@ -57,10 +57,10 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     /**
      * Invoked prior to updating general properties of the composable, such as the position and size.
      */
-    open fun preCompose(component: Composable) {}
+    open fun preCompose(context: ComposableContext) {}
 
-    open fun compose(composable: Composable) {
-        background?.compose(composable)
+    open fun compose(context: ComposableContext) {
+        background?.compose(context)
     }
 
     open fun composePosition(context: ComposableContext) {

@@ -6,6 +6,7 @@ import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.property.Focusable
 import net.prismclient.aether.core.util.shorthands.*
+import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
@@ -57,7 +58,7 @@ abstract class UILayout(
     override fun yOffset(): Float =
         (modifier.verticalScrollbar?.value ?: 0f) * (layoutSize.height - this.height) + super.yOffset()
 
-    override fun compose() {
+    override fun compose(context: ComposableContext) {
         modifier.preCompose(this)
         composeSize()
         composePosition()
@@ -179,12 +180,12 @@ abstract class LayoutModifier<T : LayoutModifier<T>> : CompositionModifier<T>() 
             field = value
         }
 
-    override fun compose(composable: Composable) {
-        super.compose(composable)
+    override fun compose(context: ComposableContext) {
+        super.compose(context)
 
         // Update the scrollbars after the layout has been updated
-        horizontalScrollbar?.compose(composable as UILayout)
-        verticalScrollbar?.compose(composable as UILayout)
+        horizontalScrollbar?.compose(context.composable as UILayout)
+        verticalScrollbar?.compose(context.composable as UILayout)
     }
 
     override fun render() {
