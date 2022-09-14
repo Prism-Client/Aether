@@ -1,6 +1,10 @@
 package net.prismclient.aether.ui.unit
 
+import net.prismclient.aether.core.animation.AnimationContext
+import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
+import net.prismclient.aether.core.util.shorthands.dp
+import net.prismclient.aether.core.util.shorthands.lerp
 import net.prismclient.aether.ui.composition.Composable
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
@@ -14,7 +18,7 @@ import kotlin.reflect.full.isSubclassOf
  * @author sen
  * @since 1.0
  */
-abstract class UIUnit<T : UIUnit<T>>(open var value: Float) : Copyable<T> {
+abstract class UIUnit<T : UIUnit<T>>(open var value: Float) : Copyable<T>{
     open var cachedValue: Float = 0f
 
     /**
@@ -38,6 +42,14 @@ abstract class UIUnit<T : UIUnit<T>>(open var value: Float) : Copyable<T> {
      * not actually be an instance of the expected type, but represent one, such as a [DynamicUnit].
      */
     open fun <T : UIUnit<T>> identifiesAs(clazz: KClass<T>): Boolean = this::class.isSubclassOf(clazz)
+
+    /**
+     * Animates the [cachedValue] based on the cached value of [start], and [end].
+     */
+    open fun animate(context: AnimationContext<*>, start: UIUnit<*>?, end: UIUnit<*>?, progress: Float) {
+        cachedValue = start.dp + ((end.dp - start.dp) * progress)
+        println("$cachedValue, ${start.dp}, ${end.dp}, $progress, a: ${start.dp + ((end.dp - start.dp) * progress)}")
+    }
 }
 
 /**

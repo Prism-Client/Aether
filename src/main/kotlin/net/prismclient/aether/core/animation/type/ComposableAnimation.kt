@@ -30,6 +30,6 @@ class ComposableAnimation<T : Animatable<T>> : Animation<T>() {
 
     override fun update(obj: T) {
         super.update(obj)
-        composable!!.composition.compose()
+        composable!!.composition.compose() // TODO: Hotspot
     }
 }

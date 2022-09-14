@@ -15,6 +15,13 @@ class fiddle {
     }
 
     fun func() {
+        /*
+        compositions!!.forEach {
+            it.composeInstructions { instructions -> instructions.composeAll(it) // it.children }
+        }
+
+
+        */
 //        Control<UIButton>(
 //            active = Button("HUD")
 //        ) {

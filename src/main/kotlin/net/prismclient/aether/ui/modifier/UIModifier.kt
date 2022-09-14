@@ -9,6 +9,7 @@ import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.Alignment.*
+import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.composition.util.UIBorder
@@ -62,6 +63,24 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
         background?.compose(composable)
     }
 
+    open fun composePosition(context: ComposableContext) {
+        x?.compute // (false)
+        y?.compute // (true)
+    }
+
+    open fun composeSize(context: ComposableContext) {
+        width?.compute // (true)
+        height?.compute // (false)
+    }
+
+    open fun composeAnchor(context: ComposableContext) {
+        anchorPoint?.compose(context.composable, context.composable.width, context.composable.height)
+    }
+
+    open fun composePadding(context: ComposableContext) {
+        padding?.compose(context.composable)
+    }
+
     /**
      * Merges the given modifier from [UIRegistry] into this, if not null.
      */
@@ -84,6 +103,8 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
      */
     open fun render() {
     }
+
+    // -- Extension Functions -- //
 
     /**
      * Adjusts the x of this to the given [value].

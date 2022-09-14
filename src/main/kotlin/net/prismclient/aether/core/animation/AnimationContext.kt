@@ -26,6 +26,8 @@ class AnimationContext<T : Animatable<T>>(snapshot: T?) {
         changesLayout = false
     }
 
+    fun composeContext() {}
+
     /**
      * Indicates to the active animation that the property change requires the composition
      * to be recomposed.

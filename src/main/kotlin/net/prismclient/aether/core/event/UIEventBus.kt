@@ -57,8 +57,8 @@ object UIEventBus {
      * @see register
      */
     @JvmStatic
-    @Suppress("Unchecked_Cast")
-    fun <T : UIEvent> publish(event: T) {
+    @Suppress("UNCHECKED_CAST")
+    fun <T : UIEvent> publish(event: T) { // TODO: Hotspot
         if (events.containsKey(event::class)) {
             events[event::class]!!.forEach { (_, consumer) ->
                 try {

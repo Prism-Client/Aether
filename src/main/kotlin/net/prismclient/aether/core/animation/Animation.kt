@@ -75,8 +75,8 @@ abstract class Animation<T : Animatable<T>> {
 
         obj.animate(
             context,
-            (activeKeyframe?.animatable ?: context.snapshot) as? T,
-            (nextKeyframe?.animatable ?: context.snapshot) as? T,
+            (activeKeyframe?.animatable ?: context.snapshot),
+            (nextKeyframe?.animatable ?: context.snapshot),
             (activeKeyframe?.ease?.getValue() ?: 0.0).toFloat()
         )
     }

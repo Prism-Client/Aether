@@ -69,10 +69,13 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
     }
 
     override fun animate(context: AnimationContext<*>, start: UIBackground?, end: UIBackground?, progress: Float) {
-        // TODO: Animate position and size
         ifNotNull(start?.backgroundColor, end?.backgroundColor) {
             backgroundColor = backgroundColor.default
             backgroundColor!!.animate(context, start?.backgroundColor, end?.backgroundColor, progress)
+        }
+        ifNotNull(start?.backgroundRadius, end?.backgroundRadius) {
+            backgroundRadius = backgroundRadius.default
+            backgroundRadius!!.animate(context, start?.backgroundRadius, end?.backgroundRadius, progress)
         }
     }
 

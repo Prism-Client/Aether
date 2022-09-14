@@ -11,12 +11,6 @@ import net.prismclient.aether.ui.unit.UIUnit
  * @since 1.0
  */
 open class PixelUnit(value: Float) : UIUnit<PixelUnit>(value) {
-    // Since this is a static unit, and the value of it is
-    // known at  the creation, return the value directly.
-    @Suppress("SuspiciousVarProperty")
-    override var cachedValue: Float = value
-        get() = value
-
     override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float = value
 
     override fun copy(): PixelUnit = PixelUnit(value)
