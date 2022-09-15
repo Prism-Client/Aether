@@ -4,7 +4,7 @@ import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
-import net.prismclient.aether.ui.component.*
+import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.composable.Construct
 import net.prismclient.aether.ui.composable.Label
 import net.prismclient.aether.ui.composable.VerticalList
@@ -14,11 +14,12 @@ import net.prismclient.aether.ui.composition.util.UIBorder
 import net.prismclient.aether.ui.dsl.ComposeDSL.Composition
 import net.prismclient.aether.ui.dsl.ComposeDSL.composable
 import net.prismclient.aether.ui.dsl.Renderer
+import net.prismclient.aether.ui.dsl.Resource
 import net.prismclient.aether.ui.font.*
 import net.prismclient.aether.ui.layout.LayoutModifier
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.modifier.UIModifier
-import net.prismclient.aether.ui.registry.register
+import net.prismclient.aether.ui.registry.UIRegistry
 import net.prismclient.aether.ui.renderer.UIStrokeDirection
 import net.prismclient.aether.ui.screen.UIScreen
 
@@ -38,31 +39,20 @@ class MacrosExample : UIScreen {
 
     override fun compose() {
         val BACKGROUND_COLOR = (-1).rgb
-        val FONT = FontStyle() // Define the base font style
-            .fontSpacing(0.1.px).fontType(FontType.AutoWidth).fontAlignment(UITextAlignment.LEFT, UITextAlignment.TOP)
-            .offsetBaseline()
 
-        // Load the Montserrat Font & the vuesax icons.
-        // Bulk load loads them as Montserrat/fileName or Montserrat/subDirectory/fileName
-        // e.g: Montserrat/Montserrat-Regular
-//        UIAssetDSL.bulkLoad("/fonts/Montserrat/")
-//        UIAssetDSL.bulkLoad("/icons/vuesax/")
+        UIRegistry.registerStyle("FontStyle", FontStyle().fontType(FontType.AutoWidth))
 
-        // TODO: Warning when failed to reference font
 
-        register(name = "Bold", style = FONT.fontName("Montserrat/Montserrat-Bold"))
-
-        register(name = "SemiBold", style = FONT.fontName("Montserrat/Montserrat-SemiBold"))
-
-        register(name = "Medium", style = FONT.fontName("Montserrat/Montserrat-Medium"))
-
-        register(name = "Regular", style = FONT.fontName("Montserrat/Montserrat-Regular"))
+        // Load the Montserrat Font
+        Resource {
+            fontCollection(localResource("/fonts/Montserrat/"))
+        }
 
         Composition(
             name = "Test", modifier = DefaultCompositionModifier()
-                .size(546.px, 336.px)
-                .backgroundRadius(8.radius)
-                .backgroundColor(BACKGROUND_COLOR)
+            .size(546.px, 336.px)
+            .backgroundRadius(8.radius)
+            .backgroundColor(BACKGROUND_COLOR)
         ) {
             val border = UIBorder()
             border.borderWidth = 1.px
@@ -73,22 +63,32 @@ class MacrosExample : UIScreen {
             // Title
             Label(
                 text = "Macros",
-                modifier = Modifier().position(32.px, 32.px),
-                fontStyle = FontStyle().of("Bold").fontColor(0x252733.rgb).fontSize(19.px)
+                modifier = Modifier()
+                    .position(32.px, 32.px),
+                fontStyle = FontStyle()
+                    .fontName("Montserrat-Bold")
+                    .fontColor(0x252733.rgb)
+                    .fontSize(19.px)
             )
             // Description below title
             Label(
                 text = "Speed up your gameplay by utilizing macros!",
-                modifier = Modifier().position(32, 64),
-                fontStyle = FontStyle().of("Regular").fontColor(0x9FA2B4.rgb).fontSize(12.px)
+                modifier = Modifier()
+                    .position(32, 64),
+                fontStyle = FontStyle()
+                    .fontName("Montserrat-Regular")
+                    .fontColor(0x9FA2B4.rgb)
+                    .fontSize(12.px)
             )
             // View all hyperlink label
             Label(
                 text = "View All",
-                modifier = Modifier().anchor(Alignment.TOPRIGHT)/* TODO: Full Font and Background shorthands */
-                    //.backgroundColor(RGBA(1f, 0f, 0f, 0.3f).rgba)
-                    /* TODO: Align function for Modifiers*/.position(1.rel - 32.px, 32.px),
-                fontStyle = FontStyle().of("SemiBold").fontColor(0x3751FF.rgb).fontSize(14.px)
+                modifier = Modifier().anchor(Alignment.TOPRIGHT)
+                    .position(1.rel - 32.px, 32.px),
+                fontStyle = FontStyle()
+                    .fontName("Montserrat-SemiBold")
+                    .fontColor(0x3751FF.rgb)
+                    .fontSize(14.px)
             )
 
             VerticalList(
@@ -166,7 +166,7 @@ class MacrosExample : UIScreen {
         open fun renderLabel(): Float {
             Renderer {
                 color(RGBA(37, 39, 51))
-                font("Montserrat/Montserrat-Medium", 14f, UITextAlignment.LEFT, UITextAlignment.CENTER, 0f)
+                font("Montserrat-Medium", 14f, UITextAlignment.LEFT, UITextAlignment.CENTER, 0f)
                 label.render(x + 68, y + height / 2f)
             }
             return fontBounds()[0] + fontBounds()[2]
