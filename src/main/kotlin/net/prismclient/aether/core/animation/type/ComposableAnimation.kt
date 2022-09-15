@@ -4,7 +4,6 @@ import net.prismclient.aether.core.animation.Animation
 import net.prismclient.aether.core.event.PreRenderEvent
 import net.prismclient.aether.core.event.UIEventBus
 import net.prismclient.aether.core.util.property.Animatable
-import net.prismclient.aether.ui.composer.Context
 import net.prismclient.aether.ui.composition.Composable
 import java.lang.RuntimeException
 
@@ -31,6 +30,6 @@ class ComposableAnimation<T : Animatable<T>> : Animation<T>() {
 
     override fun update(obj: T) {
         super.update(obj)
-        if (context!!.changesLayout) composable!!.recompose(null)// TODO: Hotspot
+        composable!!.composition.compose()
     }
 }

@@ -4,9 +4,6 @@ import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.animation.Animation
 import net.prismclient.aether.core.event.*
 import net.prismclient.aether.core.util.shorthands.dp
-import net.prismclient.aether.ui.composer.ComposableContext
-import net.prismclient.aether.ui.composer.ComposerHint
-import net.prismclient.aether.ui.composer.Context
 import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
@@ -43,11 +40,13 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      */
     open var composition: Composition
         get() {
-            if (compositionRef == null)
-                compositionRef = Aether.instance.defaultComposition
+//            if (compositionRef == null)
+//                compositionRef = Aether.instance.defaultComposition
             return compositionRef!!
         }
-        set(value) { compositionRef = value }
+        set(value) {
+            compositionRef = value
+        }
     open var parent: Composable? = null
 
     /**
@@ -61,10 +60,9 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     open var animations: HashMap<String, Animation<*>>? = null
 
     /**
-     * Returns true if this has not been edited since the last compose. False by default.
+     * Returns true if this has been composed at least once.
      */
     open var composed: Boolean = false
-    open var hints: ArrayList<ComposerHint>? = null
 
     // The actual positions calculated based on the different properties, such as
     // the position and padding of the Composable. The relative units represent the
@@ -83,9 +81,10 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     /**
      * Updates the anchor point and computes the [UIModifier.x] and [UIModifier.y] values and sets them to [x] and [y].
      */
-    open fun composePosition(context: ComposableContext) {
-        modifier.composeAnchor(context)
-        modifier.composePosition(context)
+    open fun composePosition() {
+        composeAnchor()
+        modifier.x?.compute(false)
+        modifier.y?.compute(true)
 
         if (!overridden) {
             x = (modifier.x.dp - modifier.anchorPoint?.x.dp + parentX()).roundToInt().toFloat()
@@ -98,11 +97,12 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      * Updates the size of this and sets the calculated properties to [width] and [height]. If the
      * units are dynamic, [Composable.dynamic] will be true. The padding is calculated.
      */
-    open fun composeSize(context: ComposableContext) {
-        modifier.composeSize(context)
+    open fun composeSize() {
+        modifier.width?.compute(false)
+        modifier.height?.compute(true)
         width = modifier.width.dp.roundToInt().toFloat()
         height = modifier.height.dp.roundToInt().toFloat()
-        modifier.composePadding(context)
+        composePadding()
     }
 
     /**
@@ -115,11 +115,19 @@ abstract class Composable(open val modifier: UIModifier<*>) {
         relHeight = (height + modifier.padding?.bottom.dp + modifier.padding?.top.dp).roundToInt().toFloat()
     }
 
+    open fun composeAnchor() {
+        modifier.anchorPoint?.compose(this, width, height)
+    }
+
+    open fun composePadding() {
+        modifier.padding?.compose(this)
+    }
+
     /**
      * todo be doced
      *
      */
-    abstract fun compose(context: ComposableContext)
+    abstract fun compose()
 
     /**
      * todo be doced
@@ -129,9 +137,9 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     /**
      * todo be doced
      */
-    open fun recompose(context: ComposableContext?) {
-        // TODO: Determine when to recompose only necessary elements if neccsssary
-        composition.recompose(context)
+    open fun recompose() {
+        // TODO: Determine when to recompose only necessary elements if necesssary
+        composition.recompose()
     }
 
     /**
@@ -250,19 +258,11 @@ abstract class Composable(open val modifier: UIModifier<*>) {
         (relX <= xBound && relY <= yBound && relX + relWidth >= xBound && relY + relHeight >= yBound)
 
     /**
-     * Adds a [ComposerHint] to this.
-     */
-    open fun hint(hint: ComposerHint) {
-        hints = arrayListOf()
-        hints!!.add(hint)
-    }
-
-    /**
      * Computes the given unit with the [parentWidth] and [parentHeight].
      */
     @Suppress
     protected fun UIUnit<*>?.compute(yaxis: Boolean) {
-        this?.compute(Context.createContext(this@Composable), parentWidth(), parentHeight(), yaxis)
+        this?.compute(this@Composable, parentWidth(), parentHeight(), yaxis)
     }
 }
 

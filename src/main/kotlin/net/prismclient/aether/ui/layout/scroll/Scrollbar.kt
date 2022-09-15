@@ -10,7 +10,6 @@ import net.prismclient.aether.core.util.property.UIUniqueProperty
 import net.prismclient.aether.core.util.shorthands.Block
 import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.core.util.shorthands.within
-import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.dsl.Renderer
@@ -44,7 +43,7 @@ import net.prismclient.aether.ui.unit.other.UIRadius
  * @see DefaultScrollbar
  */
 abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollbar, UILayout> {
-    protected open lateinit var composable: UILayout
+    protected open lateinit var composable: Composable
 
     open var direction: LayoutDirection = LayoutDirection.HORIZONTAL
 
@@ -83,8 +82,8 @@ abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollb
      */
     open var thumbSelected: Boolean = false
 
-    override fun compose(context: ComposableContext) {
-        super.compose(context); this.composable = context.activeComposable() as UILayout
+    override fun compose(composable: UILayout?) {
+        super.compose(composable); this.composable = composable!!
 
         // Compute if the scrollbar should be
         // rendered and the size of the thumb.
@@ -184,14 +183,14 @@ class DefaultScrollbar : Scrollbar() {
             thumbBounds[3] = h
         }
 
-    override fun compose(context: ComposableContext) {
-        super.compose(context)
+    override fun compose(composable: UILayout?) {
+        super.compose(composable)
         background?.x = x
         background?.y = y
         background?.width = width
         background?.height = height
-        background?.compose(context)
-        thumbRadius?.compose(context)
+        background?.compose(composable)
+        thumbRadius?.compose(composable)
         value = value // Update the thumbBounds
     }
 
@@ -218,7 +217,7 @@ class DefaultScrollbar : Scrollbar() {
             value = if (direction == LayoutDirection.HORIZONTAL)
                 (event.mouseX - initialX - x.dp - mouseOffset) / (width.dp - actualThumbSize)
             else (event.mouseY - initialY - y.dp - mouseOffset) / (height.dp - actualThumbSize)
-            composable.composition.recompose(null)
+            composable.composition.recompose()
         }
     }
 

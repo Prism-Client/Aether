@@ -22,7 +22,7 @@ import net.prismclient.aether.ui.composition.Composable
  */
 abstract class CustomEvent(val composable: Composable) : UIEvent {
     open fun recompose() {
-        composable.recompose(null)
+        composable.recompose()
     }
 }
 

@@ -4,12 +4,10 @@ import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.property.UIProperty
 import net.prismclient.aether.core.util.shorthands.*
-import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.unit.compute
 import net.prismclient.aether.ui.unit.other.UIRadius
 
 /**
@@ -28,15 +26,11 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
     var backgroundRadius: UIRadius? = null
     var backgroundBorder: UIBorder? = null
 
-    override fun compose(context: ComposableContext) {
-        x?.compute(context, context.activeComposable().relWidth, context.activeComposable().relHeight, false)
-        y?.compute(context, context.activeComposable().relWidth, context.activeComposable().relHeight, true)
-        width?.compute(context, context.activeComposable().relWidth, context.activeComposable().relHeight, false)
-        height?.compute(context, context.activeComposable().relWidth, context.activeComposable().relHeight, true)
-
-        initialX = context.activeComposable().relX
-        initialY = context.activeComposable().relY
-        backgroundRadius?.compose(context)
+    override fun compose(composable: Composable?) {
+        super.compose(composable)
+        initialX = composable!!.relX
+        initialY = composable.relY
+        backgroundRadius?.compose(composable)
         backgroundBorder?.compose(this)
     }
 
@@ -46,6 +40,11 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
             rect(initialX + x.dp, initialY + y.dp, width.dp, height.dp, backgroundRadius)
         }
         backgroundBorder?.render()
+    }
+
+    override fun UIUnit<*>?.compute(composable: Composable, yaxis: Boolean) {
+        // Update based on the relative values instead of the normal
+        this?.compute(composable, composable.relWidth, composable.relHeight, yaxis)
     }
 
     override fun copy(): UIBackground = UIBackground().also {
@@ -70,13 +69,10 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
     }
 
     override fun animate(context: AnimationContext<*>, start: UIBackground?, end: UIBackground?, progress: Float) {
+        // TODO: Animate position and size
         ifNotNull(start?.backgroundColor, end?.backgroundColor) {
             backgroundColor = backgroundColor.default
             backgroundColor!!.animate(context, start?.backgroundColor, end?.backgroundColor, progress)
-        }
-        ifNotNull(start?.backgroundRadius, end?.backgroundRadius) {
-            backgroundRadius = backgroundRadius.default
-            backgroundRadius!!.animate(context, start?.backgroundRadius, end?.backgroundRadius, progress)
         }
     }
 

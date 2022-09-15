@@ -8,7 +8,6 @@ import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment.*
-import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.font.FontType.*
@@ -96,17 +95,17 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
      * Expects [composeSize] to be invoked prior to this. This should be invoked after the size
      * and position of the composable have been calculated.
      */
-    override fun compose(context: ComposableContext) {
+    override fun compose(composable: Composable?) {
         style.preCompose()
-        super.compose(context)
-        anchor?.compose(context, width.dp, height.dp)
+        super.compose(composable)
+        anchor?.compose(composable, width.dp, height.dp)
     }
 
     /**
      * Attempts to resize the [Composable] based on the metrics of the font.
      */
-    open fun composeSize(context: ComposableContext) {
-        style.compose(context)
+    open fun composeSize(composable: Composable?) {
+        style.compose(composable)
         calculateMetrics()
         when (style.textResizing) {
             AutoWidth -> {
@@ -116,15 +115,15 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
                 height!!.cachedValue = fontHeight()
 
                 // Update the size of the composable
-                context.composable?.width = x.dp + width.dp
-                context.composable?.height = y.dp + height.dp
+                composable?.width = x.dp + width.dp
+                composable?.height = y.dp + height.dp
             }
             AutoHeight -> {
                 height = AutoResize()
                 height!!.cachedValue = fontHeight()
 
                 // Update the height of the composable
-                context.composable?.height = y.dp + height.dp
+                composable?.height = y.dp + height.dp
             }
             else -> {}
         }
@@ -224,7 +223,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
  * An internal unit used to indicate if the [UIFont] is set to [FontType.AutoWidth] or [FontType.AutoHeight].
  */
 internal class AutoResize : UIUnit<AutoResize>(0f){
-    override fun updateCache(context: ComposableContext?, width: Float, height: Float, yaxis: Boolean): Float = cachedValue
+    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float = cachedValue
 
     override fun copy(): AutoResize = AutoResize()
 
@@ -293,13 +292,14 @@ open class FontStyle : Style<FontStyle, Composable>() {
         font.anchor = anchor ?: font.anchor
     }
 
-    override fun compose(context: ComposableContext) {
+    override fun compose(composable: Composable?) {
+        composable!!
         ifNotNull(fontFamily) {
             //println("here")
             actualFontName = "${fontFamily!!.familyName}-${fontFaceType?.name?.lowercase()}"
         }
-        fontSize?.compute(context, context.activeComposable().width, context.activeComposable().height, false)
-        fontSpacing?.compute(context, context.activeComposable().width, context.activeComposable().height, false)
+        fontSize?.compute(composable, composable.width, composable.height, false)
+        fontSpacing?.compute(composable, composable.width, composable.height, false)
     }
 
     override fun animate(context: AnimationContext<*>, start: FontStyle?, end: FontStyle?, progress: Float) {

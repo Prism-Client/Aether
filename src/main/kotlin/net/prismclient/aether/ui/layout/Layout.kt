@@ -6,8 +6,6 @@ import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.property.Focusable
 import net.prismclient.aether.core.util.shorthands.*
-import net.prismclient.aether.ui.composer.ComposableContext
-import net.prismclient.aether.ui.composer.Context
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
@@ -59,13 +57,13 @@ abstract class UILayout(
     override fun yOffset(): Float =
         (modifier.verticalScrollbar?.value ?: 0f) * (layoutSize.height - this.height) + super.yOffset()
 
-    override fun compose(context: ComposableContext) {
-        modifier.preCompose(context)
-        composeSize(context)
-        composePosition(context)
+    override fun compose() {
+        modifier.preCompose(this)
+        composeSize()
+        composePosition()
         // Invoke the updateUnits function after
         // calculating the relevant properties of this.
-        updateUnits(context)
+        updateUnits()
 
         // Update the parent and override (if necessary) to the children
         children.forEach {
@@ -75,7 +73,7 @@ abstract class UILayout(
         // Calculate the initial and possible the final layout
         layoutSize = updateLayout()
 
-        modifier.compose(context)
+        modifier.compose(this)
         rasterize()
     }
 
@@ -85,7 +83,7 @@ abstract class UILayout(
      *
      * @see layoutSize
      */
-    abstract fun updateUnits(context: ComposableContext)
+    abstract fun updateUnits()
 
     /**
      * Invoked when the layout needs an update. At this point, [updateUnits] has already been invoked.
@@ -181,12 +179,12 @@ abstract class LayoutModifier<T : LayoutModifier<T>> : CompositionModifier<T>() 
             field = value
         }
 
-    override fun compose(context: ComposableContext) {
-        super.compose(context)
+    override fun compose(composable: Composable) {
+        super.compose(composable)
 
         // Update the scrollbars after the layout has been updated
-        horizontalScrollbar?.compose(Context.createContext(context.composable as UILayout))
-        verticalScrollbar?.compose(Context.createContext(context.composable as UILayout))
+        horizontalScrollbar?.compose(composable as UILayout)
+        verticalScrollbar?.compose(composable as UILayout)
     }
 
     override fun render() {

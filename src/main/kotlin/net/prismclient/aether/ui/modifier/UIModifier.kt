@@ -9,7 +9,6 @@ import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.Alignment.*
-import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.composition.util.UIBorder
@@ -18,7 +17,6 @@ import net.prismclient.aether.ui.composition.util.radius
 import net.prismclient.aether.ui.registry.UIRegistry
 import net.prismclient.aether.ui.renderer.UIStrokeDirection
 import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.unit.compute
 import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
@@ -58,28 +56,10 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     /**
      * Invoked prior to updating general properties of the composable, such as the position and size.
      */
-    open fun preCompose(context: ComposableContext) {}
+    open fun preCompose(component: Composable) {}
 
-    open fun compose(context: ComposableContext) {
-        background?.compose(context)
-    }
-
-    open fun composePosition(context: ComposableContext) {
-        x.compute(context, false) // (false)
-        y.compute(context, true) // (true)
-    }
-
-    open fun composeSize(context: ComposableContext) {
-        width.compute(context, false) // (true)
-        height.compute(context, true) // (false)
-    }
-
-    open fun composeAnchor(context: ComposableContext) {
-        anchorPoint?.compose(context, context.activeComposable().width, context.activeComposable().height)
-    }
-
-    open fun composePadding(context: ComposableContext) {
-        padding?.compose(context)
+    open fun compose(composable: Composable) {
+        background?.compose(composable)
     }
 
     /**
@@ -104,8 +84,6 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
      */
     open fun render() {
     }
-
-    // -- Extension Functions -- //
 
     /**
      * Adjusts the x of this to the given [value].
@@ -380,10 +358,6 @@ class DefaultModifier : UIModifier<DefaultModifier>() {
     }
 
     override fun animate(context: AnimationContext<*>, start: DefaultModifier?, end: DefaultModifier?, progress: Float) {
-        ifNotNull(start?.opacity, end?.opacity) {
-            opacity = opacity ?: UIAlpha(1f)
-            opacity!!.animate(context, start?.opacity, end?.opacity, progress)
-        }
         ifNotNull(start?.background, end?.background) {
             background = background ?: run {
                 context.recompose()

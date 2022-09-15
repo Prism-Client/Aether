@@ -2,10 +2,8 @@ package net.prismclient.aether.ui.unit.other
 
 import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.util.property.UIProperty
-import net.prismclient.aether.core.util.shorthands.default
-import net.prismclient.aether.core.util.shorthands.ifNotNull
 import net.prismclient.aether.core.util.shorthands.or
-import net.prismclient.aether.ui.composer.ComposableContext
+import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 import net.prismclient.aether.ui.unit.compute
 
@@ -22,20 +20,16 @@ open class UIRadius(
     var bottomRight: UIUnit<*>? = null,
     var bottomLeft: UIUnit<*>? = null
 ) : UIProperty<UIRadius> {
-    override fun compose(context: ComposableContext) {
-        context!!
-        topLeft?.compute(context, true)
-        topRight?.compute(context, false)
-        bottomRight?.compute(context, true)
-        bottomLeft?.compute(context, false)
+    override fun compose(composable: Composable?) {
+        composable!!
+        topLeft?.compute(composable, true)
+        topRight?.compute(composable, false)
+        bottomRight?.compute(composable, true)
+        bottomLeft?.compute(composable, false)
     }
 
     override fun animate(context: AnimationContext<*>, start: UIRadius?, end: UIRadius?, progress: Float) {
-        ifNotNull(start?.topLeft, end?.topLeft) {
-            topLeft = topLeft.default
-            topLeft!!.animate(context, start?.topLeft ?: topLeft, end?.topLeft ?: topLeft, progress)
-//            println("Topleft: ${topLeft.dp}, ${start?.topLeft}, ${end?.topLeft}")
-        }
+        TODO("Not yet implemented")
     }
 
     override fun copy(): UIRadius = UIRadius(topLeft?.copy(), topRight?.copy(), bottomRight?.copy(), bottomLeft?.copy())

@@ -7,7 +7,6 @@ import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.property.Focusable
 import net.prismclient.aether.core.util.shorthands.notNull
 import net.prismclient.aether.core.util.shorthands.rel
-import net.prismclient.aether.ui.composer.Context
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
@@ -75,7 +74,7 @@ open class Aether(renderer: UIRenderer) {
         if (activeScreen != null) {
             check()
             renderer.beginFrame(displayWidth, displayHeight, devicePxRatio)
-            compositions!!.forEach { it.compose(Context.createContext(it)) }
+            compositions!!.forEach(Composition::compose)
             renderer.cancelFrame()
         }
     }
@@ -106,7 +105,7 @@ open class Aether(renderer: UIRenderer) {
                             val event = MousePress(mouseX, mouseY, mouseButton, item)
                             item.publish(event)
                             UIEventBus.publish(event)
-                            composition.compose(Context.createContext(composition))
+                            composition.compose()
                             return
                         }
                     }
@@ -139,7 +138,7 @@ open class Aether(renderer: UIRenderer) {
         val composable = (focusedComponent as? Composable)
 
         composable?.publish(MouseScrolled(dstX, dstY, composable))
-        composable?.recompose(null)
+        composable?.recompose()
     }
 
     /**

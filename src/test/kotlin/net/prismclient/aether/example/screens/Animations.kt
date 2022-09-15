@@ -6,7 +6,6 @@ import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.ease.impl.UIQuart
 import net.prismclient.aether.core.util.shorthands.ColorOf
 import net.prismclient.aether.core.util.shorthands.px
-import net.prismclient.aether.core.util.shorthands.radius
 import net.prismclient.aether.core.util.shorthands.rgb
 import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.Alignment
@@ -47,8 +46,7 @@ object Animations : UIScreen {
             text = "Some text!",
             modifier = Modifier()
                 .control(Alignment.CENTER)
-                .padding(5.px, 14.px, 5.px, 14f.px)
-                .backgroundColor(ColorOf(1f, 0f, 0f)),
+                .padding(5.px, 14.px, 5.px, 14f.px),
             fontStyle = FontStyle()
                 .fontName("Poppins-Medium")
                 .fontColor(0xFFFFFF.rgb)
@@ -63,12 +61,11 @@ object Animations : UIScreen {
             propertyAnimation.start(title, title.modifier as DefaultModifier)
         }
 
-        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(1000L), DefaultModifier()))
+        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(1250L), DefaultModifier()))
 //        propertyAnimation.keyframes.add(Keyframe(UILinear(10000L), DefaultModifier().x(50.px)))
-//        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(1250), DefaultModifier().backgroundColor(ColorOf(1f, 0f, 0f))))
-        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(1000L), DefaultModifier().backgroundRadius(15.radius)))
+        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(1250), DefaultModifier().backgroundColor(ColorOf(1f, 0f, 0f))))
 
-        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(1000L), DefaultModifier().backgroundRadius(0.radius)))
+        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(100L), DefaultModifier().backgroundColor(UIColor(0))))
 
         title.animations = HashMap()
         title.animations!!["Hello"] = propertyAnimation

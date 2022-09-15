@@ -4,7 +4,6 @@ import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.component.UIComponent
-import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.image.ImageProvider
 import net.prismclient.aether.ui.image.UIImage
@@ -39,7 +38,7 @@ class ImageComponent(image: UIImage, modifier: IconModifier) : UIComponent<Image
         modifier
     )
 
-    override fun update(context: ComposableContext) {
+    override fun update() {
         imageHandle = image.retrieveImage(width, height)
     }
 

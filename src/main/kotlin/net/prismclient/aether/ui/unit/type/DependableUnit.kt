@@ -1,6 +1,6 @@
 package net.prismclient.aether.ui.unit.type
 
-import net.prismclient.aether.ui.composer.ComposableContext
+import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 import java.util.function.Supplier
 
@@ -12,7 +12,7 @@ import java.util.function.Supplier
  * @since 1.0
  */
 class DependableUnit(val supplier: Supplier<Float>) : UIUnit<DependableUnit>(0f) {
-    override fun updateCache(context: ComposableContext?, width: Float, height: Float, yaxis: Boolean): Float = supplier.get()
+    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float = supplier.get()
 
     override fun copy(): DependableUnit = DependableUnit(supplier)
 }

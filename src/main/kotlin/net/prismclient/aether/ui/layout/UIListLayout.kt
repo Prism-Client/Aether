@@ -2,8 +2,6 @@ package net.prismclient.aether.ui.layout
 
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.shorthands.dp
-import net.prismclient.aether.ui.composer.ComposableContext
-import net.prismclient.aether.ui.composer.Context
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.layout.util.LayoutOrder
 import net.prismclient.aether.ui.unit.UIUnit
@@ -15,7 +13,7 @@ open class UIListLayout constructor(
     var itemSpacing: UIUnit<*>?,
     modifier: LayoutModifier<*>
 ) : UILayout(layoutName, modifier, true) {
-    override fun updateUnits(context: ComposableContext) {
+    override fun updateUnits() {
         itemSpacing.compute(direction == LayoutDirection.VERTICAL)
     }
 
@@ -35,7 +33,7 @@ open class UIListLayout constructor(
                 // Update the position as it would be normally,
                 // and only override the axis set. Update the size as well.
                 child.overridden = false
-                child.compose(Context.createContext(child))
+                child.compose()
                 child.overridden = true
 
                 if (direction == LayoutDirection.HORIZONTAL) {
@@ -45,7 +43,7 @@ open class UIListLayout constructor(
                     child.y = y + child.modifier.padding?.top.dp
                     y += child.relHeight + spacing
                 }
-                child.compose(Context.createContext(child))
+                child.compose()
 
                 w = w.coerceAtLeast(child.x + child.relWidth - this.x)
                 h = h.coerceAtLeast(child.y + child.relHeight - this.y)
@@ -57,7 +55,7 @@ open class UIListLayout constructor(
                 // Update the position as it would be normally,
                 // and only override the axis set. Update the size as well.
                 child.overridden = false
-                child.compose(Context.createContext(child))
+                child.compose()
                 child.overridden = true
 
                 if (direction == LayoutDirection.HORIZONTAL) {
@@ -67,7 +65,7 @@ open class UIListLayout constructor(
                     child.y = y + child.modifier.padding?.top.dp
                     y += child.relHeight + spacing
                 }
-                child.compose(Context.createContext(child))
+                child.compose()
 
                 w = w.coerceAtLeast(child.x + child.relWidth - this.x)
                 h = h.coerceAtLeast(child.y + child.relHeight - this.y)

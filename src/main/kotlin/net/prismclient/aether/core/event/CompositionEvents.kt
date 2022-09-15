@@ -1,7 +1,6 @@
 package net.prismclient.aether.core.event
 
 import net.prismclient.aether.core.input.MouseButtonType
-import net.prismclient.aether.ui.composer.Context
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 
@@ -41,7 +40,7 @@ abstract class PropagatingEvent(val initialComposable: Composable) : CustomEvent
     fun propagate() {
         propagationIndex++
         if (currentComposable is Composition && (currentComposable as Composition).isTopLayer()) {
-            if (requiresRecompose) currentComposable.compose(Context.createContext(currentComposable))
+            if (requiresRecompose) currentComposable.compose()
             return
         }
         previousComposable = currentComposable

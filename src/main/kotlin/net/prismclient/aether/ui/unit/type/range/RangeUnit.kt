@@ -2,7 +2,7 @@ package net.prismclient.aether.ui.unit.type.range
 
 import net.prismclient.aether.core.util.shorthands.copy
 import net.prismclient.aether.core.util.shorthands.dp
-import net.prismclient.aether.ui.composer.ComposableContext
+import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 import kotlin.reflect.KClass
 
@@ -21,10 +21,10 @@ class RangeUnit(var unit: UIUnit<*>, var min: UIUnit<*>?, var max: UIUnit<*>?) :
                 .coerceAtMost(max?.cachedValue ?: value)
         }
 
-    override fun updateCache(context: ComposableContext?, width: Float, height: Float, yaxis: Boolean): Float {
-        unit.compute(context, width, height, yaxis)
-        min?.compute(context, width, height, yaxis)
-        max?.compute(context, width, height, yaxis)
+    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float {
+        unit.compute(composable, width, height, yaxis)
+        min?.compute(composable, width, height, yaxis)
+        max?.compute(composable, width, height, yaxis)
         return unit.dp
     }
 

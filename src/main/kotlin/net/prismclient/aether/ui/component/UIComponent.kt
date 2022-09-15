@@ -1,7 +1,6 @@
 package net.prismclient.aether.ui.component
 
 import net.prismclient.aether.core.util.property.Copyable
-import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.modifier.UIModifier
 
@@ -14,18 +13,18 @@ import net.prismclient.aether.ui.modifier.UIModifier
 abstract class UIComponent<T : UIComponent<T>>(modifier: UIModifier<*>) : Composable(modifier), Copyable<T> {
     override var parent: Composable? = null
 
-    override fun compose(context: ComposableContext) {
-        modifier.preCompose(context)
-        composeSize(context)
-        composePosition(context)
-        update(context)
-        modifier.compose(context)
+    override fun compose() {
+        modifier.preCompose(this)
+        composeSize()
+        composePosition()
+        update()
+        modifier.compose(this)
     }
 
     /**
      * Invoked after the components bounds have been updated.
      */
-    open fun update(context: ComposableContext) {}
+    open fun update() {}
 
     override fun render() {
         modifier.preRender()

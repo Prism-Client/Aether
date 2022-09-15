@@ -4,8 +4,6 @@ import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.shorthands.*
-import net.prismclient.aether.ui.composer.ComposableContext
-import net.prismclient.aether.ui.composer.Context
 import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.modifier.UIModifier
@@ -53,16 +51,13 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
 
     // -- Core -- //
 
-    override fun compose(context: ComposableContext) {
-        modifier.preCompose(context)
+    override fun compose() {
+        modifier.preCompose(this)
 
-        composeSize(context)
-        composePosition(context)
-        children.forEach {
-            println(it)
-            it.compose(Context.createContext(it))
-        }
-        modifier.compose(context)
+        composeSize()
+        composePosition()
+        children.forEach(Composable::compose)
+        modifier.compose(this)
         requestRasterization()
     }
 
@@ -86,8 +81,8 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
         }
     }
 
-    override fun recompose(context: ComposableContext?) {
-        if (isTopLayer()) compose(Context.createContext(this)) else super.recompose(context)
+    override fun recompose() {
+        if (isTopLayer()) compose() else super.recompose()
     }
 
     open fun requestRasterization() {

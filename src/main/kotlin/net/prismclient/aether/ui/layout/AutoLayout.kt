@@ -3,8 +3,7 @@ package net.prismclient.aether.ui.layout
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.ui.alignment.Alignment.*
-import net.prismclient.aether.ui.composer.ComposableContext
-import net.prismclient.aether.ui.composer.Context
+import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.unit.UIUnit
 import kotlin.math.max
@@ -71,7 +70,7 @@ class AutoLayout(
                 child.y = y + child.modifier.padding?.top.dp
                 y += child.relHeight + layoutStyle.itemSpacing.dp
             }
-            child.compose(Context.createContext(child))
+            child.compose()
             w = max(child.relX + child.relWidth - this.x, w)
             h = max(child.relY + child.relHeight - this.y, h)
         }
@@ -88,9 +87,9 @@ class AutoLayout(
  * @since 1.0
  */
 open class SpaceBetween : UIUnit<SpaceBetween>(0f) {
-    override fun updateCache(context: ComposableContext?, width: Float, height: Float, yaxis: Boolean): Float {
-        if (context?.composable !is AutoLayout)
-            throw RuntimeException("The SpaceBetween unit cannot be applied to a ${context?.composable?.javaClass?.simpleName}")
+    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float {
+        if (composable !is AutoLayout)
+            throw RuntimeException("The SpaceBetween unit cannot be applied to a ${composable?.javaClass?.simpleName ?: "null"}")
         return 0f
     }
 
@@ -108,12 +107,12 @@ open class SpaceBetween : UIUnit<SpaceBetween>(0f) {
  * @since 1.0
  */
 class SpaceEvenly : UIUnit<SpaceEvenly>(0f) {
-    override fun compute(context: ComposableContext?, width: Float, height: Float, yaxis: Boolean) {
-        if (context?.composable !is UILayout) throw RuntimeException("Expected a UILayout for a SpaceEvenly unit. Got: $context")
-        super.compute(context, width, height, yaxis)
+    override fun compute(composable: Composable?, width: Float, height: Float, yaxis: Boolean) {
+        if (composable !is UILayout) throw RuntimeException("Expected a UILayout for a SpaceEvenly unit. Got: $composable")
+        super.compute(composable, width, height, yaxis)
     }
 
-    override fun updateCache(context: ComposableContext?, width: Float, height: Float, yaxis: Boolean): Float = 0f
+    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float = 0f
 
     override fun copy(): SpaceEvenly = SpaceEvenly()
 

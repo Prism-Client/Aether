@@ -7,7 +7,7 @@ import net.prismclient.aether.core.util.property.Mergable
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.Alignment.*
-import net.prismclient.aether.ui.composer.ComposableContext
+import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.unit.UIUnit
 
 /**
@@ -20,9 +20,9 @@ open class AnchorPoint : Animatable<AnchorPoint>, Copyable<AnchorPoint>, Mergabl
     open var x: UIUnit<*>? = null
     open var y: UIUnit<*>? = null
 
-    open fun compose(context: ComposableContext?, width: Float, height: Float) {
-        x?.compute(context, width, height, false)
-        y?.compute(context, width, height, true)
+    open fun compose(composable: Composable?, width: Float, height: Float) {
+        x?.compute(composable, width, height, false)
+        y?.compute(composable, width, height, true)
     }
 
     /**
