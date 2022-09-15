@@ -105,8 +105,8 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
     /**
      * Attempts to resize the [Composable] based on the metrics of the font.
      */
-    open fun composeSize(composable: Composable?) {
-        style.compose(composable)
+    open fun composeSize(context: ComposableContext) {
+        style.compose(context)
         calculateMetrics()
         when (style.textResizing) {
             AutoWidth -> {
@@ -116,15 +116,15 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
                 height!!.cachedValue = fontHeight()
 
                 // Update the size of the composable
-                composable?.width = x.dp + width.dp
-                composable?.height = y.dp + height.dp
+                context.composable?.width = x.dp + width.dp
+                context.composable?.height = y.dp + height.dp
             }
             AutoHeight -> {
                 height = AutoResize()
                 height!!.cachedValue = fontHeight()
 
                 // Update the height of the composable
-                composable?.height = y.dp + height.dp
+                context.composable?.height = y.dp + height.dp
             }
             else -> {}
         }
@@ -224,7 +224,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
  * An internal unit used to indicate if the [UIFont] is set to [FontType.AutoWidth] or [FontType.AutoHeight].
  */
 internal class AutoResize : UIUnit<AutoResize>(0f){
-    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float = cachedValue
+    override fun updateCache(context: ComposableContext?, width: Float, height: Float, yaxis: Boolean): Float = cachedValue
 
     override fun copy(): AutoResize = AutoResize()
 
@@ -294,13 +294,12 @@ open class FontStyle : Style<FontStyle, Composable>() {
     }
 
     override fun compose(context: ComposableContext) {
-        context!!
         ifNotNull(fontFamily) {
             //println("here")
             actualFontName = "${fontFamily!!.familyName}-${fontFaceType?.name?.lowercase()}"
         }
-        fontSize?.compute(context, context.width, context.height, false)
-        fontSpacing?.compute(context, context.width, context.height, false)
+        fontSize?.compute(context, context.activeComposable().width, context.activeComposable().height, false)
+        fontSpacing?.compute(context, context.activeComposable().width, context.activeComposable().height, false)
     }
 
     override fun animate(context: AnimationContext<*>, start: FontStyle?, end: FontStyle?, progress: Float) {

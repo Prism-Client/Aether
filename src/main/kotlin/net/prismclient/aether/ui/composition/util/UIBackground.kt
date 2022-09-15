@@ -9,6 +9,7 @@ import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.shape.ComposableShape
 import net.prismclient.aether.ui.unit.UIUnit
+import net.prismclient.aether.ui.unit.compute
 import net.prismclient.aether.ui.unit.other.UIRadius
 
 /**
@@ -28,9 +29,13 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
     var backgroundBorder: UIBorder? = null
 
     override fun compose(context: ComposableContext) {
-        super.compose(context)
-        initialX = context!!.relX
-        initialY = context.relY
+        x?.compute(context, context.activeComposable().relWidth, context.activeComposable().relHeight, false)
+        y?.compute(context, context.activeComposable().relWidth, context.activeComposable().relHeight, true)
+        width?.compute(context, context.activeComposable().relWidth, context.activeComposable().relHeight, false)
+        height?.compute(context, context.activeComposable().relWidth, context.activeComposable().relHeight, true)
+
+        initialX = context.activeComposable().relX
+        initialY = context.activeComposable().relY
         backgroundRadius?.compose(context)
         backgroundBorder?.compose(this)
     }
@@ -41,11 +46,6 @@ open class UIBackground : ComposableShape<Composable>(), UIProperty<UIBackground
             rect(initialX + x.dp, initialY + y.dp, width.dp, height.dp, backgroundRadius)
         }
         backgroundBorder?.render()
-    }
-
-    override fun UIUnit<*>?.compute(composable: Composable, yaxis: Boolean) {
-        // Update based on the relative values instead of the normal
-        this?.compute(composable, composable.relWidth, composable.relHeight, yaxis)
     }
 
     override fun copy(): UIBackground = UIBackground().also {

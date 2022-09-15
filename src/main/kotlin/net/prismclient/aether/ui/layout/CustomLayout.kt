@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.layout
 
 import net.prismclient.aether.core.metrics.Size
+import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composition.Composable
 
 /**
@@ -31,7 +32,7 @@ class CustomLayout @JvmOverloads constructor(
 ) : BoxLayout(name, modifier, layoutStyle) {
     override fun calculatePotentialSize(): Size = sizeCalculation() ?: Size(0f, 0f)
 
-    override fun updateUnits() = unitCalculation.invoke(this, potentialSize)
+    override fun updateUnits(context: ComposableContext) = unitCalculation.invoke(this, potentialSize)
 
     override fun updateLayout(): Size = layout.invoke(this, children, potentialSize)
 }

@@ -18,6 +18,7 @@ import net.prismclient.aether.ui.composition.util.radius
 import net.prismclient.aether.ui.registry.UIRegistry
 import net.prismclient.aether.ui.renderer.UIStrokeDirection
 import net.prismclient.aether.ui.unit.UIUnit
+import net.prismclient.aether.ui.unit.compute
 import net.prismclient.aether.ui.unit.other.AnchorPoint
 import net.prismclient.aether.ui.unit.other.Margin
 import net.prismclient.aether.ui.unit.other.Padding
@@ -64,21 +65,21 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     }
 
     open fun composePosition(context: ComposableContext) {
-        x?.compute // (false)
-        y?.compute // (true)
+        x.compute(context, false) // (false)
+        y.compute(context, true) // (true)
     }
 
     open fun composeSize(context: ComposableContext) {
-        width?.compute // (true)
-        height?.compute // (false)
+        width.compute(context, false) // (true)
+        height.compute(context, true) // (false)
     }
 
     open fun composeAnchor(context: ComposableContext) {
-        anchorPoint?.compose(context.composable, context.composable.width, context.composable.height)
+        anchorPoint?.compose(context, context.activeComposable().width, context.activeComposable().height)
     }
 
     open fun composePadding(context: ComposableContext) {
-        padding?.compose(context.composable)
+        padding?.compose(context)
     }
 
     /**

@@ -15,17 +15,17 @@ abstract class UIComponent<T : UIComponent<T>>(modifier: UIModifier<*>) : Compos
     override var parent: Composable? = null
 
     override fun compose(context: ComposableContext) {
-        modifier.preCompose(this)
-        composeSize()
-        composePosition()
-        update()
-        modifier.compose(this)
+        modifier.preCompose(context)
+        composeSize(context)
+        composePosition(context)
+        update(context)
+        modifier.compose(context)
     }
 
     /**
      * Invoked after the components bounds have been updated.
      */
-    open fun update() {}
+    open fun update(context: ComposableContext) {}
 
     override fun render() {
         modifier.preRender()

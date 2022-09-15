@@ -11,7 +11,7 @@ import net.prismclient.aether.ui.composition.Composable
  * @since 1.0
  * @see UIUniqueProperty
  */
-interface UIProperty<T> : Updatable<Composable>, Copyable<T>, Mergable<T>, Animatable<T>
+interface UIProperty<T> : Updatable, Copyable<T>, Mergable<T>, Animatable<T>
 
 /**
  * A [UIProperty], where the second generic type, [C] represents the [Composable] for [Updatable]
@@ -20,4 +20,4 @@ interface UIProperty<T> : Updatable<Composable>, Copyable<T>, Mergable<T>, Anima
  * @since 1.0
  * @see UIProperty
  */
-interface UIUniqueProperty<T, C : Composable> : Updatable<C>, Copyable<T>, Mergable<T>, Animatable<T>
+interface UIUniqueProperty<T, C : Composable> : Updatable, Copyable<T>, Mergable<T>, Animatable<T>

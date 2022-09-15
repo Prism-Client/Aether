@@ -1,6 +1,6 @@
 package net.prismclient.aether.ui.unit.type
 
-import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.unit.UIUnit
 
 /**
@@ -13,7 +13,7 @@ import net.prismclient.aether.ui.unit.UIUnit
  */
 class SizeUnit(value: Float) : UIUnit<SizeUnit>(value) {
     override fun updateCache(
-        composable: Composable?,
+        context: ComposableContext?,
         width: Float,
         height: Float,
         yaxis: Boolean

@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.component.type
 
 import net.prismclient.aether.ui.component.UIComponent
+import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.font.Font
 import net.prismclient.aether.ui.font.FontStyle
 import net.prismclient.aether.ui.font.UIFont
@@ -27,17 +28,18 @@ open class UIButton internal constructor(
             // TODO: compose update
         }
 
-    override fun composePadding() {
+
+    override fun composeSize(context: ComposableContext) {
+        super.composeSize(context)
         font.actualText = text
         // Calculate the font metrics, and update the size. Compose
         // Padding is invoked directly after updating the width.
-        font.composeSize(this)
-        super.composePadding()
+        font.composeSize(context)
     }
 
-    override fun update() {
+    override fun update(context: ComposableContext) {
         // After the position is calculated compose the font
-        font.compose(this)
+        font.compose(context)
 
 //        font.compose(this)
 //        if (dynamic)

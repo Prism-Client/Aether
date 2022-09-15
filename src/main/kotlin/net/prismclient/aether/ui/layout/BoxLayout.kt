@@ -5,10 +5,11 @@ import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.composer.ComposableContext
-import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.composer.Context
 import net.prismclient.aether.ui.layout.util.LayoutDirection
 import net.prismclient.aether.ui.style.Style
 import net.prismclient.aether.ui.unit.UIUnit
+import net.prismclient.aether.ui.unit.compute
 import net.prismclient.aether.ui.unit.other.Padding
 import net.prismclient.aether.ui.unit.typeOf
 import kotlin.math.max
@@ -35,7 +36,7 @@ open class BoxLayout(
         var height = 0f
 
         for (child in children) {
-            child.compose()
+            child.compose(Context.createContext(child))
             if (layoutStyle.layoutDirection == LayoutDirection.HORIZONTAL) {
                 width += child.relWidth + layoutStyle.itemSpacing.dp
                 height = max(height, child.relHeight)
@@ -63,12 +64,12 @@ open class BoxLayout(
         // invoked from compose such as updateLayout and updateSize will
         // have a general idea of the final dimensions of the layout.
         if (modifier.width.typeOf(HugLayout::class) || modifier.height.typeOf(HugLayout::class)) potentialSize = calculatePotentialSize()
-        super.compose()
+        super.compose(context)
         potentialSize = null
     }
 
-    override fun composeSize() {
-        super.composeSize()
+    override fun composeSize(context: ComposableContext) {
+        super.composeSize(context)
 
         // If the layout is intended to be resized based on the size of the
         // layout, increment equal the cachedValue of it to the potential
@@ -85,12 +86,12 @@ open class BoxLayout(
 
             width = modifier.width.dp.roundToInt().toFloat()
             height = modifier.height.dp.roundToInt().toFloat()
-            composePadding()
+            modifier.composePadding(context)
         }
     }
 
-    override fun updateUnits() {
-        layoutStyle.compose(this)
+    override fun updateUnits(context: ComposableContext) {
+        layoutStyle.compose(context)
     }
 
     override fun updateLayout(): Size {
@@ -98,7 +99,7 @@ open class BoxLayout(
         var h = 0f
 
         children.forEach { child ->
-            child.compose()
+            child.compose(Context.createContext(child))
             w = max(child.x + child.relWidth - this.x, w)
             h = max(child.y + child.relHeight - this.y, h)
         }
@@ -143,16 +144,15 @@ class BoxLayoutStyle : Style<BoxLayoutStyle, BoxLayout>() {
     var itemSpacing: UIUnit<*>? = null
 
     override fun compose(context: ComposableContext) {
-        itemSpacing?.compute(
-            context!!,
-            context.width,
-            context.height,
-            layoutDirection == LayoutDirection.VERTICAL
-        )
-        layoutPadding?.compose(context!!)
+        val layout = context.composable as BoxLayout
+        itemSpacing.compute(context, layoutDirection == LayoutDirection.VERTICAL)
+        layoutPadding?.compose(context)
         if (itemSpacing is SpaceBetween)
-            itemSpacing!!.value = (if (layoutDirection == LayoutDirection.HORIZONTAL)
-                context!!.potentialSize!!.width else context!!.potentialSize!!.height) / context.children.size
+            itemSpacing!!.value = if (layoutDirection == LayoutDirection.HORIZONTAL) {
+                layout.potentialSize!!.width
+            } else {
+                layout.potentialSize!!.height
+            } / layout.children.size.coerceAtLeast(0)
     }
 
     override fun animate(context: AnimationContext<*>, start: BoxLayoutStyle?, end: BoxLayoutStyle?, progress: Float) {
@@ -239,9 +239,9 @@ class BoxLayoutStyle : Style<BoxLayoutStyle, BoxLayout>() {
  * @since 1.0
  */
 open class HugLayout : UIUnit<HugLayout>(0f) {
-    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float {
-        if (composable !is BoxLayout)
-            throw RuntimeException("The HugLayout unit cannot be applied to a ${composable?.javaClass?.simpleName ?: "null"}")
+    override fun updateCache(context: ComposableContext?, width: Float, height: Float, yaxis: Boolean): Float {
+        if (context?.composable !is BoxLayout)
+            throw RuntimeException("The HugLayout unit cannot be applied to a ${context?.composable?.javaClass?.simpleName}")
         return 0f
     }
 

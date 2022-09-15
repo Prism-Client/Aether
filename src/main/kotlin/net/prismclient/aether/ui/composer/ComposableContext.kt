@@ -8,7 +8,13 @@ import net.prismclient.aether.ui.composition.Composable
  * @author sen
  * @since 1.0
  */
-class ComposableContext(var composable: Composable?) {
+object ComposableContext{
+    var composable: Composable? = null
+
+    fun updateContext(target: Composable) {
+        composable = target
+    }
+
     /**
      * Returns the [composable] and throws an exception if it is null.
      */

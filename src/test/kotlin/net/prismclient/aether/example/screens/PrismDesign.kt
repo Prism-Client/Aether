@@ -11,6 +11,7 @@ import net.prismclient.aether.ui.component.type.IconModifier
 import net.prismclient.aether.ui.component.type.UIButton
 import net.prismclient.aether.ui.component.type.imageColor
 import net.prismclient.aether.ui.composable.*
+import net.prismclient.aether.ui.composer.Context
 import net.prismclient.aether.ui.composition.CompositionModifier
 import net.prismclient.aether.ui.composition.disableOptimizations
 import net.prismclient.aether.ui.composition.onClick
@@ -142,7 +143,7 @@ object PrismDesign : CloseableScreen {
                         run loop@ {
                             children.forEachIndexed { i, child ->
                                 child.overridden = true
-                                child.compose()
+                                child.compose(Context.createContext(child))
                                 spacing += child.relWidth
 
                                 if (spacing + child.relWidth > width) {
@@ -159,11 +160,11 @@ object PrismDesign : CloseableScreen {
 
                         children.forEach { child ->
                             child.overridden = true
-                            child.compose()
+                            child.compose(Context.createContext(child))
                             child.x = x
                             child.y = y
                             x += child.relWidth + spacing
-                            child.compose()
+                            child.compose(Context.createContext(child))
 
                             if (x > width + this.x) {
                                 x = this.x + spacing

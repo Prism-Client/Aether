@@ -6,9 +6,9 @@ import net.prismclient.aether.ui.unit.UIUnit
 /**
  * Adds a hint to the [Composable] when computed that this is depden
  */
-abstract class DynamicUnit<T : DynamicUnit<T>>(value: Float) : UIUnit<T>(value) {
-    override fun compute(composable: Composable?, width: Float, height: Float, yaxis: Boolean) {
-//        if (composable != null) composable.hint()
-        super.compute(composable, width, height, yaxis)
-    }
-}
+//abstract class DynamicUnit<T : DynamicUnit<T>>(value: Float) : UIUnit<T>(value) {
+//    override fun compute( width: Float, height: Float, yaxis: Boolean) {
+////        if (composable != null) composable.hint()
+//        super.compute(composable, width, height, yaxis)
+//    }
+//}

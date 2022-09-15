@@ -1,7 +1,7 @@
 package net.prismclient.aether.ui.unit.type
 
 import net.prismclient.aether.core.Aether
-import net.prismclient.aether.ui.composition.Composable
+import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.unit.UIUnit
 
 /**
@@ -13,11 +13,11 @@ import net.prismclient.aether.ui.unit.UIUnit
  * @since 1.0
  */
 open class RelativeUnit(value: Float) : UIUnit<RelativeUnit>(value) {
-    override fun updateCache(composable: Composable?, width: Float, height: Float, yaxis: Boolean): Float {
+    override fun updateCache(context: ComposableContext?, width: Float, height: Float, yaxis: Boolean): Float {
         return if (!yaxis) {
-            composable?.parentWidth() ?: Aether.instance.displayWidth
+            context?.composable?.parentWidth() ?: Aether.instance.displayWidth
         } else {
-            composable?.parentHeight() ?: Aether.instance.displayHeight
+            context?.composable?.parentHeight() ?: Aether.instance.displayHeight
         } * value
     }
 

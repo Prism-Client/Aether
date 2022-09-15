@@ -6,6 +6,7 @@ import net.prismclient.aether.core.event.*
 import net.prismclient.aether.core.util.shorthands.dp
 import net.prismclient.aether.ui.composer.ComposableContext
 import net.prismclient.aether.ui.composer.ComposerHint
+import net.prismclient.aether.ui.composer.Context
 import net.prismclient.aether.ui.layout.UILayout
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
@@ -128,9 +129,9 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     /**
      * todo be doced
      */
-    open fun recompose() {
+    open fun recompose(context: ComposableContext?) {
         // TODO: Determine when to recompose only necessary elements if neccsssary
-        composition.recompose()
+        composition.recompose(context)
     }
 
     /**
@@ -261,7 +262,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      */
     @Suppress
     protected fun UIUnit<*>?.compute(yaxis: Boolean) {
-        this?.compute(this@Composable, parentWidth(), parentHeight(), yaxis)
+        this?.compute(Context.createContext(this@Composable), parentWidth(), parentHeight(), yaxis)
     }
 }
 

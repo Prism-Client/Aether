@@ -44,7 +44,7 @@ import net.prismclient.aether.ui.unit.other.UIRadius
  * @see DefaultScrollbar
  */
 abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollbar, UILayout> {
-    protected open lateinit var composable: Composable
+    protected open lateinit var composable: UILayout
 
     open var direction: LayoutDirection = LayoutDirection.HORIZONTAL
 
@@ -84,31 +84,31 @@ abstract class Scrollbar : ComposableShape<UILayout>(), UIUniqueProperty<Scrollb
     open var thumbSelected: Boolean = false
 
     override fun compose(context: ComposableContext) {
-        super.compose(context); this.composable = context!!
+        super.compose(context); this.composable = context.activeComposable() as UILayout
 
         // Compute if the scrollbar should be
         // rendered and the size of the thumb.
         if (direction == LayoutDirection.HORIZONTAL) {
             shouldRender = when (overflow) {
                 Overflow.SCROLLBAR -> true
-                Overflow.AUTO -> context.widthOverflow() > 0f
+                Overflow.AUTO -> composable.widthOverflow() > 0f
                 else -> false
             }
             actualThumbSize =
-                (context.width / context.layoutSize.width.coerceAtLeast(context.width)) * width.dp
+                (composable.width / composable.layoutSize.width.coerceAtLeast(composable.width)) * width.dp
         } else {
             shouldRender = when (overflow) {
                 Overflow.SCROLLBAR -> true
-                Overflow.AUTO -> context.heightOverflow() > 0f
+                Overflow.AUTO -> composable.heightOverflow() > 0f
                 else -> false
             }
             actualThumbSize =
-                (context.height / (context.layoutSize.height.coerceAtLeast(context.height))) * height.dp
+                (composable.height / (composable.layoutSize.height.coerceAtLeast(composable.height))) * height.dp
         }
-        context.addListener("$this:$direction", listener = ::onScroll)
-        context.addListener("$this:$direction", listener = ::onMousePress)
-        context.addListener("$this:$direction", listener = ::onMouseRelease)
-        context.addListener("$this:$direction", listener = ::onMouseMove)
+        composable.addListener("$this:$direction", listener = ::onScroll)
+        composable.addListener("$this:$direction", listener = ::onMousePress)
+        composable.addListener("$this:$direction", listener = ::onMouseRelease)
+        composable.addListener("$this:$direction", listener = ::onMouseMove)
     }
 
     /**
@@ -218,7 +218,7 @@ class DefaultScrollbar : Scrollbar() {
             value = if (direction == LayoutDirection.HORIZONTAL)
                 (event.mouseX - initialX - x.dp - mouseOffset) / (width.dp - actualThumbSize)
             else (event.mouseY - initialY - y.dp - mouseOffset) / (height.dp - actualThumbSize)
-            composable.composition.recompose()
+            composable.composition.recompose(null)
         }
     }
 
