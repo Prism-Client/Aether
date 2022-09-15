@@ -83,7 +83,7 @@ class IconModifier : UIModifier<IconModifier>() {
         }
     }
 
-    override fun animate(context: AnimationContext<*>, start: IconModifier?, end: IconModifier?, progress: Float) {
+    override fun animate(context: AnimationContext<*>, initial: IconModifier?, start: IconModifier?, end: IconModifier?, progress: Float) {
         TODO("Not yet implemented")
     }
 }

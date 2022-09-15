@@ -302,7 +302,7 @@ open class FontStyle : Style<FontStyle, Composable>() {
         fontSpacing?.compute(composable, composable.width, composable.height, false)
     }
 
-    override fun animate(context: AnimationContext<*>, start: FontStyle?, end: FontStyle?, progress: Float) {
+    override fun animate(context: AnimationContext<*>, initial: FontStyle?, start: FontStyle?, end: FontStyle?, progress: Float) {
         TODO("Not yet implemented")
     }
 

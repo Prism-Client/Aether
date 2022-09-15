@@ -183,7 +183,7 @@ fun CompositionModifier(): DefaultCompositionModifier = DefaultCompositionModifi
  * @since 1.0
  */
 class DefaultCompositionModifier : CompositionModifier<DefaultCompositionModifier>() {
-    override fun animate(context: AnimationContext<*>, start: DefaultCompositionModifier?, end: DefaultCompositionModifier?, progress: Float) {
+    override fun animate(context: AnimationContext<*>, initial: DefaultCompositionModifier?, start: DefaultCompositionModifier?, end: DefaultCompositionModifier?, progress: Float) {
         TODO("Not yet implemented")
     }
 

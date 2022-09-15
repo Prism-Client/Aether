@@ -202,7 +202,7 @@ abstract class LayoutModifier<T : LayoutModifier<T>> : CompositionModifier<T>() 
 fun LayoutModifier(): DefaultLayoutModifier = DefaultLayoutModifier()
 
 class DefaultLayoutModifier : LayoutModifier<DefaultLayoutModifier>() {
-    override fun animate(context: AnimationContext<*>, start: DefaultLayoutModifier?, end: DefaultLayoutModifier?, progress: Float) {
+    override fun animate(context: AnimationContext<*>, initial: DefaultLayoutModifier?, start: DefaultLayoutModifier?, end: DefaultLayoutModifier?, progress: Float) {
         TODO("Not yet implemented")
     }
 

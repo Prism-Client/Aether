@@ -62,8 +62,14 @@ class UIColor(color: Int) : Copyable<UIColor>, Mergable<UIColor>, Animatable<UIC
         }
     }
 
-    override fun animate(context: AnimationContext<*>, start: UIColor?, end: UIColor?, progress: Float) {
-        rgba = colorLerp(start?.rgba ?: 0, end?.rgba ?: 0, progress)
+    override fun animate(
+        context: AnimationContext<*>,
+        initial: UIColor?,
+        start: UIColor?,
+        end: UIColor?,
+        progress: Float
+    ) {
+        rgba = colorLerp(start?.rgba ?: initial?.rgba ?: 0, end?.rgba ?: initial?.rgba ?: 0, progress)
     }
 
     override fun toString(): String =

@@ -4,7 +4,6 @@ import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.property.Copyable
 import net.prismclient.aether.core.util.property.Mergable
-import net.prismclient.aether.core.util.shorthands.lerp
 
 /**
  * [UIAlpha] represents a alpha value between 0 and 1.
@@ -18,7 +17,7 @@ class UIAlpha(var value: Float) : Copyable<UIAlpha>, Mergable<UIAlpha>, Animatab
      */
     constructor(value: Int) : this((value and 0xFF) / 255f)
 
-    override fun animate(context: AnimationContext<*>, start: UIAlpha?, end: UIAlpha?, progress: Float) {
+    override fun animate(context: AnimationContext<*>, initial: UIAlpha?, start: UIAlpha?, end: UIAlpha?, progress: Float) {
         TODO("Not yet implemented")
     }
 

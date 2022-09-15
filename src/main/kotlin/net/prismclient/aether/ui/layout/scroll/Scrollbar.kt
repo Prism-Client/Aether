@@ -221,7 +221,7 @@ class DefaultScrollbar : Scrollbar() {
         }
     }
 
-    override fun animate(context: AnimationContext<*>, start: Scrollbar?, end: Scrollbar?, progress: Float) {
+    override fun animate(context: AnimationContext<*>, initial: Scrollbar?, start: Scrollbar?, end: Scrollbar?, progress: Float) {
         TODO("Not yet implemented")
     }
 

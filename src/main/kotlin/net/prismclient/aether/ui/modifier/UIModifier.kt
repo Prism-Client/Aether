@@ -357,13 +357,13 @@ class DefaultModifier : UIModifier<DefaultModifier>() {
         }
     }
 
-    override fun animate(context: AnimationContext<*>, start: DefaultModifier?, end: DefaultModifier?, progress: Float) {
+    override fun animate(context: AnimationContext<*>, initial: DefaultModifier?, start: DefaultModifier?, end: DefaultModifier?, progress: Float) {
         ifNotNull(start?.background, end?.background) {
             background = background ?: run {
                 context.recompose()
                 UIBackground()
             }
-            background!!.animate(context, start?.background, end?.background, progress)
+            background!!.animate(context, initial?.background, start?.background, end?.background, progress)
         }
     }
 }

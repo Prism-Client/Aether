@@ -62,10 +62,9 @@ object Animations : UIScreen {
         }
 
         propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(1250L), DefaultModifier()))
-//        propertyAnimation.keyframes.add(Keyframe(UILinear(10000L), DefaultModifier().x(50.px)))
-        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(1250), DefaultModifier().backgroundColor(ColorOf(1f, 0f, 0f))))
+        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(1250L), DefaultModifier().backgroundColor(ColorOf(1f, 0f, 0f))))
 
-        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(100L), DefaultModifier().backgroundColor(UIColor(0))))
+        propertyAnimation.keyframes.add(propertyAnimation.createKeyframe(UIQuart(1000L), DefaultModifier().backgroundColor(ColorOf(0f, 1f, 0f))))
 
         title.animations = HashMap()
         title.animations!!["Hello"] = propertyAnimation

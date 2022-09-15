@@ -1,12 +1,8 @@
 package net.prismclient.aether.core.animation
 
 import net.prismclient.aether.core.ease.UIEase
-import net.prismclient.aether.core.event.PreRenderEvent
-import net.prismclient.aether.core.event.UIEventBus.register
-import net.prismclient.aether.core.event.UIEventBus.unregister
 import net.prismclient.aether.core.util.property.Animatable
 import net.prismclient.aether.core.util.shorthands.copy
-import net.prismclient.aether.ui.composition.Composable
 import java.lang.NullPointerException
 
 /**
@@ -34,8 +30,6 @@ abstract class Animation<T : Animatable<T>> {
         activeKeyframe!!.ease.start()
 
         animating = true
-
-        context = AnimationContext(activeKeyframe!!.animatable.copy)
     }
 
     open fun next() {
@@ -47,10 +41,6 @@ abstract class Animation<T : Animatable<T>> {
             complete()
             return
         }
-
-        if (context == null)
-            throw NullPointerException("Animation context is null. Has the animation been started?")
-        context!!.updateContext(activeKeyframe!!.animatable.copy as? T)
     }
 
     open fun complete() {
@@ -58,7 +48,7 @@ abstract class Animation<T : Animatable<T>> {
     }
 
     open fun update(obj: T) {
-        val context = context ?: throw NullPointerException("Animation context is null. Has the animation been started?")
+        val context = context ?: AnimationContext(obj.copy)
 
         if (activeKeyframe == null || nextKeyframe == null) {
             complete()
@@ -67,6 +57,7 @@ abstract class Animation<T : Animatable<T>> {
 
         if (activeKeyframe!!.ease.finished) {
             next()
+            context.updateContext(obj.copy)
             if (activeKeyframe == null || nextKeyframe == null) {
                 complete()
                 return
@@ -75,8 +66,9 @@ abstract class Animation<T : Animatable<T>> {
 
         obj.animate(
             context,
-            (activeKeyframe?.animatable ?: context.snapshot) as? T,
-            (nextKeyframe?.animatable ?: context.snapshot) as? T,
+            context.snapshot,
+            activeKeyframe?.animatable,
+            nextKeyframe?.animatable,
             (activeKeyframe?.ease?.getValue() ?: 0.0).toFloat()
         )
     }
