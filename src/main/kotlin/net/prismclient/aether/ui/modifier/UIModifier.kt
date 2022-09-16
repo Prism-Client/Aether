@@ -59,7 +59,36 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     open fun preCompose(component: Composable) {}
 
     open fun compose(composable: Composable) {
+        composeSize(composable)
+        composePosition(composable)
+        composeAnchorPoint(composable)
+        composePadding(composable)
+        composeMargin(composable)
+
         background?.compose(composable)
+    }
+
+    open fun composePosition(composable: Composable) {
+        x?.compute(composable, composable.width, composable.height, false)
+        y?.compute(composable, composable.width, composable.height, true)
+
+    }
+
+    open fun composeSize(composable: Composable) {
+        width?.compute(composable, composable.width, composable.height, false)
+        height?.compute(composable, composable.parentWidth(), composable.parentHeight(), true)
+    }
+
+    open fun composeAnchorPoint(composable: Composable) {
+        anchorPoint?.compose(composable, composable.width, composable.height)
+    }
+
+    open fun composePadding(composable: Composable) {
+        padding?.compose(composable)
+    }
+
+    open fun composeMargin(composable: Composable) {
+        margin?.compose(composable)
     }
 
     /**
@@ -358,6 +387,10 @@ class DefaultModifier : UIModifier<DefaultModifier>() {
     }
 
     override fun animate(context: AnimationContext<*>, initial: DefaultModifier?, start: DefaultModifier?, end: DefaultModifier?, progress: Float) {
+        ifNotNull(start?.x, end?.x) {
+
+        }
+
         ifNotNull(start?.background, end?.background) {
             background = background ?: run {
                 context.recompose()
