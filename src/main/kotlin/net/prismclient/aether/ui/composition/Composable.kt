@@ -78,14 +78,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     open var relWidth: Float = 0f
     open var relHeight: Float = 0f
 
-    /**
-     * Updates the anchor point and computes the [UIModifier.x] and [UIModifier.y] values and sets them to [x] and [y].
-     */
     open fun composePosition() {
-        composeAnchor()
-        modifier.x?.compute(false)
-        modifier.y?.compute(true)
-
         if (!overridden) {
             x = (modifier.x.dp - modifier.anchorPoint?.x.dp + parentX()).roundToInt().toFloat()
             y = (modifier.y.dp - modifier.anchorPoint?.y.dp + parentY()).roundToInt().toFloat()
@@ -93,34 +86,16 @@ abstract class Composable(open val modifier: UIModifier<*>) {
         composeBounds()
     }
 
-    /**
-     * Updates the size of this and sets the calculated properties to [width] and [height]. If the
-     * units are dynamic, [Composable.dynamic] will be true. The padding is calculated.
-     */
     open fun composeSize() {
-        modifier.width?.compute(false)
-        modifier.height?.compute(true)
         width = modifier.width.dp.roundToInt().toFloat()
         height = modifier.height.dp.roundToInt().toFloat()
-        composePadding()
     }
 
-    /**
-     * Updates the relative x, y, width and height of this based on the padding.
-     */
     open fun composeBounds() {
         relX = (x - modifier.padding?.left.dp).roundToInt().toFloat()
         relY = (y - modifier.padding?.top.dp).roundToInt().toFloat()
         relWidth = (width + modifier.padding?.right.dp + modifier.padding?.left.dp).roundToInt().toFloat()
         relHeight = (height + modifier.padding?.bottom.dp + modifier.padding?.top.dp).roundToInt().toFloat()
-    }
-
-    open fun composeAnchor() {
-        modifier.anchorPoint?.compose(this, width, height)
-    }
-
-    open fun composePadding() {
-        modifier.padding?.compose(this)
     }
 
     /**

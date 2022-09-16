@@ -53,30 +53,26 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
         applyModifier(this::class.simpleName!!)
     }
 
-    /**
-     * Invoked prior to updating general properties of the composable, such as the position and size.
-     */
-    open fun preCompose(component: Composable) {}
-
-    open fun compose(composable: Composable) {
+    open fun preCompose(composable: Composable) {
         composeSize(composable)
-        composePosition(composable)
         composeAnchorPoint(composable)
+        composePosition(composable)
         composePadding(composable)
         composeMargin(composable)
+    }
 
+    open fun compose(composable: Composable) {
         background?.compose(composable)
     }
 
     open fun composePosition(composable: Composable) {
         x?.compute(composable, composable.width, composable.height, false)
         y?.compute(composable, composable.width, composable.height, true)
-
     }
 
     open fun composeSize(composable: Composable) {
         width?.compute(composable, composable.width, composable.height, false)
-        height?.compute(composable, composable.parentWidth(), composable.parentHeight(), true)
+        height?.compute(composable, composable.width, composable.height, true)
     }
 
     open fun composeAnchorPoint(composable: Composable) {

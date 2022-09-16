@@ -84,7 +84,8 @@ open class BoxLayout(
 
             width = modifier.width.dp.roundToInt().toFloat()
             height = modifier.height.dp.roundToInt().toFloat()
-            composePadding()
+            modifier.composePadding(this)
+            modifier.composeMargin(this)
         }
     }
 

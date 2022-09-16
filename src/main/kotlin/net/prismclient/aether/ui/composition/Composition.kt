@@ -53,7 +53,6 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
 
     override fun compose() {
         modifier.preCompose(this)
-
         composeSize()
         composePosition()
         children.forEach(Composable::compose)

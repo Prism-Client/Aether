@@ -27,21 +27,21 @@ open class UIButton internal constructor(
             // TODO: compose update
         }
 
-    override fun composePadding() {
+    override fun composeSize() {
+        super.composeSize()
         font.actualText = text
         // Calculate the font metrics, and update the size. Compose
         // Padding is invoked directly after updating the width.
         font.composeSize(this)
-        super.composePadding()
+        modifier.composeAnchorPoint(this)
+        modifier.composePadding(this)
+        modifier.composeMargin(this)
     }
+
 
     override fun update() {
         // After the position is calculated compose the font
         font.compose(this)
-
-//        font.compose(this)
-//        if (dynamic)
-//            composePosition()
     }
 
     override fun renderComponent() {
