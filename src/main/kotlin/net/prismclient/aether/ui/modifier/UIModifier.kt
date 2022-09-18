@@ -431,6 +431,8 @@ class DefaultModifier : UIModifier<DefaultModifier>() {
         if (completed) {
             if (width is AnimationUnit && end?.width != null) width = end.width
             if (height is AnimationUnit && end?.height != null) height = end.height
+            composable.overridden = false
+            context.recompose()
             return
         }
     }
