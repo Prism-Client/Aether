@@ -67,7 +67,8 @@ class UIColor(color: Int) : Copyable<UIColor>, Mergable<UIColor>, Animatable<UIC
         initial: UIColor?,
         start: UIColor?,
         end: UIColor?,
-        progress: Float
+        progress: Float,
+        completed: Boolean
     ) {
         rgba = colorLerp(start?.rgba ?: initial?.rgba ?: 0, end?.rgba ?: initial?.rgba ?: 0, progress)
     }

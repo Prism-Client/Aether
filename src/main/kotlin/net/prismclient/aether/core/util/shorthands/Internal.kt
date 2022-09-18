@@ -59,7 +59,7 @@ internal fun lerp(start: Int, end: Int, progress: Float): Int = start + ((end - 
 /**
  * Linearly interpolates between [start] and [end] by [progress] which are Floats, and returns a Float.
  */
-internal fun lerp(start: Float, end: Float, progress: Float) = start + (end - start) * progress.roundToInt()
+internal fun lerp(start: Float, end: Float, progress: Float) = start + (end - start) * progress
 
 /**
  * Splits the given [color]s into four channels and lerps them individually to provide

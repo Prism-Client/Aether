@@ -1,6 +1,7 @@
 package net.prismclient.aether.ui.modifier
 
 import net.prismclient.aether.core.animation.AnimationContext
+import net.prismclient.aether.core.animation.AnimationUnit
 import net.prismclient.aether.core.color.UIAlpha
 import net.prismclient.aether.core.color.UIColor
 import net.prismclient.aether.core.util.property.Animatable
@@ -37,6 +38,8 @@ import net.prismclient.aether.ui.unit.type.SizeUnit
  */
 @Suppress("Unchecked_Cast", "LeakingThis")
 abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animatable<M> {
+    lateinit var composable: Composable
+
     open var x: UIUnit<*>? = null
     open var y: UIUnit<*>? = null
     open var width: UIUnit<*>? = null
@@ -54,6 +57,7 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     }
 
     open fun preCompose(composable: Composable) {
+        this.composable = composable
         composeSize(composable)
         composeAnchorPoint(composable)
         composePosition(composable)
@@ -382,9 +386,38 @@ class DefaultModifier : UIModifier<DefaultModifier>() {
         }
     }
 
-    override fun animate(context: AnimationContext<*>, initial: DefaultModifier?, start: DefaultModifier?, end: DefaultModifier?, progress: Float) {
-        ifNotNull(start?.x, end?.x) {
+    override fun animate(
+        context: AnimationContext<*>,
+        initial: DefaultModifier?,
+        start: DefaultModifier?,
+        end: DefaultModifier?,
+        progress: Float,
+        completed: Boolean
+    ) {
+        start?.preCompose(composable)
+        end?.preCompose(composable)
 
+        ifNotNull(start?.x, end?.x) {
+            composable.overridden = true
+            composable.x = lerp(start?.x?.dp ?: initial?.x.dp, end?.x?.dp ?: initial?.x.dp, progress) - anchorPoint?.x.dp
+        }
+        ifNotNull(start?.y, end?.y) {
+            composable.overridden = true
+            composable.y = lerp(start?.y?.dp ?: initial?.y.dp, end?.y?.dp ?: initial?.y.dp, progress) - anchorPoint?.y.dp
+        }
+        ifNotNull(start?.width, end?.width) {
+            if (width !is AnimationUnit) {
+                width = AnimationUnit(width, composable.width)
+            }
+
+            width!!.value = lerp(start?.width?.dp ?: initial?.width.dp, end?.width?.dp ?: initial?.width.dp, progress)
+        }
+        ifNotNull(start?.height, end?.height) {
+            if (height !is AnimationUnit) {
+                height = AnimationUnit(height, composable.height)
+            }
+
+            height!!.value = lerp(start?.height?.dp ?: initial?.height.dp, end?.height?.dp ?: initial?.height.dp, progress)
         }
 
         ifNotNull(start?.background, end?.background) {
@@ -392,11 +425,13 @@ class DefaultModifier : UIModifier<DefaultModifier>() {
                 context.recompose()
                 UIBackground()
             }
-            background!!.animate(context, initial?.background, start?.background, end?.background, progress)
+            background!!.animate(context, initial?.background, start?.background, end?.background, progress, completed)
+        }
+
+        if (completed) {
+            if (width is AnimationUnit && end?.width != null) width = end.width
+            if (height is AnimationUnit && end?.height != null) height = end.height
+            return
         }
     }
-}
-
-inline fun <T> has(obj1: T?, obj2: T?, block: () -> Unit) {
-    if (obj1 != null && obj2 != null) block()
 }

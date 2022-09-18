@@ -107,6 +107,7 @@ object PrismDesign : CloseableScreen {
                         modifier
                             .size(1.rel, 39.px)
                             .control(Alignment.BOTTOMLEFT)
+                            .disableOptimizations()
                         Button(
                             text = name,
                             modifier = Modifier()

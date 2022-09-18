@@ -98,7 +98,7 @@ object Renderer : UIRenderer {
         )
         framebuffers[fbo] = framebuffer
 
-        println("Created FBO of $width, $height. Content Scale: $contentScale, $fbo")
+        println("FBO($width, $height)")
 
         return fbo
     }

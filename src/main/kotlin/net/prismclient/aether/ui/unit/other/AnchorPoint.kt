@@ -41,7 +41,14 @@ open class AnchorPoint : Animatable<AnchorPoint>, Copyable<AnchorPoint>, Mergabl
         }.crel
     }
 
-    override fun animate(context: AnimationContext<*>, initial: AnchorPoint?, start: AnchorPoint?, end: AnchorPoint?, progress: Float) {
+    override fun animate(
+        context: AnimationContext<*>,
+        initial: AnchorPoint?,
+        start: AnchorPoint?,
+        end: AnchorPoint?,
+        progress: Float,
+        completed: Boolean
+    ) {
         TODO("Not yet implemented")
     }
 

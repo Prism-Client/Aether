@@ -86,7 +86,7 @@ abstract class Game(val windowTitle: String) {
         glfwMakeContextCurrent(window.handle)
         createCapabilities()
         glfwSetTime(0.0)
-        glfwSwapInterval(0)
+        glfwSwapInterval(1)
 
         // Create Aether after we've initialized OpenGL.
         createAether()

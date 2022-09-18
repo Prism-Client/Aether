@@ -19,5 +19,5 @@ interface Animatable<T> : Copyable<T> {
      * If a property is changed of which the layout needs to be recomposed, invoke
      * [AnimationContext.recompose] to indicate this.
      */
-    fun animate(context: AnimationContext<*>, initial: T?, start: T?, end: T?, progress: Float)
+    fun animate(context: AnimationContext<*>, initial: T?, start: T?, end: T?, progress: Float, completed: Boolean)
 }

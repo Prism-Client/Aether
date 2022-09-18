@@ -155,7 +155,14 @@ class BoxLayoutStyle : Style<BoxLayoutStyle, BoxLayout>() {
                 composable!!.potentialSize!!.width else composable!!.potentialSize!!.height) / composable.children.size
     }
 
-    override fun animate(context: AnimationContext<*>, initial: BoxLayoutStyle?, start: BoxLayoutStyle?, end: BoxLayoutStyle?, progress: Float) {
+    override fun animate(
+        context: AnimationContext<*>,
+        initial: BoxLayoutStyle?,
+        start: BoxLayoutStyle?,
+        end: BoxLayoutStyle?,
+        progress: Float,
+        completed: Boolean
+    ) {
         TODO("Not yet implemented")
     }
 

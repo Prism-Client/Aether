@@ -54,7 +54,14 @@ open class UIBorder : Shape(), Animatable<UIBorder>, Copyable<UIBorder>, Mergabl
         }
     }
 
-    override fun animate(context: AnimationContext<*>, initial: UIBorder?, start: UIBorder?, end: UIBorder?, progress: Float) {
+    override fun animate(
+        context: AnimationContext<*>,
+        initial: UIBorder?,
+        start: UIBorder?,
+        end: UIBorder?,
+        progress: Float,
+        completed: Boolean
+    ) {
         TODO("Not yet implemented")
     }
 

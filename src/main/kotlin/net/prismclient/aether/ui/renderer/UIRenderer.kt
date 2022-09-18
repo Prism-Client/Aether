@@ -109,7 +109,7 @@ interface UIRenderer {
      */
     fun useAntialiasing(antialiasing: Boolean)
 
-    // -- FBO --//
+    // -- "FFBO --//
 
     /**
      * Creates a framebuffer from the given [width] and [height].

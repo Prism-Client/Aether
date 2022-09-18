@@ -17,7 +17,14 @@ class UIAlpha(var value: Float) : Copyable<UIAlpha>, Mergable<UIAlpha>, Animatab
      */
     constructor(value: Int) : this((value and 0xFF) / 255f)
 
-    override fun animate(context: AnimationContext<*>, initial: UIAlpha?, start: UIAlpha?, end: UIAlpha?, progress: Float) {
+    override fun animate(
+        context: AnimationContext<*>,
+        initial: UIAlpha?,
+        start: UIAlpha?,
+        end: UIAlpha?,
+        progress: Float,
+        completed: Boolean
+    ) {
         TODO("Not yet implemented")
     }
 
