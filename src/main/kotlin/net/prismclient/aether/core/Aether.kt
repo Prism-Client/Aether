@@ -126,7 +126,7 @@ open class Aether(renderer: UIRenderer) {
                             val event = MousePress(mouseX, mouseY, mouseButton, item)
                             item.publish(event)
                             publish(event)
-//                            composition.compose()
+                            composition.compose()
                             return
                         }
                     }

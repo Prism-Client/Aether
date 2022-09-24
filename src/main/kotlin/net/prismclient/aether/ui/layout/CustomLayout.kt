@@ -29,7 +29,6 @@ class CustomLayout @JvmOverloads constructor(
      */
     val layout: CustomLayout.(children: ArrayList<Composable>, layoutSize: Size?) -> Size,
 ) : BoxLayout(name, modifier, layoutStyle) {
-    override fun calculatePotentialSize(): Size = sizeCalculation() ?: Size(0f, 0f)
 
     override fun updateUnits() = unitCalculation.invoke(this, potentialSize)
 

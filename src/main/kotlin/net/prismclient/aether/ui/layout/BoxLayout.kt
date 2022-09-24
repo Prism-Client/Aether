@@ -29,7 +29,7 @@ open class BoxLayout(
      * on the [BoxLayoutStyle.layoutDirection], and the other axis is the largest element within
      * layout. It also incorporates for the [BoxLayoutStyle.layoutPadding].
      */
-    open fun calculatePotentialSize(): Size {
+    open fun calculatePotentialSize() {
         var width = 0f
         var height = 0f
 
@@ -51,7 +51,7 @@ open class BoxLayout(
             height -= layoutStyle.itemSpacing.dp
         }
 
-        return Size(
+        potentialSize = Size(
             width + layoutStyle.layoutPadding?.left.dp + layoutStyle.layoutPadding?.right.dp,
             height + layoutStyle.layoutPadding?.top.dp + layoutStyle.layoutPadding?.bottom.dp
         )
@@ -61,14 +61,12 @@ open class BoxLayout(
         // Calculate hte potential size of the layout so the functions
         // invoked from compose such as updateLayout and updateSize will
         // have a general idea of the final dimensions of the layout.
-        potentialSize = calculatePotentialSize()
+        calculatePotentialSize()
         super.compose()
     }
 
     override fun composeSize() {
         super.composeSize()
-
-        potentialSize = potentialSize ?: Size(width, height)
 
         // If the layout is intended to be resized based on the size of the
         // layout, increment equal the cachedValue of it to the potential
@@ -76,15 +74,14 @@ open class BoxLayout(
         // units such as DynamicUnits, it is increment as a value for the
         // other unit might be stored there which shouldn't be overwritten.
         if (modifier.width.typeOf(HugLayout::class) || modifier.height.typeOf(HugLayout::class)) {
-            if (modifier.width.typeOf(HugLayout::class)) {
-                modifier.width!!.cachedValue += potentialSize!!.width
-            }
-            if (modifier.height.typeOf(HugLayout::class)) {
-                modifier.height!!.cachedValue += potentialSize!!.height
-            }
+            if (modifier.width.typeOf(HugLayout::class))
+                modifier.width!!.cachedValue += potentialSize.width.roundToInt()
+            if (modifier.height.typeOf(HugLayout::class))
+                modifier.height!!.cachedValue += potentialSize.height.roundToInt()
 
             width = modifier.width.dp.roundToInt().toFloat()
             height = modifier.height.dp.roundToInt().toFloat()
+
             modifier.composePadding(this)
             modifier.composeMargin(this)
         }
@@ -153,7 +150,7 @@ class BoxLayoutStyle : Style<BoxLayoutStyle, BoxLayout>() {
         layoutPadding?.compose(composable!!)
         if (itemSpacing is SpaceBetween)
             itemSpacing!!.value = (if (layoutDirection == LayoutDirection.HORIZONTAL)
-                composable!!.potentialSize!!.width else composable!!.potentialSize!!.height) / composable.children.size
+                composable!!.potentialSize.width else composable!!.potentialSize.height) / composable.children.size
     }
 
     override fun animate(

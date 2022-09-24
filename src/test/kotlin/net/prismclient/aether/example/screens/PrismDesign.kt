@@ -30,6 +30,7 @@ import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.renderer.UIStrokeDirection
 import net.prismclient.aether.ui.screen.CloseableScreen
 import net.prismclient.aether.ui.unit.other.Padding
+import kotlin.random.Random
 
 object PrismDesign : CloseableScreen {
     var initialized = false
@@ -59,20 +60,11 @@ object PrismDesign : CloseableScreen {
         Composition(
             name = "Test",
             modifier = CompositionModifier()
-                .background(RGBA(1f, 0f, 0f).rgba)
                 .size(1.rel, 1.rel)
                 .disableOptimizations()
         ) {
             Background()
             PrismLogo()
-
-            activePane = Composition(
-                name = "Viewport",
-                modifier = CompositionModifier()
-                    .constrain(253.px, 21.px, 1.rel - 253.px - 21.px, 1.rel - 42.px),
-            ) {}
-
-            Dashboard()
 
             Column(
                 name = "Main Column",
@@ -153,8 +145,6 @@ object PrismDesign : CloseableScreen {
             .layoutSpacing(24.px)
     ) {
         modifier.clipContent = false
-        modifier.optimizeComposition = false
-
 
         val image = Image(
             imageName = iconName,
@@ -180,9 +170,6 @@ object PrismDesign : CloseableScreen {
             image.image = ImageProvider.obtainImage(image.image.imageName.replace("solid", "gradient"))!!
             button.fontStyle.fontColor(0x292D32.rgb)
         }
-
-
-        println("$name, $this, ${modifier.optimizeComposition}")
     }
 
     fun SideTitle(text: String) = Button(

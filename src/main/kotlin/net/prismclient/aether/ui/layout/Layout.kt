@@ -59,8 +59,6 @@ abstract class UILayout(
 
     override fun compose() {
         modifier.preCompose(this)
-        composeSize()
-        composePosition()
         // Invoke the updateUnits function after
         // calculating the relevant properties of this.
         updateUnits()
