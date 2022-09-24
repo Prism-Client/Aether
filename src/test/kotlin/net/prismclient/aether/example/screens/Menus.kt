@@ -30,6 +30,8 @@ fun Dashboard() = PrismDesign.Pane {
             .fontSize(24.px)
             .fontType(FontType.AutoWidth)
     )
+
+
 }
 
 fun mods() = PrismDesign.Pane {

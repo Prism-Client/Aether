@@ -66,6 +66,14 @@ object PrismDesign : CloseableScreen {
             Background()
             PrismLogo()
 
+            activePane = Composition(
+                name = "Viewport",
+                modifier = CompositionModifier()
+                    .constrain(253.px, 21.px, 1.rel - 253.px - 21.px, 1.rel - 42.px),
+            )
+
+            Dashboard()
+
             Column(
                 name = "Main Column",
                 modifier = LayoutModifier()

@@ -7,10 +7,7 @@ import net.prismclient.aether.ui.alignment.HorizontalAlignment
 import net.prismclient.aether.ui.alignment.VerticalAlignment
 import net.prismclient.aether.ui.alignment.horizontalConvert
 import net.prismclient.aether.ui.alignment.verticalConvert
-import net.prismclient.aether.ui.component.type.DefaultConstruct
-import net.prismclient.aether.ui.component.type.IconModifier
-import net.prismclient.aether.ui.component.type.ImageComponent
-import net.prismclient.aether.ui.component.type.UIButton
+import net.prismclient.aether.ui.component.type.*
 import net.prismclient.aether.ui.composition.*
 import net.prismclient.aether.ui.dsl.ComposeDSL.composable
 import net.prismclient.aether.ui.dsl.ConstructionDSL
@@ -28,18 +25,18 @@ inline fun Button(
     text: String,
     modifier: UIModifier<*> = Modifier(),
     fontStyle: FontStyle = FontStyle(),
+    noinline onClick: (UIButton.(MousePress) -> Unit)? = null,
     block: Block<UIButton> = {},
-): UIButton = composable(UIButton(text, modifier, fontStyle), block)
+): UIButton = composable(UIButton(text, modifier, fontStyle), block).apply {
+    if (onClick != null) onClick { this.onClick(it) }
+}
 
 inline fun Label(
     text: String,
     modifier: UIModifier<*> = Modifier(),
     fontStyle: FontStyle = FontStyle(),
-    noinline onClick: (UIButton.(MousePress) -> Unit)? = null,
-    block: Block<UIButton> = {},
-): UIButton = Button(text, modifier, fontStyle, block).apply {
-    if (onClick != null) onClick { this.onClick(it) }
-}
+    block: Block<UILabel> = {},
+): UILabel = composable(UILabel(text, modifier, fontStyle), block)
 
 inline fun Image(
     imageName: UIImage,
@@ -62,7 +59,7 @@ inline fun Icon(
 inline fun Composition(
     name: String = "",
     modifier: CompositionModifier<*> = CompositionModifier(),
-    block: Block<Composition> = {}
+    block: Block<Composition> = {},
 ): Composition = composable(net.prismclient.aether.ui.composition.Composition(name, modifier), block)
 
 /**
@@ -206,7 +203,7 @@ inline fun Layout(
     noinline sizeCalculation: CustomLayout.() -> Size = { Size(0f, 0f) },
     noinline unitCalculation: CustomLayout.(layoutSize: Size?) -> Unit = {},
     noinline layout: CustomLayout.(children: ArrayList<Composable>, layoutSize: Size?) -> Size,
-    block: Block<CustomLayout> = {}
+    block: Block<CustomLayout> = {},
 ): CustomLayout = composable(
     CustomLayout(name, modifier, layoutStyle, sizeCalculation, unitCalculation, layout),
     block
