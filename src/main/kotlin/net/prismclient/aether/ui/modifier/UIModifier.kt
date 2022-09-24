@@ -59,8 +59,10 @@ abstract class UIModifier<M : UIModifier<M>> : Copyable<M>, Mergable<M>, Animata
     open fun preCompose(composable: Composable) {
         this.composable = composable
         composeSize(composable)
+        composable.composeSize()
         composeAnchorPoint(composable)
         composePosition(composable)
+        composable.composePosition()
         composePadding(composable)
         composeMargin(composable)
     }

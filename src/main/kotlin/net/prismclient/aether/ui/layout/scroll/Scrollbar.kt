@@ -217,7 +217,7 @@ class DefaultScrollbar : Scrollbar() {
             value = if (direction == LayoutDirection.HORIZONTAL)
                 (event.mouseX - initialX - x.dp - mouseOffset) / (width.dp - actualThumbSize)
             else (event.mouseY - initialY - y.dp - mouseOffset) / (height.dp - actualThumbSize)
-            composable.composition.recompose()
+            composable.composition?.recompose()
         }
     }
 

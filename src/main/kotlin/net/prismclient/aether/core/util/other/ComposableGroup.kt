@@ -4,7 +4,7 @@ import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.dsl.ComposeDSL
 
 /**
- * Indicates to Aether, specifically [ComposeDSL] that this contains a group of [Composable]s, [children].
+ * Indicates to Aether, specifically [ComposeDSL] that this contains a group of [Composable]s, known as [children].
  *
  * @author sen
  * @since 1.0

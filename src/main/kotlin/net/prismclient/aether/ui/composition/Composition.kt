@@ -4,10 +4,11 @@ import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.animation.AnimationContext
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.shorthands.*
-import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.dsl.Renderer
+import net.prismclient.aether.ui.dsl.UIRendererDSL
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.renderer.UIFramebuffer
+import java.lang.RuntimeException
 
 // TODO: disable optimize composition
 // TODO: Limit composition framerate
@@ -22,6 +23,7 @@ import net.prismclient.aether.ui.renderer.UIFramebuffer
  * @since 1.0
  */
 open class Composition(val name: String, modifier: CompositionModifier<*>) : Composable(modifier), ComposableGroup {
+    override var composition: Composition? = this
     override val modifier: CompositionModifier<*> get() = super.modifier as CompositionModifier
     override val children: ArrayList<Composable> = arrayListOf()
 
@@ -29,21 +31,10 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
     override fun parentHeight(): Float = if (isTopLayer()) Aether.instance.displayHeight else super.parentHeight()
 
     /**
-     * Returns the parent composition or this.
-     */
-    override var composition: Composition
-        get() = compositionRef ?: this
-        set(value) {
-            compositionRef = value
-        }
-
-    /**
      * The FrameBuffer reference. This is automatically allocated when [CompositionModifier.optimizeComposition] is true.
      */
     open var framebuffer: UIFramebuffer? = null
         protected set
-
-    open var requiresRasterization: Boolean = false
 
     init {
         Aether.instance.compositions?.add(this)
@@ -53,8 +44,6 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
 
     override fun compose() {
         modifier.preCompose(this)
-        composeSize()
-        composePosition()
         children.forEach(Composable::compose)
         modifier.compose(this)
         requestRasterization()
@@ -63,7 +52,6 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
     override fun render() {
         Renderer {
             if (modifier.optimizeComposition) {
-                if (framebuffer == null || requiresRasterization) rasterize()
                 color(-1)
                 path {
                     renderer.imagePattern(framebuffer!!.imagePattern, x, y, width, height, 0f, 1f)
@@ -85,9 +73,7 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
     }
 
     open fun requestRasterization() {
-        if (modifier.optimizeComposition) {
-            requiresRasterization = true
-        }
+        Aether.instance.rasterizationQueue?.add(this)
     }
 
     /**
@@ -96,28 +82,17 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
     open fun rasterize() {
         if (!modifier.optimizeComposition) return
 
-        requiresRasterization = false
-
         if (framebuffer == null || framebuffer!!.width != width || framebuffer!!.height != height) {
             if (framebuffer != null)
                 Aether.renderer.deleteFBO(framebuffer!!)
             framebuffer = Aether.renderer.createFBO(width, height)
-            println("Requested a new Framebuffer")
         }
 
         UIRendererDSL.renderToFramebuffer(framebuffer!!) {
-            // Translate the composition by the inverse position. This is done
-            // because it is rendered to a framebuffer where the origin is now
-            // (x, y) instead of 0, 0 as it is automatically set to (x, y) when
-            // the image of the framebuffer is rendered.
             translate(-x, -y) {
-                // UIRendererDSL saving is disabled to account for saving
-                // the state within the translation call above.
-                shouldSave = false
                 modifier.preRender()
                 children.forEach(Composable::render)
                 modifier.render()
-                shouldSave = true
             }
         }
     }
@@ -139,7 +114,7 @@ open class Composition(val name: String, modifier: CompositionModifier<*>) : Com
      * Returns true if this Composition is at the top of the Composition tree. A composition within
      * another composition would return false as it is not at the top.
      */
-    open fun isTopLayer(): Boolean = composition == this // TODO: Update to fit Compositions within Compositions
+    open fun isTopLayer(): Boolean = composition == this
 }
 
 /**
@@ -188,7 +163,7 @@ class DefaultCompositionModifier : CompositionModifier<DefaultCompositionModifie
         start: DefaultCompositionModifier?,
         end: DefaultCompositionModifier?,
         progress: Float,
-        completed: Boolean
+        completed: Boolean,
     ) {
         TODO("Not yet implemented")
     }

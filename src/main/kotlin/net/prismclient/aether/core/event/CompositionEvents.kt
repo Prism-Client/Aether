@@ -44,7 +44,7 @@ abstract class PropagatingEvent(val initialComposable: Composable) : CustomEvent
             return
         }
         previousComposable = currentComposable
-        currentComposable = currentComposable.parent ?: currentComposable.composition
+        currentComposable = currentComposable.parent ?: currentComposable.composition!!
         currentComposable.publish(this)
     }
 

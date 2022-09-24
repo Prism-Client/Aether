@@ -4,14 +4,11 @@ import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.Alignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
-import net.prismclient.aether.ui.component.UIComponent
-import net.prismclient.aether.ui.composable.Construct
-import net.prismclient.aether.ui.composable.Label
-import net.prismclient.aether.ui.composable.VerticalList
+import net.prismclient.aether.ui.component.*
+import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.DefaultCompositionModifier
 import net.prismclient.aether.ui.composition.util.UIBackground
 import net.prismclient.aether.ui.composition.util.UIBorder
-import net.prismclient.aether.ui.dsl.ComposeDSL.Composition
 import net.prismclient.aether.ui.dsl.ComposeDSL.composable
 import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.dsl.Resource

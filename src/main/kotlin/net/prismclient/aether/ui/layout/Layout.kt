@@ -74,15 +74,9 @@ abstract class UILayout(
         layoutSize = updateLayout()
 
         modifier.compose(this)
-        rasterize()
+        requestRasterization()
     }
 
-    /**
-     * Update any units of the layout. The potential layout size is already calculated
-     * at this point if necessary.
-     *
-     * @see layoutSize
-     */
     abstract fun updateUnits()
 
     /**
@@ -126,13 +120,13 @@ abstract class UILayout(
         if (!modifier.optimizeComposition) return
 
         if (framebuffer == null || framebuffer!!.width != width || framebuffer!!.height != height) {
+            if (framebuffer != null)
+                Aether.renderer.deleteFBO(framebuffer!!)
             framebuffer = Aether.renderer.createFBO(width, height)
         }
 
         UIRendererDSL.renderToFramebuffer(framebuffer!!) {
-            renderer.save()
             translate(-x, -y) {
-                shouldSave = false
                 modifier.preRender()
 
                 // Calculate the offset of the scrollbars
@@ -146,9 +140,7 @@ abstract class UILayout(
                 renderer.translate(xOffset, yOffset)
 
                 modifier.render()
-                shouldSave = true
             }
-            renderer.restore()
         }
     }
 

@@ -15,8 +15,6 @@ abstract class UIComponent<T : UIComponent<T>>(modifier: UIModifier<*>) : Compos
 
     override fun compose() {
         modifier.preCompose(this)
-        composeSize()
-        composePosition()
         update()
         modifier.compose(this)
     }

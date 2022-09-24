@@ -96,7 +96,6 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
      * and position of the composable have been calculated.
      */
     override fun compose(composable: Composable?) {
-        style.preCompose()
         super.compose(composable)
         anchor?.compose(composable, width.dp, height.dp)
     }
@@ -105,6 +104,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
      * Attempts to resize the [Composable] based on the metrics of the font.
      */
     open fun composeSize(composable: Composable?) {
+        style.preCompose()
         style.compose(composable)
         calculateMetrics()
         when (style.textResizing) {
@@ -123,6 +123,13 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
                 height!!.cachedValue = fontHeight()
 
                 // Update the height of the composable
+                composable?.height = y.dp + height.dp
+            }
+            FixedSize -> {
+                height = AutoResize()
+                height!!.cachedValue = fontHeight()
+
+                composable?.width = x.dp + width.dp
                 composable?.height = y.dp + height.dp
             }
             else -> {}

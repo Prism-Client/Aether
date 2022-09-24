@@ -21,7 +21,7 @@ open class BoxLayout(
     modifier: LayoutModifier<*>,
     val layoutStyle: BoxLayoutStyle
 ): UILayout(name, modifier, false) {
-    open var potentialSize: Size? = null
+    open lateinit var potentialSize: Size
         protected set
 
     /**
@@ -61,13 +61,14 @@ open class BoxLayout(
         // Calculate hte potential size of the layout so the functions
         // invoked from compose such as updateLayout and updateSize will
         // have a general idea of the final dimensions of the layout.
-        if (modifier.width.typeOf(HugLayout::class) || modifier.height.typeOf(HugLayout::class)) potentialSize = calculatePotentialSize()
+        potentialSize = calculatePotentialSize()
         super.compose()
-        potentialSize = null
     }
 
     override fun composeSize() {
         super.composeSize()
+
+        potentialSize = potentialSize ?: Size(width, height)
 
         // If the layout is intended to be resized based on the size of the
         // layout, increment equal the cachedValue of it to the potential

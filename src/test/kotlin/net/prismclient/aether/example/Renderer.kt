@@ -98,8 +98,6 @@ object Renderer : UIRenderer {
         )
         framebuffers[fbo] = framebuffer
 
-        println("FBO($width, $height)")
-
         return fbo
     }
 

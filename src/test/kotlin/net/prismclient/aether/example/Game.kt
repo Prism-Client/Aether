@@ -86,7 +86,7 @@ abstract class Game(val windowTitle: String) {
         glfwMakeContextCurrent(window.handle)
         createCapabilities()
         glfwSetTime(0.0)
-        glfwSwapInterval(1)
+        glfwSwapInterval(0)
 
         // Create Aether after we've initialized OpenGL.
         createAether()
@@ -125,6 +125,8 @@ abstract class Game(val windowTitle: String) {
         var lastSecond = System.currentTimeMillis()
 
         while (!glfwWindowShouldClose(window.handle)) {
+            aether.renderFrames()
+
             glViewport(0, 0, window.width, window.height)
             glClearColor(0f, 0f, 0f, 0f)
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT or GL_STENCIL_BUFFER_BIT)

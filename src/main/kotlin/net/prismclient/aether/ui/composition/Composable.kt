@@ -32,21 +32,8 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      */
     open var overridden: Boolean = false
 
-    protected open var compositionRef: Composition? = null
+    open var composition: Composition? = Aether.instance.defaultComposition
 
-    /**
-     * The composition which this composable is assigned to. The functions within ComponentsKt class
-     * automatically set this value. If nothing is set it will default to the default composition.
-     */
-    open var composition: Composition
-        get() {
-//            if (compositionRef == null)
-//                compositionRef = Aether.instance.defaultComposition
-            return compositionRef!!
-        }
-        set(value) {
-            compositionRef = value
-        }
     open var parent: Composable? = null
 
     /**
@@ -114,7 +101,7 @@ abstract class Composable(open val modifier: UIModifier<*>) {
      */
     open fun recompose() {
         // TODO: Determine when to recompose only necessary elements if necesssary
-        composition.recompose()
+        composition?.recompose()
     }
 
     /**
@@ -177,12 +164,12 @@ abstract class Composable(open val modifier: UIModifier<*>) {
     /**
      * Returns the width of [parent], or the width of the composition.
      */
-    open fun parentWidth(): Float = parent?.width ?: composition.width
+    open fun parentWidth(): Float = parent?.width ?: composition?.width ?: 0f
 
     /**
      * Returns the height of [parent], or the height of the composition.
      */
-    open fun parentHeight(): Float = parent?.height ?: composition.height
+    open fun parentHeight(): Float = parent?.height ?: composition?.height ?: 0f
 
     /**
      * Returns the value required to make the [Composable]'s position values relative to the

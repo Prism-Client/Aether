@@ -1,9 +1,7 @@
-package net.prismclient.aether.ui.composable
+package net.prismclient.aether.ui.component
 
-import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.event.MousePress
 import net.prismclient.aether.core.metrics.Size
-import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.shorthands.Block
 import net.prismclient.aether.ui.alignment.HorizontalAlignment
 import net.prismclient.aether.ui.alignment.VerticalAlignment
@@ -25,8 +23,6 @@ import net.prismclient.aether.ui.layout.util.LayoutOrder
 import net.prismclient.aether.ui.modifier.Modifier
 import net.prismclient.aether.ui.modifier.UIModifier
 import net.prismclient.aether.ui.unit.UIUnit
-import java.util.function.BiConsumer
-import java.util.function.Consumer
 
 inline fun Button(
     text: String,
@@ -62,6 +58,12 @@ inline fun Icon(
     modifier: IconModifier = IconModifier(),
     block: Block<ImageComponent> = {},
 ): ImageComponent = Image(imageName, modifier, block)
+
+inline fun Composition(
+    name: String = "",
+    modifier: CompositionModifier<*> = CompositionModifier(),
+    block: Block<Composition> = {}
+): Composition = composable(net.prismclient.aether.ui.composition.Composition(name, modifier), block)
 
 /**
  * Creates a new [DefaultConstruct], a composable which executes the [block] when rendered. An example

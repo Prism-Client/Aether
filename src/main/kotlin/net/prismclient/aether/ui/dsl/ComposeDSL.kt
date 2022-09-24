@@ -21,7 +21,6 @@ inline fun Compose(block: Block<ComposeDSL>) {
 }
 
 /**
- * Used to easily compose [Composable]s. To start composing create a [Compose] block.
  *
  * @author sen
  * @since 1.0
@@ -52,36 +51,31 @@ object ComposeDSL {
     }
 
     /**
-     * Creates a new [Composition] with the given [name] and [block].
+     *
      */
-    inline fun Composition(
-        name: String,
-        modifier: CompositionModifier<*> = DefaultCompositionModifier(),
-        block: Block<Composition>,
-    ): Composition = Aether.instance.createComposition(name, modifier).also {
-        val previous = activeComposition
-        activeComposition = it
-        block(it)
-        activeComposition = previous
-    }
-
-
-    /**
-     * Accepts the given [Composable], [T] and applies the active state to it while applying the given [block].
-     */
-    inline fun <T : Composable> composable(composable: T, block: Block<T>): T {
+    inline fun <T : Composable> composable(composable: T, block: Block<T>): T = composable.apply {
         check()
-        composable.composition = activeComposition ?: Aether.instance.defaultComposition!!
-        composable.parent = activeComposable ?: activeComposition ?: Aether.instance.defaultComposition
 
-        if (composable.parent is ComposableGroup) (composable.parent as ComposableGroup).children.add(composable)
+        val previousComposition = activeComposition
+        val previousComposable = activeComposable
 
-        val previous = activeComposable
+        composition = if (this is Composition) {
+            activeComposition = this
+            previousComposition ?: this
+        } else {
+            activeComposition ?: Aether.instance.defaultComposition!!
+        }
 
-        activeComposable = composable
-        block(composable)
-        activeComposable = previous
+        parent = activeComposable
 
-        return composable
+        if (parent is ComposableGroup) (parent as ComposableGroup).children.add(this)
+
+        activeComposable = this
+
+        block()
+
+        activeComposable = previousComposable
+        activeComposition = previousComposition
+
     }
 }

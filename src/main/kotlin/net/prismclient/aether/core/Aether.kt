@@ -5,14 +5,18 @@ import net.prismclient.aether.core.event.UIEventBus.publish
 import net.prismclient.aether.core.input.MouseButtonType
 import net.prismclient.aether.core.util.other.ComposableGroup
 import net.prismclient.aether.core.util.property.Focusable
+import net.prismclient.aether.core.util.shorthands.RGBA
 import net.prismclient.aether.core.util.shorthands.notNull
 import net.prismclient.aether.core.util.shorthands.rel
 import net.prismclient.aether.ui.composition.Composable
 import net.prismclient.aether.ui.composition.Composition
 import net.prismclient.aether.ui.composition.CompositionModifier
+import net.prismclient.aether.ui.composition.disableOptimizations
+import net.prismclient.aether.ui.dsl.Renderer
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.screen.CloseableScreen
 import net.prismclient.aether.ui.screen.UIScreen
+import java.util.*
 
 // TODO: Event plotting optimizations (invoke only when the composition is within range)
 
@@ -36,16 +40,12 @@ open class Aether(renderer: UIRenderer) {
     open var mouseY: Float = 0f
         protected set
 
+    open var rasterizationQueue: LinkedList<Composition>? = null
+
     /**
      * The compositions represented as a HashMap with the key as the name of the composition.
      */
     open var compositions: ArrayList<Composition>? = null
-        protected set
-
-    /**
-     * All active, or top layer compositions that Aether directly acccess to render.
-     */
-    open var activeCompositions: ArrayList<Composition>? = null
         protected set
 
     /**
@@ -74,12 +74,33 @@ open class Aether(renderer: UIRenderer) {
         if (activeScreen != null) {
             check()
             renderer.beginFrame(displayWidth, displayHeight, devicePxRatio)
-            compositions!!.forEach(Composition::compose)
+            compositions!!.filter(Composition::isTopLayer).forEach(Composition::compose)
             renderer.cancelFrame()
         }
     }
 
-    //open fun renderFrames() {}
+    open fun renderFrames() {
+        if (activeScreen.notNull()) {
+            while (rasterizationQueue!!.isNotEmpty()) {
+                rasterizationQueue!!.poll().rasterize()
+            }
+        }
+    }
+
+    open fun render() {
+        publish(PreRenderEvent())
+        if (activeScreen.notNull()) {
+            renderer.beginFrame(displayWidth, displayHeight, devicePixelRatio)
+            for (i in compositions!!.indices) {
+                val composition = compositions!![i]
+                if (composition.isTopLayer()) {
+                    composition.render()
+                }
+            }
+            renderer.endFrame()
+        }
+        publish(RenderEvent())
+    }
 
     /**
      * Invoked when the mouse changes its state. This can be when it is pressed, released, or moved.
@@ -98,23 +119,23 @@ open class Aether(renderer: UIRenderer) {
 
         if (mouseButton != MouseButtonType.None) {
             if (!isRelease) {
-                activeCompositions!!.forEach { composition ->
+                compositions!!.forEach { composition ->
                     if (composition.mouseWithinBounds()) {
                         val item = findDeepest(mouseX, mouseY, composition)
                         if (item != null) {
                             val event = MousePress(mouseX, mouseY, mouseButton, item)
                             item.publish(event)
-                            UIEventBus.publish(event)
-                            composition.compose()
+                            publish(event)
+//                            composition.compose()
                             return
                         }
                     }
                 }
             } else {
-                UIEventBus.publish(MouseRelease(mouseX, mouseY, mouseButton))
+                publish(MouseRelease(mouseX, mouseY, mouseButton))
             }
         } else {
-            UIEventBus.publish(MouseMove(mouseX, mouseY))
+            publish(MouseMove(mouseX, mouseY))
         }
     }
 
@@ -122,8 +143,8 @@ open class Aether(renderer: UIRenderer) {
      * Invoked when the mouse scroll or trackpad is interacted with.
      */
     open fun mouseScrolled(dstX: Float, dstY: Float) {
-        for (i in activeCompositions!!.size - 1 downTo 0) {
-            val composition = activeCompositions!![i]
+        for (i in compositions!!.size - 1 downTo 0) {
+            val composition = compositions!![i]
             if (composition.mouseWithinBounds()) {
                 val item = scrollFind(composition)
 
@@ -180,16 +201,6 @@ open class Aether(renderer: UIRenderer) {
         return null
     }
 
-    open fun render() {
-        publish(PreRenderEvent())
-        if (activeScreen.notNull()) {
-            renderer.beginFrame(displayWidth, displayHeight, devicePixelRatio)
-            for (i in activeCompositions!!.indices) activeCompositions!![i].render()
-            renderer.endFrame()
-        }
-        publish(RenderEvent())
-    }
-
     /**
      * Used internally for [Aether] to display a screen.
      *
@@ -198,28 +209,19 @@ open class Aether(renderer: UIRenderer) {
     open fun screen(screen: UIScreen) {
         deleteActiveScreen()
         compositions = arrayListOf()
-        activeCompositions = arrayListOf()
+        compositions = arrayListOf()
+        rasterizationQueue = LinkedList()
         activeScreen = screen
-        defaultComposition = createComposition("Default", CompositionModifier())
-        defaultComposition!!.modifier.size(1.rel, 1.rel)
+        defaultComposition = Composition("Default", CompositionModifier().size(1.rel, 1.rel).disableOptimizations())
         activeScreen!!.compose()
         update(displayWidth, displayHeight, devicePixelRatio)
     }
-
-    /**
-     * Creates a new composition from the given [name].
-     */
-    open fun createComposition(name: String, modifier: CompositionModifier<*>): Composition =
-        Composition(name, modifier).also {
-            check()
-            activeCompositions?.add(it)
-        }
 
     open fun deleteActiveScreen() {
         if (activeScreen != null) {
             compositions!!.forEach(Composition::delete)
             compositions = null
-            activeCompositions = null
+            rasterizationQueue = null
             if (activeScreen!! is CloseableScreen)
                 (activeScreen!! as CloseableScreen).closeScreen()
         }

@@ -1,9 +1,6 @@
 package net.prismclient.aether.example.screens
 
-import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.animation.type.ComposableAnimation
-import net.prismclient.aether.core.color.UIColor
-import net.prismclient.aether.core.ease.impl.UILinear
 import net.prismclient.aether.core.ease.impl.UIQuart
 import net.prismclient.aether.core.util.shorthands.ColorOf
 import net.prismclient.aether.core.util.shorthands.px
@@ -11,8 +8,7 @@ import net.prismclient.aether.core.util.shorthands.rel
 import net.prismclient.aether.core.util.shorthands.rgb
 import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.Alignment
-import net.prismclient.aether.ui.composable.Label
-import net.prismclient.aether.ui.composition.disableOptimizations
+import net.prismclient.aether.ui.component.Label
 import net.prismclient.aether.ui.dsl.Compose
 import net.prismclient.aether.ui.dsl.Resource
 import net.prismclient.aether.ui.font.*
