@@ -8,6 +8,7 @@ import net.prismclient.aether.core.util.shorthands.rel
 import net.prismclient.aether.core.util.shorthands.rgb
 import net.prismclient.aether.example.Runner
 import net.prismclient.aether.ui.alignment.Alignment
+import net.prismclient.aether.ui.component.Button
 import net.prismclient.aether.ui.component.Label
 import net.prismclient.aether.ui.dsl.Compose
 import net.prismclient.aether.ui.dsl.Resource
@@ -40,7 +41,7 @@ object Animations : UIScreen {
 
         //Aether.instance.defaultComposition?.modifier?.disableOptimizations()
 
-        val title = Label(
+        val title = Button(
             text = "Some text!",
             modifier = Modifier()
                 .control(Alignment.CENTER)

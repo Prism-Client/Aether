@@ -119,8 +119,10 @@ open class Aether(renderer: UIRenderer) {
 
         if (mouseButton != MouseButtonType.None) {
             if (!isRelease) {
-                compositions!!.forEach { composition ->
-                    if (composition.mouseWithinBounds()) {
+                for (i in compositions!!.size - 1 downTo 0) {
+                    val composition = compositions!![i]
+
+                    if (composition.isTopLayer() && composition.mouseWithinBounds()) {
                         val item = findDeepest(mouseX, mouseY, composition)
                         if (item != null) {
                             val event = MousePress(mouseX, mouseY, mouseButton, item)
@@ -145,8 +147,8 @@ open class Aether(renderer: UIRenderer) {
     open fun mouseScrolled(dstX: Float, dstY: Float) {
         for (i in compositions!!.size - 1 downTo 0) {
             val composition = compositions!![i]
-            if (composition.mouseWithinBounds()) {
-                val item = scrollFind(composition)
+            if (composition.isTopLayer() && composition.mouseWithinBounds()) {
+                val item = scrollFind(composition) ?: if (composition is Focusable && composition.wantsFocus()) composition else null
 
                 if (item != null) {
                     focusedComponent = item

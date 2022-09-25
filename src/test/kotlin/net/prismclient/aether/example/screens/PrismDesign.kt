@@ -45,7 +45,6 @@ object PrismDesign : CloseableScreen {
     lateinit var activeSidebarButton: AutoLayout
 
     override fun compose() = Compose {
-
         if (!initialized) {
             Resource {
                 fontCollection(localResource("/fonts/Poppins"))

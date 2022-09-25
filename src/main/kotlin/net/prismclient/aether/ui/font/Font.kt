@@ -152,7 +152,13 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
         text.clear()
         // Calculate the bounds of the text based on the type and update the actual text.
         Renderer {
-            font(style.actualFontName ?: "", style.fontSize.dp, LEFT, TOP, style.fontSpacing.dp)
+            font(
+                fontFace = style.actualFontName ?: "",
+                fontSize = style.fontSize.dp,
+                fontSpacing = style.fontSpacing.dp,
+                horizontalAlignment = style.horizontalAlignment ?: LEFT,
+                verticalAlignment = style.verticalAlignment ?: TOP
+            )
             when (style.textResizing) {
                 AutoWidth -> {
                     text.add(actualText)
@@ -187,11 +193,7 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
         val height = height.dp
         val lineHeight = style.lineHeight.dp
 
-        val x = x.dp + initialX + when (horizontalAlignment) {
-            CENTER -> (width - fontMetrics.maxX - fontMetrics.minY) / 2f
-            RIGHT -> (width - fontMetrics.maxX - fontMetrics.minY)
-            else -> 0f
-        } - anchor?.x.dp
+        val x = x.dp + initialX - anchor?.x.dp
 
         val y = y.dp + initialY + when (verticalAlignment) {
             CENTER -> (height - fontMetrics.maxY - fontMetrics.minY) / 2f
@@ -201,7 +203,13 @@ open class UIFont(open val style: FontStyle) : ComposableShape<Composable>(), Co
 
         Renderer {
             color(style.fontColor)
-            font(style.actualFontName ?: "", style.fontSize.dp, LEFT, TOP, style.fontSpacing.dp)
+            font(
+                fontFace = style.actualFontName ?: "",
+                fontSize = style.fontSize.dp,
+                fontSpacing = style.fontSpacing.dp,
+                horizontalAlignment = style.horizontalAlignment ?: LEFT,
+                verticalAlignment = style.verticalAlignment ?: TOP
+            )
             when (style.textResizing) {
                 AutoWidth -> actualText.render(x, y)
                 AutoHeight -> renderer.renderText(text, x, y, lineHeight)

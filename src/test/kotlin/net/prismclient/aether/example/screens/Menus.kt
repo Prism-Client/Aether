@@ -3,6 +3,7 @@ package net.prismclient.aether.example.screens
 import net.prismclient.aether.core.metrics.Size
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.ui.alignment.Alignment
+import net.prismclient.aether.ui.alignment.HorizontalAlignment
 import net.prismclient.aether.ui.alignment.UITextAlignment
 import net.prismclient.aether.ui.component.*
 import net.prismclient.aether.ui.component.type.IconModifier
@@ -22,7 +23,6 @@ fun Dashboard() = PrismDesign.Pane {
     Label(
         text = "Dashboard",
         modifier = Modifier()
-            .backgroundColor(RGBA(1f, 0f, 0f, 0.3f).rgba)
             .position(47.px, 29.px),
         fontStyle = FontStyle()
             .fontName("Poppins-Medium")
@@ -31,7 +31,29 @@ fun Dashboard() = PrismDesign.Pane {
             .fontType(FontType.AutoWidth)
     )
 
-
+    Column(
+        modifier = LayoutModifier().control(Alignment.CENTER),
+        layoutStyle = BoxLayoutStyle().spacing(7.px)
+    ) {
+        Label(
+            text = "Dashboard Not Yet Supported",
+            fontStyle = FontStyle()
+                .fontName("Poppins-Medium")
+                .fontColor(0xFFFFFF.rgb)
+                .fontSize(32.px)
+                .fontType(FontType.AutoWidth)
+        )
+        Label(
+            text = "The dashboard has not yet been fully implemented\n\nSorry ~sen",
+            fontStyle = FontStyle()
+                .x(0.5.rel)
+                .fontAlignment(UITextAlignment.CENTER, UITextAlignment.TOP)
+                .fontName("Poppins-Regular")
+                .fontColor(0xEFF6FF.rgb)
+                .fontSize(14.px)
+                .fontType(FontType.AutoHeight)
+        )
+    }
 }
 
 fun mods() = PrismDesign.Pane {
