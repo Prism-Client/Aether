@@ -1,5 +1,6 @@
 package net.prismclient.aether.example.screens
 
+import net.prismclient.aether.core.Aether
 import net.prismclient.aether.core.util.shorthands.*
 import net.prismclient.aether.example.Renderer.fontBounds
 import net.prismclient.aether.example.Runner
@@ -176,6 +177,18 @@ object PrismDesign : CloseableScreen {
             activeSidebarButton = this
             image.image = ImageProvider.obtainImage(image.image.imageName.replace("solid", "gradient"))!!
             button.fontStyle.fontColor(0x292D32.rgb)
+
+            when (button.text) {
+                "Dashboard" -> Dashboard()
+                "Mods" -> Mods()
+//                "Settings" -> Settings()
+//                "Store" -> Store()
+//                "Profiles" -> Profiles()
+//                "Messages" -> Messages()
+//                "Friends" -> Friends()
+//                "Recordings" -> Recordings()
+                else -> NotSupported()
+            }
         }
     }
 
@@ -249,6 +262,7 @@ object PrismDesign : CloseableScreen {
             activeComposable = prev1
             activeComposition = prev2
         }
+        Aether.instance.update(Aether.instance.displayWidth, Aether.instance.displayHeight, Aether.instance.devicePixelRatio)
     }
 
     override fun closeScreen() {

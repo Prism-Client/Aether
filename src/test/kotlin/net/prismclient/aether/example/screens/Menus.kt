@@ -30,33 +30,11 @@ fun Dashboard() = PrismDesign.Pane {
             .fontSize(24.px)
             .fontType(FontType.AutoWidth)
     )
-
-    Column(
-        modifier = LayoutModifier().control(Alignment.CENTER),
-        layoutStyle = BoxLayoutStyle().spacing(7.px)
-    ) {
-        Label(
-            text = "Dashboard Not Yet Supported",
-            fontStyle = FontStyle()
-                .fontName("Poppins-Medium")
-                .fontColor(0xFFFFFF.rgb)
-                .fontSize(32.px)
-                .fontType(FontType.AutoWidth)
-        )
-        Label(
-            text = "The dashboard has not yet been fully implemented\n\nSorry ~sen",
-            fontStyle = FontStyle()
-                .x(0.5.rel)
-                .fontAlignment(UITextAlignment.CENTER, UITextAlignment.TOP)
-                .fontName("Poppins-Regular")
-                .fontColor(0xEFF6FF.rgb)
-                .fontSize(14.px)
-                .fontType(FontType.AutoHeight)
-        )
-    }
 }
 
-fun mods() = PrismDesign.Pane {
+fun Mods() = PrismDesign.Pane {
+    println("Hello!")
+
     fun CategoryButton(text: String): UIButton = Button(
         text = text,
         modifier = Modifier()
@@ -202,5 +180,31 @@ fun mods() = PrismDesign.Pane {
             }
             children.forEach { btn -> btn.onClick { select(btn as UIButton) } }
         }
+    }
+}
+
+fun NotSupported() = PrismDesign.Pane {
+    Column(
+        modifier = LayoutModifier().control(Alignment.CENTER),
+        layoutStyle = BoxLayoutStyle().spacing(7.px)
+    ) {
+        Label(
+            text = "Work in progress...",
+            fontStyle = FontStyle()
+                .fontName("Poppins-Medium")
+                .fontColor(0xFFFFFF.rgb)
+                .fontSize(32.px)
+                .fontType(FontType.AutoWidth)
+        )
+        Label(
+            text = "This window is work in progress :p \n\nSorry ~sen <3",
+            fontStyle = FontStyle()
+                .x(0.5.rel)
+                .fontAlignment(UITextAlignment.CENTER, UITextAlignment.TOP)
+                .fontName("Poppins-Regular")
+                .fontColor(0xEFF6FF.rgb)
+                .fontSize(14.px)
+                .fontType(FontType.AutoHeight)
+        )
     }
 }
