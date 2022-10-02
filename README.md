@@ -1,3 +1,3 @@
-Future repository for Aether.
+Aether rewrite.
 
-## See the existing one [here](https://github.com/Prism-Client/Aether-UI)
+## See the original one [here](https://github.com/Prism-Client/Aether-UI)
